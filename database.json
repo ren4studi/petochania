@@ -1,0 +1,45 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "$2a$10$/cJ1RpBOaB.DLEpYmEBkEett7N4mYUKJAb/wIpNlMhVg4zkXTyrs2"
+    }
+  ],
+  "cats": [],
+  "gallery": [],
+  "faq": [],
+  "reviews": [],
+  "settings": {
+    "siteTitle": "Petochania",
+    "siteDescription": "Питомник элитных кошек",
+    "contactPhone": "8 926 150 2870",
+    "contactEmail": "",
+    "socialLinks": [
+      {
+        "name": "Telegram",
+        "url": "https://t.me/tata_procats"
+      },
+      {
+        "name": "WhatsApp",
+        "url": "https://wa.me/message/Y4ZYRHELPNHUE1"
+      },
+      {
+        "name": "VK",
+        "url": "https://vk.com/petochania"
+      },
+      {
+        "name": "Facebook",
+        "url": "https://www.facebook.com/share/1A33qj8Nbm/?mibextid=wwXIfr"
+      },
+      {
+        "name": "TikTok",
+        "url": "https://www.tiktok.com/@tata.vygodnaya?_t=ZS-90PLbDoj2kE&_r=1"
+      },
+      {
+        "name": "Instagram",
+        "url": "https://www.instagram.com/petochania?igsh=MWR3bHhpNjhnd3g3dw%3D%3D&utm_source=qr"
+      }
+    ]
+  }
+}

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Часто задаваемые вопросы | Petochania</title>
+    <link rel="shortcut icon" href="img/free-icon-kitten-5389298.png">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Lato', 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .main {
+            flex: 1;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #e0e0e0;
+            backdrop-filter: blur(5px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        /* Логотип и название слева */
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            text-decoration: none;
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.5px;
+        }
+        
+        .logo-main {
+            font-size: 20px;
+            font-weight: 700;
+            color: #C8A97E;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 12px;
+            color: #666;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Центральное меню */
+        .nav-center {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: #C8A97E;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #C8A97E;
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Правая часть с телефоном */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .phone-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .phone-number:hover {
+            color: #C8A97E;
+        }
+        
+        /* Hero Section */
+        .faq-hero {
+            padding: 140px 20px 60px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            text-align: center;
+        }
+        
+        .faq-hero h1 {
+            font-size: clamp(36px, 6vw, 48px);
+            color: #333;
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .faq-hero p {
+            font-size: clamp(16px, 3vw, 20px);
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: 60px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .faq-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .faq-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+        
+        .faq-question {
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: white;
+            transition: background-color 0.3s;
+        }
+        
+        .faq-question:hover {
+            background: #f8f9fa;
+        }
+        
+        .faq-question h3 {
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+            margin: 0;
+            flex: 1;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .faq-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #C8A97E;
+            transition: transform 0.3s;
+        }
+        
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 0 30px 25px;
+            max-height: 1000px;
+        }
+        
+        .faq-answer p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .faq-answer p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .faq-categories {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .faq-category {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #C8A97E;
+            border-radius: 25px;
+            color: #C8A97E;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .faq-category.active,
+        .faq-category:hover {
+            background: #C8A97E;
+            color: white;
+        }
+        
+        /* Contact Section */
+        .contact {
+            padding: 60px 20px;
+            text-align: center;
+            background: #f8f9fa;
+            margin-top: 40px;
+        }
+        
+        .contact h2 {
+            font-size: clamp(24px, 6vw, 32px);
+            margin-bottom: 15px;
+            color: #333;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .contact p {
+            font-size: clamp(14px, 4vw, 16px);
+            color: #666;
+            margin-bottom: 25px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #C8A97E;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .cta-button:hover {
+            background: #694e28;
+        }
+        
+        /* Footer */
+        footer {
+            background: #444;
+            color: #fff;
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
+        
+        footer .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        footer .logo {
+            text-align: center;
+            font-size: 24px;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer-left {
+            text-align: center;
+        }
+        
+        .footer-right {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .footer-links a {
+            color: #777;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            color: #C8A97E;
+        }
+        
+        .social {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #363636;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+        
+        .social:hover {
+            background: #C8A97E;
+        }
+        
+        /* Мобильное меню */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+            padding: 5px;
+            z-index: 1002;
+        }
+        
+        @media (max-width: 1024px) {
+            .nav-center, .nav-right {
+                display: none;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .mobile-menu {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                z-index: 1001;
+                padding: 80px 20px 20px;
+                overflow-y: auto;
+            }
+            
+            .mobile-menu.active {
+                display: block;
+            }
+            
+            .mobile-menu-content {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .mobile-menu a {
+                padding: 16px 20px;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 18px;
+                color: #333;
+                text-decoration: none;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                transition: all 0.3s;
+            }
+            
+            .mobile-menu a:hover {
+                color: #C8A97E;
+                background: #f9f9f9;
+            }
+            
+            .mobile-menu a:last-child {
+                border-bottom: none;
+            }
+            
+            .mobile-phone {
+                display: block;
+                padding: 16px 20px;
+                border-top: 2px solid #C8A97E;
+                margin-top: 20px;
+                font-weight: 600;
+                background: #f8f9fa;
+            }
+            
+            .close-menu {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: none;
+                border: none;
+                font-size: 24px;
+                color: #333;
+                cursor: pointer;
+                z-index: 1003;
+            }
+        }
+
+        /* Адаптация для мобильных */
+        @media (max-width: 768px) {
+            .faq-question {
+                padding: 20px;
+            }
+            
+            .faq-question h3 {
+                font-size: 16px;
+            }
+            
+            .faq-answer {
+                padding: 0 20px;
+            }
+            
+            .faq-item.active .faq-answer {
+                padding: 0 20px 20px;
+            }
+            
+            .faq-categories {
+                gap: 10px;
+            }
+            
+            .faq-category {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .faq-hero {
+                padding: 120px 15px 40px;
+            }
+            
+            .faq-section {
+                padding: 40px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <!-- Левая часть с логотипом -->
+                <div class="logo-section">
+                    <a href="index.html" class="logo">
+                        <div class="logo-main">Petochania</div>
+                        <div class="logo-subtitle">Питомник элитных кошек</div>
+                    </a>
+                </div>
+                
+                <!-- Центральное меню -->
+                <div class="nav-center">
+                    <div class="nav-links">
+                        <a href="index.html#about">О питомнике</a>
+                        <a href="index.html#testimonials">Отзывы</a>
+                        <a href="index.html#contact">Контакты</a>
+                        <a href="gallery.html">Наши кошки</a>
+                        <a href="faq.html" class="active">Частые вопросы</a>
+                    </div>
+                </div>
+                
+                <!-- Правая часть с телефоном -->
+                <div class="nav-right">
+                    <a href="tel:+79261502870" class="phone-number">8 926 150 2870</a>
+                </div>
+                
+                <!-- Кнопка мобильного меню -->
+                <button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Мобильное меню -->
+    <div class="mobile-menu">
+        <button class="close-menu">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="mobile-menu-content">
+            <a href="index.html#about">О питомнике</a>
+            <a href="index.html#testimonials">Отзывы</a>
+            <a href="index.html#contact">Контакты</a>
+            <a href="gallery.html">Наши кошки</a>
+            <a href="faq.html">Частые вопросы</a>
+            <a href="tel:+79261502870" class="mobile-phone">8 926 150 2870</a>
+        </div>
+    </div>
+
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="faq-hero">
+            <div class="container">
+                <h1>Часто задаваемые вопросы</h1>
+                <p>Ответы на самые популярные вопросы о наших кошках, условиях покупки и содержании</p>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <div class="container">
+                <div class="faq-categories">
+                    <div class="faq-category active" data-category="all">Все вопросы</div>
+                    <div class="faq-category" data-category="purchase">Покупка котенка</div>
+                    <div class="faq-category" data-category="care">Уход и содержание</div>
+                    <div class="faq-category" data-category="delivery">Доставка</div>
+                    <div class="faq-category" data-category="documents">Документы</div>
+                </div>
+                
+                <div class="faq-container">
+                    <!-- Вопрос 1 -->
+                    <div class="faq-item active" data-category="purchase">
+                        <div class="faq-question">
+                            <h3>Как выбрать подходящего котенка?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Мы рекомендуем обратить внимание на несколько факторов: порода, характер, возраст и пол котенка. Наши специалисты помогут вам подобрать идеального питомца, учитывая ваш образ жизни, опыт содержания кошек и личные предпочтения.</p>
+                            <p>Все наши котята проходят ветеринарный осмотр и имеют необходимые документы.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Вопрос 2 -->
+                    <div class="faq-item" data-category="purchase">
+                        <div class="faq-question">
+                            <h3>Какие документы получает новый владелец?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>При покупке котенка вы получаете полный пакет документов:</p>
+                            <p>- Ветеринарный паспорт с отметками о прививках</p>
+                            <p>- Родословная (для породистых кошек)</p>
+                            <p>- Договор купли-продажи</p>
+                            <p>- Инструкция по уходу и содержанию</p>
+                            <p>- Рекомендации по кормлению</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Вопрос 3 -->
+                    <div class="faq-item" data-category="care">
+                        <div class="faq-question">
+                            <h3>Как подготовить дом к приезду котенка?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Для комфортной адаптации котенка рекомендуем подготовить:</p>
+                            <p>- Уютное место для сна (лежанка или домик)</p>
+                            <p>- Лоток с наполнителем</p>
+                            <p>- Миски для еды и воды</p>
+                            <p>- Когтеточку</p>
+                            <p>- Безопасные игрушки</p>
+                            <p>- Уберите опасные предметы и растения</p>
+                            <p>- Закройте окна и балконы защитными сетками</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Вопрос 4 -->
+                    <div class="faq-item" data-category="delivery">
+                        <div class="faq-question">
+                            <h3>Возможна ли доставка в другие города и страны?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Да, мы организуем доставку котят в любую точку России и за границу. Доставка осуществляется специализированными транспортными компаниями с соблюдением всех норм безопасности и комфорта для животного.</p>
+                            <p>Стоимость доставки рассчитывается индивидуально в зависимости от расстояния и выбранного способа транспортировки.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Вопрос 5 -->
+                    <div class="faq-item" data-category="care">
+                        <div class="faq-question">
+                            <h3>Какой корм рекомендуется для ваших кошек?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Мы рекомендуем премиальные корма супер-премиум класса или холистик. Наши котята с детства приучены к качественному питанию.</p>
+                            <p>При передаче котенка новому владельцу мы предоставляем подробные рекомендации по кормлению с указанием конкретных марок кормов и режима питания.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Вопрос 6 -->
+                    <div class="faq-item" data-category="purchase">
+                        <div class="faq-question">
+                            <h3>Можно ли забронировать котенка?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Да, вы можете забронировать понравившегося котенка. Для этого необходимо внести предоплату в размере 30% от стоимости котенка. Бронь действует в течение оговоренного срока.</p>
+                            <p>После бронирования котенок снимается с продажи и ожидает переезда к новым владельцам.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Вопрос 7 -->
+                    <div class="faq-item" data-category="documents">
+                        <div class="faq-question">
+                            <h3>Какие гарантии вы предоставляете?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Мы предоставляем следующие гарантии:</p>
+                            <p>- Гарантия здоровья котенка на момент продажи</p>
+                            <p>- Все котята привиты по возрасту и обработаны от паразитов</p>
+                            <p>- Пожизненная консультационная поддержка</p>
+                            <p>- Гарантия соответствия породным стандартам</p>
+                            <p>Подробные условия гарантий указаны в договоре купли-продажи.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Вопрос 8 -->
+                    <div class="faq-item" data-category="care">
+                        <div class="faq-question">
+                            <h3>Как часто нужно посещать ветеринара?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Рекомендуемый график посещения ветеринара:</p>
+                            <p>- Ежегодный профилактический осмотр</p>
+                            <p>- Ревакцинация согласно графику прививок</p>
+                            <p>- Регулярная обработка от паразитов</p>
+                            <p>- Стоматологический осмотр 1-2 раза в год</p>
+                            <p>При любых изменениях в поведении или состоянии здоровья кошки следует немедленно обратиться к ветеринару.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Вопрос 9 -->
+                    <div class="faq-item" data-category="purchase">
+                        <div class="faq-question">
+                            <h3>Можно ли приехать и посмотреть котят лично?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Да, мы приглашаем будущих владельцев на личную встречу с котятами. Посещение возможно по предварительной записи.</p>
+                            <p>Мы просим сообщать о визите заранее, чтобы подготовить котят к встрече и обеспечить комфортные условия для знакомства.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Вопрос 10 -->
+                    <div class="faq-item" data-category="documents">
+                        <div class="faq-question">
+                            <h3>Нужно ли стерилизовать/кастрировать кошку?</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Если вы не планируете заниматься разведением, мы настоятельно рекомендуем стерилизовать/кастрировать питомца. Это продлевает жизнь животного, предотвращает многие заболевания и решает поведенческие проблемы.</p>
+                            <p>Оптимальный возраст для стерилизации/кастрации - 6-9 месяцев. Мы предоставляем скидки на стерилизацию для наших выпускников в партнерских ветеринарных клиниках.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact">
+            <div class="container">
+                <h2>Остались вопросы?</h2>
+                <p>Свяжитесь с нами, и мы с радостью ответим на все ваши вопросы</p>
+                <a href="https://wa.me/message/Y4ZYRHELPNHUE1" class="cta-button">Написать на WhatsApp</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrapper">
+            <div class="footer-left">
+                <a href="index.html" class="logo">Petochania</a>
+                <div class="footer-links">
+                    <a href="index.html#about">О питомнике</a>
+                    <a href="index.html#testimonials">Отзывы</a>
+                    <a href="index.html#contact">Контакты</a>
+                    <a href="gallery.html">Наши кошки</a>
+                    <a href="faq.html">Частые вопросы</a>
+                </div>
+            </div>
+            <div class="footer-right">
+                <a href="https://t.me/tata_procats" class="social"><i class="fab fa-telegram"></i> Telegram</a>
+                <a href="https://wa.me/message/Y4ZYRHELPNHUE1" class="social"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://vk.com/petochania" class="social"><i class="fab fa-vk"></i> VK</a>
+                <a href="https://www.facebook.com/share/1A33qj8Nbm/?mibextid=wwXIfr" class="social"><i class="fab fa-facebook"></i> Facebook</a>
+                <a href="https://www.tiktok.com/@tata.vygodnaya?_t=ZS-90PLbDoj2kE&_r=1" class="social"><i class="fab fa-tiktok"></i> Tik-Tok</a>
+                <a href="https://www.instagram.com/petochania?igsh=MWR3bHhpNjhnd3g3dw%3D%3D&utm_source=qr" class="social"><i class="fab fa-instagram"></i> Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Мобильное меню
+        const menuToggle = document.querySelector('.menu-toggle');
+        const closeMenu = document.querySelector('.close-menu');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Закрытие меню при клике на ссылку
+        const mobileLinks = document.querySelectorAll('.mobile-menu a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+        
+        // FAQ Accordion
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            const faqCategories = document.querySelectorAll('.faq-category');
+            
+            // Обработчик для открытия/закрытия вопросов
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    // Закрываем все другие открытые вопросы
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('active')) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // Переключаем текущий вопрос
+                    item.classList.toggle('active');
+                });
+            });
+            
+            // Обработчик для фильтрации по категориям
+            faqCategories.forEach(category => {
+                category.addEventListener('click', () => {
+                    const categoryName = category.getAttribute('data-category');
+                    
+                    // Обновляем активную категорию
+                    faqCategories.forEach(cat => cat.classList.remove('active'));
+                    category.classList.add('active');
+                    
+                    // Показываем/скрываем вопросы по категориям
+                    faqItems.forEach(item => {
+                        if (categoryName === 'all' || item.getAttribute('data-category') === categoryName) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Открываем первый вопрос по умолчанию
+            if (faqItems.length > 0) {
+                faqItems[0].classList.add('active');
+            }
+        });
+
+// Автоматическое определение базового URL
+function getBaseURL() {
+    return window.location.origin;
+}
+
+// Функция для загрузки FAQ из API
+async function loadFAQFromAPI() {
+    try {
+        const baseURL = getBaseURL();
+        const response = await fetch(`${baseURL}/api/faq`);
+        const faq = await response.json();
+        updateFAQPage(faq);
+    } catch (error) {
+        console.error('Ошибка загрузки FAQ:', error);
+    }
+}
+
+// Функция для обновления FAQ на странице
+function updateFAQPage(faq) {
+    const faqContainer = document.querySelector('.faq-container');
+    if (!faqContainer) return;
+    
+    // Очищаем только существующие вопросы (оставляем структуру)
+    const existingItems = faqContainer.querySelectorAll('.faq-item');
+    existingItems.forEach(item => item.remove());
+    
+    // Добавляем вопросы из API
+    faq.forEach((item, index) => {
+        const faqHTML = `
+            <div class="faq-item ${index === 0 ? 'active' : ''}" data-category="${item.category}">
+                <div class="faq-question">
+                    <h3>${item.question}</h3>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-answer">
+                    <p>${item.answer}</p>
+                </div>
+            </div>
+        `;
+        faqContainer.innerHTML += faqHTML;
+    });
+    
+    // Переинициализируем аккордеон после добавления новых элементов
+    initFAQAccordion();
+}
+
+// Инициализация аккордеона
+function initFAQAccordion() {
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        
+        question.addEventListener('click', () => {
+            // Закрываем все другие открытые вопросы
+            faqItems.forEach(otherItem => {
+                if (otherItem !== item && otherItem.classList.contains('active')) {
+                    otherItem.classList.remove('active');
+                }
+            });
+            
+            // Переключаем текущий вопрос
+            item.classList.toggle('active');
+        });
+    });
+}
+
+// Загрузка данных при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    loadFAQFromAPI();
+    // Остальной код аккордеона остается
+});
+</script>
+</body>
+</html>
