@@ -416,6 +416,44 @@
             font-size: 12px;
             cursor: pointer;
         }
+
+        /* Video Upload Styles */
+        .uploaded-videos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .uploaded-video {
+            position: relative;
+            display: inline-block;
+        }
+
+        .uploaded-video video {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 2px solid #007bff;
+        }
+
+        .uploaded-video .remove-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
         /* Preview */
         .preview-container {
@@ -654,9 +692,11 @@
             <div class="nav-links">
                 <a href="#" class="active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> <span>Дашборд</span></a>
                 <a href="#" data-tab="cats"><i class="fas fa-cat"></i> <span>Кошки</span></a>
+                <a href="#" data-tab="breed-pages"><i class="fas fa-file-alt"></i> <span>Страницы пород</span></a>
                 <a href="#" data-tab="gallery"><i class="fas fa-images"></i> <span>Галерея</span></a>
                 <a href="#" data-tab="faq"><i class="fas fa-question-circle"></i> <span>FAQ</span></a>
                 <a href="#" data-tab="reviews"><i class="fas fa-star"></i> <span>Отзывы</span></a>
+                <a href="#" data-tab="videos"><i class="fas fa-video"></i> <span>Видео</span></a>
                 <a href="#" data-tab="settings"><i class="fas fa-cog"></i> <span>Настройки</span></a>
                 <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Выйти</span></a>
             </div>
@@ -722,11 +762,11 @@
                         <button class="btn btn-primary" data-tab="cats">
                             <i class="fas fa-plus"></i> Добавить кошку
                         </button>
-                        <button class="btn btn-primary" data-tab="faq">
-                            <i class="fas fa-question"></i> Добавить вопрос
+                        <button class="btn btn-primary" data-tab="breed-pages">
+                            <i class="fas fa-edit"></i> Редактировать породы
                         </button>
-                        <button class="btn btn-primary" data-tab="gallery">
-                            <i class="fas fa-image"></i> Добавить фото
+                        <button class="btn btn-primary" data-tab="videos">
+                            <i class="fas fa-video"></i> Добавить видео
                         </button>
                     </div>
                 </div>
@@ -876,6 +916,137 @@
                 </div>
             </div>
 
+            <!-- Breed Pages Tab -->
+            <div id="breed-pages" class="tab-content">
+                <div class="content-section">
+                    <h3 class="section-title">Управление страницами пород</h3>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-subtab="breed-pages-list">Все страницы</div>
+                        <div class="tab" data-subtab="edit-breed-page">Редактировать страницу</div>
+                    </div>
+                    
+                    <!-- Breed Pages List -->
+                    <div id="breed-pages-list" class="tab-content active">
+                        <div class="form-group">
+                            <input type="text" id="searchBreedPages" class="form-control" placeholder="Поиск по названию породы...">
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Порода</th>
+                                    <th>URL страницы</th>
+                                    <th>Последнее обновление</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="breedPagesTableBody">
+                                <tr>
+                                    <td>Золотая Шиншилла</td>
+                                    <td>/chinchilla.html</td>
+                                    <td>Не обновлялась</td>
+                                    <td>
+                                        <button class="btn btn-primary action-btn" onclick="editBreedPage('chinchilla')">
+                                            <i class="fas fa-edit"></i> Редактировать
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Девон-Рекс</td>
+                                    <td>/devon.html</td>
+                                    <td>Не обновлялась</td>
+                                    <td>
+                                        <button class="btn btn-primary action-btn" onclick="editBreedPage('devon')">
+                                            <i class="fas fa-edit"></i> Редактировать
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Манчкин</td>
+                                    <td>/munchkin.html</td>
+                                    <td>Не обновлялась</td>
+                                    <td>
+                                        <button class="btn btn-primary action-btn" onclick="editBreedPage('munchkin')">
+                                            <i class="fas fa-edit"></i> Редактировать
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Edit Breed Page Form -->
+                    <div id="edit-breed-page" class="tab-content">
+                        <form id="breedPageForm">
+                            <input type="hidden" id="currentBreedId">
+                            
+                            <div class="form-group">
+                                <label for="breedPageTitle">Название породы *</label>
+                                <input type="text" id="breedPageTitle" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="breedHeroDescription">Текст под заголовком (герой-секция) *</label>
+                                <textarea id="breedHeroDescription" class="form-control" required rows="3" placeholder="Краткое описание в герой-секции..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="breedPageDescription">Описание породы *</label>
+                                <textarea id="breedPageDescription" class="form-control" required rows="6" placeholder="Подробное описание породы..."></textarea>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="breedOrigin">Происхождение</label>
+                                    <input type="text" id="breedOrigin" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="breedWeight">Вес</label>
+                                    <input type="text" id="breedWeight" class="form-control" placeholder="4-6 кг">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="breedLifespan">Продолжительность жизни</label>
+                                    <input type="text" id="breedLifespan" class="form-control" placeholder="12-15 лет">
+                                </div>
+                                <div class="form-group">
+                                    <label for="breedTemperament">Темперамент</label>
+                                    <input type="text" id="breedTemperament" class="form-control" placeholder="Спокойный, нежный">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="breedCharacteristics">Характеристики (через запятую)</label>
+                                <input type="text" id="breedCharacteristics" class="form-control" placeholder="Любопытный, Дружелюбный, Элегантный">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Главное изображение породы</label>
+                                <div class="file-upload" id="breedMainImageUpload">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Перетащите сюда изображение или нажмите для загрузки</p>
+                                    <input type="file" id="breedMainImage" accept="image/*" style="display: none;">
+                                </div>
+                                <div class="uploaded-images" id="breedMainImagePreview">
+                                    <!-- Uploaded image will appear here -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <button type="submit" class="btn btn-primary">
+                                    <span id="breedPageSubmitText">Сохранить изменения</span>
+                                    <div id="breedPageSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="previewBreedPage">Предпросмотр</button>
+                                <button type="button" class="btn btn-secondary" id="resetBreedPageForm">Очистить форму</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <!-- Gallery Tab -->
             <div id="gallery" class="tab-content">
                 <div class="content-section">
@@ -961,14 +1132,13 @@
                             <thead>
                                 <tr>
                                     <th>Вопрос</th>
-                                    <th>Категория</th>
                                     <th>Статус</th>
                                     <th>Действия</th>
                                 </tr>
                             </thead>
                             <tbody id="faqTableBody">
                                 <tr>
-                                    <td colspan="4" style="text-align: center;">Загрузка вопросов...</td>
+                                    <td colspan="3" style="text-align: center;">Загрузка вопросов...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -985,19 +1155,6 @@
                             <div class="form-group">
                                 <label for="faqAnswer">Ответ *</label>
                                 <textarea id="faqAnswer" class="form-control" required placeholder="Введите ответ на вопрос" rows="5"></textarea>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="faqCategory">Категория *</label>
-                                <select id="faqCategory" class="form-control" required>
-                                    <option value="">Выберите категорию</option>
-                                    <option value="purchase">Покупка котенка</option>
-                                    <option value="care">Уход и содержание</option>
-                                    <option value="delivery">Доставка</option>
-                                    <option value="documents">Документы</option>
-                                    <option value="health">Здоровье</option>
-                                    <option value="breeding">Разведение</option>
-                                </select>
                             </div>
 
                             <div class="form-group">
@@ -1101,6 +1258,82 @@
                                     <div id="reviewSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
                                 </button>
                                 <button type="button" class="btn btn-secondary" id="resetReviewForm">Очистить форму</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Videos Tab -->
+            <div id="videos" class="tab-content">
+                <div class="content-section">
+                    <h3 class="section-title">Управление видео для главной страницы</h3>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-subtab="videos-list">Все видео</div>
+                        <div class="tab" data-subtab="add-video">Добавить видео</div>
+                    </div>
+                    
+                    <!-- Videos List -->
+                    <div id="videos-list" class="tab-content active">
+                        <div class="cards-grid" id="videosGrid">
+                            <div class="card">
+                                <div class="card-body" style="text-align: center;">
+                                    <p>Загрузка видео...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Add Video Form -->
+                    <div id="add-video" class="tab-content">
+                        <form id="videoForm">
+                            <div class="form-group">
+                                <label for="videoTitle">Название видео *</label>
+                                <input type="text" id="videoTitle" class="form-control" placeholder="Введите название" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="videoFile">Выберите видео *</label>
+                                <div class="file-upload" id="videoFileUpload">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Перетащите сюда видеофайл или нажмите для загрузки</p>
+                                    <input type="file" id="videoFile" accept="video/*" style="display: none;" required>
+                                </div>
+                                <div class="uploaded-videos" id="videoFilePreview">
+                                    <!-- Превью видео появится здесь -->
+                                </div>
+                                <small class="form-text text-muted">Поддерживаются форматы: MP4, WebM, MOV. Макс. размер: 50MB</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoPoster">Постер (превью)</label>
+                                <div class="file-upload" id="videoPosterUpload">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Перетащите сюда изображение или нажмите для загрузки постера</p>
+                                    <input type="file" id="videoPoster" accept="image/*" style="display: none;">
+                                </div>
+                                <div class="uploaded-images" id="videoPosterPreview">
+                                    <!-- Uploaded poster will appear here -->
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoDescription">Описание видео</label>
+                                <textarea id="videoDescription" class="form-control" placeholder="Введите описание видео" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="videoOrder">Порядок отображения</label>
+                                <input type="number" id="videoOrder" class="form-control" min="1" value="1" placeholder="Чем меньше число, тем выше в списке">
+                            </div>
+                            
+                            <div class="form-row">
+                                <button type="submit" class="btn btn-primary">
+                                    <span id="videoSubmitText">Добавить видео</span>
+                                    <div id="videoSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="resetVideoForm">Очистить форму</button>
                             </div>
                         </form>
                     </div>
@@ -1428,1612 +1661,1104 @@
         </div>
     </div>
 
-    <script>
-        // Configuration
-        const API_BASE = `${window.location.origin}/api`;
-        let authToken = '';
-        let currentUser = null;
+    <!-- Edit Video Modal -->
+    <div id="editVideoModal" class="modal" style="display: none;">
+        <div class="modal-backdrop" onclick="closeEditVideoModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Редактировать видео</h3>
+                <span class="close" onclick="closeEditVideoModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editVideoForm">
+                    <input type="hidden" id="editVideoId">
+                    <div class="form-group">
+                        <label for="editVideoTitle">Название видео</label>
+                        <input type="text" id="editVideoTitle" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editVideoUrl">URL видео</label>
+                        <input type="text" id="editVideoUrl" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editVideoDescription">Описание видео</label>
+                        <textarea id="editVideoDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editVideoOrder">Порядок отображения</label>
+                        <input type="number" id="editVideoOrder" class="form-control" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Текущий постер</label>
+                        <div id="editVideoCurrentPoster" class="current-image"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editVideoPoster">Новый постер</label>
+                        <input type="file" id="editVideoPoster" class="form-control" accept="image/*">
+                        <div id="editVideoUploadedPoster" class="uploaded-image"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditVideoModal()">Отмена</button>
+                <button type="button" class="btn btn-primary" onclick="saveEditVideo()">
+                    <span id="editVideoSubmitText">Сохранить</span>
+                    <div id="editVideoSubmitLoading" class="loading" style="display: none;"></div>
+                </button>
+            </div>
+        </div>
+    </div>
 
-        // API Service
-        const apiService = {
-            async request(url, options = {}) {
-                const config = {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...options.headers
-                    },
-                    ...options
-                };
-
-                if (authToken) {
-                    config.headers.Authorization = `Bearer ${authToken}`;
-                }
-
-                try {
-                    const response = await fetch(`${API_BASE}${url}`, config);
+    <!-- Edit Breed Page Modal -->
+    <div id="editBreedPageModal" class="modal" style="display: none;">
+        <div class="modal-backdrop" onclick="closeEditBreedPageModal()"></div>
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3>Редактировать страницу породы</h3>
+                <span class="close" onclick="closeEditBreedPageModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editBreedPageForm">
+                    <input type="hidden" id="editBreedPageId">
+                    <div class="form-group">
+                        <label for="editBreedPageTitle">Название породы *</label>
+                        <input type="text" id="editBreedPageTitle" class="form-control" required>
+                    </div>
                     
-                    if (response.status === 401) {
-                        this.logout();
-                        throw new Error('Требуется аутентификация');
-                    }
+                    <div class="form-group">
+                        <label for="editBreedHeroDescription">Текст под заголовком (герой-секция) *</label>
+                        <textarea id="editBreedHeroDescription" class="form-control" required rows="3" placeholder="Краткое описание в герой-секции..."></textarea>
+                    </div>
 
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(errorText || `HTTP error! status: ${response.status}`);
-                    }
+                    <div class="form-group">
+                        <label for="editBreedPageDescription">Описание породы *</label>
+                        <textarea id="editBreedPageDescription" class="form-control" required rows="6" placeholder="Подробное описание породы..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editBreedOrigin">Происхождение</label>
+                            <input type="text" id="editBreedOrigin" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editBreedWeight">Вес</label>
+                            <input type="text" id="editBreedWeight" class="form-control" placeholder="4-6 кг">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editBreedLifespan">Продолжительность жизни</label>
+                            <input type="text" id="editBreedLifespan" class="form-control" placeholder="12-15 лет">
+                        </div>
+                        <div class="form-group">
+                            <label for="editBreedTemperament">Темперамент</label>
+                            <input type="text" id="editBreedTemperament" class="form-control" placeholder="Спокойный, нежный">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editBreedCharacteristics">Характеристики (через запятую)</label>
+                        <input type="text" id="editBreedCharacteristics" class="form-control" placeholder="Любопытный, Дружелюбный, Элегантный">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Главное изображение породы</label>
+                        <div class="file-upload" id="editBreedMainImageUpload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Перетащите сюда изображение или нажмите для загрузки</p>
+                            <input type="file" id="editBreedMainImage" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="uploaded-images" id="editBreedMainImagePreview">
+                            <!-- Uploaded image will appear here -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditBreedPageModal()">Отмена</button>
+                <button type="button" class="btn btn-primary" onclick="saveEditBreedPage()">
+                    <span id="editBreedPageSubmitText">Сохранить</span>
+                    <div id="editBreedPageSubmitLoading" class="loading" style="display: none;"></div>
+                </button>
+            </div>
+        </div>
+    </div>
 
-                    return await response.json();
-                } catch (error) {
-                    console.error('API request failed:', error);
-                    throw error;
-                }
-            },
+ <script>
+    // Configuration
+    const API_BASE = `${window.location.origin}/api`;
+    let authToken = '';
+    let currentUser = null;
 
-            async login(username, password) {
-                const response = await this.request('/login', {
-                    method: 'POST',
-                    body: JSON.stringify({ username, password })
-                });
-                return response;
-            },
+    // Storage Service для работы с данными
+    const storageService = {
+        // Videos
+        getVideos() {
+            return JSON.parse(localStorage.getItem('petochania_videos')) || [];
+        },
 
-            // Cats API
-            async getCats() {
-                return await this.request('/cats');
-            },
+        saveVideos(videos) {
+            localStorage.setItem('petochania_videos', JSON.stringify(videos));
+            this.syncToFiles(); // Синхронизируем при каждом изменении
+        },
 
-            async createCat(catData) {
-                const formData = new FormData();
-                
-                // Append cat data
-                formData.append('data', JSON.stringify(catData));
-                
-                // Append images
-                if (catData.images && catData.images.length > 0) {
-                    catData.images.forEach((image, index) => {
-                        formData.append('images', image);
-                    });
-                }
+        // Cats
+        getCats() {
+            return JSON.parse(localStorage.getItem('petochania_cats')) || [];
+        },
 
-                const response = await fetch(`${API_BASE}/cats`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: formData
-                });
+        saveCats(cats) {
+            localStorage.setItem('petochania_cats', JSON.stringify(cats));
+            this.syncToFiles();
+        },
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+        // Gallery
+        getGallery() {
+            return JSON.parse(localStorage.getItem('petochania_gallery')) || [];
+        },
 
-                return await response.json();
-            },
+        saveGallery(gallery) {
+            localStorage.setItem('petochania_gallery', JSON.stringify(gallery));
+            this.syncToFiles();
+        },
 
-            async updateCat(id, catData) {
-                const formData = new FormData();
-                formData.append('data', JSON.stringify(catData));
-                
-                if (catData.newImages && catData.newImages.length > 0) {
-                    catData.newImages.forEach(image => {
-                        formData.append('images', image);
-                    });
-                }
+        // FAQ
+        getFAQ() {
+            return JSON.parse(localStorage.getItem('petochania_faq')) || [];
+        },
 
-                const response = await fetch(`${API_BASE}/cats/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: formData
-                });
+        saveFAQ(faq) {
+            localStorage.setItem('petochania_faq', JSON.stringify(faq));
+            this.syncToFiles();
+        },
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+        // Reviews
+        getReviews() {
+            return JSON.parse(localStorage.getItem('petochania_reviews')) || [];
+        },
 
-                return await response.json();
-            },
+        saveReviews(reviews) {
+            localStorage.setItem('petochania_reviews', JSON.stringify(reviews));
+            this.syncToFiles();
+        },
 
-            async deleteCat(id) {
-                return await this.request(`/cats/${id}`, {
-                    method: 'DELETE'
-                });
-            },
+        // Breed Pages
+        getBreedPages() {
+            return JSON.parse(localStorage.getItem('petochania_breedPages')) || {};
+        },
 
-            // Gallery API
-            async getGallery() {
-                return await this.request('/gallery');
-            },
+        saveBreedPages(breedPages) {
+            localStorage.setItem('petochania_breedPages', JSON.stringify(breedPages));
+            this.syncToFiles();
+        },
 
-            async createGalleryItem(itemData) {
-                const formData = new FormData();
-                formData.append('data', JSON.stringify(itemData));
-                
-                if (itemData.image) {
-                    formData.append('image', itemData.image);
-                }
+        // Settings
+        getSettings() {
+            return JSON.parse(localStorage.getItem('petochania_settings')) || {
+                siteTitle: 'Petochania',
+                siteSlogan: 'Питомник элитных кошек',
+                siteDescription: 'Международный питомник элитных породистых котят',
+                contactPhone: '8 926 150 2870',
+                contactEmail: '',
+                contactAddress: '',
+                workingHours: '',
+                socialLinks: []
+            };
+        },
 
-                const response = await fetch(`${API_BASE}/gallery`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: formData
-                });
+        saveSettings(settings) {
+            localStorage.setItem('petochania_settings', JSON.stringify(settings));
+            this.syncToFiles();
+        },
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                return await response.json();
-            },
-
-            async deleteGalleryItem(id) {
-                return await this.request(`/gallery/${id}`, {
-                    method: 'DELETE'
-                });
-            },
-
-            // FAQ API
-            async getFAQ() {
-                return await this.request('/faq');
-            },
-
-            async createFAQ(itemData) {
-                return await this.request('/faq', {
-                    method: 'POST',
-                    body: JSON.stringify(itemData)
-                });
-            },
-
-            async updateFAQ(id, itemData) {
-                return await this.request(`/faq/${id}`, {
-                    method: 'PUT',
-                    body: JSON.stringify(itemData)
-                });
-            },
-
-            async deleteFAQ(id) {
-                return await this.request(`/faq/${id}`, {
-                    method: 'DELETE'
-                });
-            },
-
-            // Reviews API
-            async getReviews() {
-                return await this.request('/reviews');
-            },
-
-            async createReview(reviewData) {
-                const formData = new FormData();
-                formData.append('data', JSON.stringify(reviewData));
-                
-                if (reviewData.image) {
-                    formData.append('image', reviewData.image);
-                }
-
-                const response = await fetch(`${API_BASE}/reviews`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                return await response.json();
-            },
-
-            async deleteReview(id) {
-                return await this.request(`/reviews/${id}`, {
-                    method: 'DELETE'
-                });
-            },
-
-            // Settings API
-            async getSettings() {
-                return await this.request('/settings');
-            },
-
-            async updateSettings(settings) {
-                return await this.request('/settings', {
-                    method: 'PUT',
-                    body: JSON.stringify(settings)
-                });
-            },
-
-            async updateUser(userData) {
-                return await this.request('/user', {
-                    method: 'PUT',
-                    body: JSON.stringify(userData)
-                });
-            },
-
-            // Backup API
-            async createBackup() {
-                return await this.request('/backup/create', {
-                    method: 'POST'
-                });
-            },
-
-            async restoreBackup(backupData) {
-                return await this.request('/backup/restore', {
-                    method: 'POST',
-                    body: JSON.stringify(backupData)
-                });
-            },
-
-            logout() {
-                authToken = '';
-                currentUser = null;
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('userData');
-                window.location.reload();
-            },
-
-            // Update methods for editing
-            async updateReview(id, reviewData) {
-                return await this.request(`/reviews/${id}`, {
-                    method: 'PUT',
-                    body: JSON.stringify(reviewData)
-                });
-            },
-
-            async updateGalleryItem(id, formData) {
-                const config = {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: formData
+        // Синхронизация данных в файлы для доступа с других страниц
+        syncToFiles() {
+            try {
+                // Сохраняем данные в sessionStorage для кросс-доменного доступа
+                const allData = {
+                    breedPages: this.getBreedPages(),
+                    videos: this.getVideos(),
+                    cats: this.getCats(),
+                    gallery: this.getGallery(),
+                    faq: this.getFAQ(),
+                    reviews: this.getReviews(),
+                    settings: this.getSettings(),
+                    lastSync: new Date().toISOString()
                 };
+                
+                // Сохраняем в sessionStorage
+                sessionStorage.setItem('petochania_data', JSON.stringify(allData));
+                
+                // Также сохраняем в localStorage с префиксом для доступа с других страниц
+                localStorage.setItem('petochania_sync_data', JSON.stringify(allData));
+                
+                console.log('Данные синхронизированы');
+            } catch (error) {
+                console.error('Ошибка синхронизации данных:', error);
+            }
+        },
 
-                const response = await fetch(`${API_BASE}/gallery/${id}`, config);
-
-                if (response.status === 401) {
-                    this.logout();
-                    throw new Error('Требуется аутентификация');
+        // Инициализация данных при загрузке
+        initData() {
+            try {
+                // Пробуем загрузить из sessionStorage (кросс-доменный доступ)
+                const sessionData = sessionStorage.getItem('petochania_data');
+                if (sessionData) {
+                    const data = JSON.parse(sessionData);
+                    console.log('Данные загружены из sessionStorage');
+                    return data;
                 }
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(errorText || `HTTP error! status: ${response.status}`);
+                
+                // Пробуем загрузить из localStorage (резервный вариант)
+                const localData = localStorage.getItem('petochania_sync_data');
+                if (localData) {
+                    const data = JSON.parse(localData);
+                    console.log('Данные загружены из localStorage');
+                    return data;
                 }
+                
+                console.log('Данные не найдены, используются значения по умолчанию');
+                return null;
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                return null;
+            }
+        }
+    };
 
-                return await response.json();
+    // Utility Functions
+    function showLoading(element) {
+        element.style.display = 'inline-block';
+    }
+
+    function hideLoading(element) {
+        element.style.display = 'none';
+    }
+
+    function showMessage(message, type = 'info') {
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            z-index: 10000;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+        `;
+        
+        if (type === 'success') {
+            toast.style.backgroundColor = '#27ae60';
+        } else if (type === 'error') {
+            toast.style.backgroundColor = '#e74c3c';
+        } else {
+            toast.style.backgroundColor = '#3498db';
+        }
+        
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+
+    // Breed Pages Management
+    let currentBreedPageData = null;
+    let currentBreedMainImage = null;
+
+    // Инициализация формы страниц пород
+    function initBreedPagesForm() {
+        document.getElementById('breedPageForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await saveBreedPage();
+        });
+
+        // Загрузка главного изображения
+        document.getElementById('breedMainImageUpload').addEventListener('click', function() {
+            document.getElementById('breedMainImage').click();
+        });
+        
+        document.getElementById('breedMainImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            currentBreedMainImage = file;
+            const preview = document.getElementById('breedMainImagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <div class="uploaded-image">
+                            <img src="${e.target.result}" alt="Uploaded breed image">
+                            <div class="remove-image" onclick="removeBreedMainImage()">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Предпросмотр
+        document.getElementById('previewBreedPage').addEventListener('click', function() {
+            previewBreedPage();
+        });
+
+        // Сброс формы
+        document.getElementById('resetBreedPageForm').addEventListener('click', function() {
+            document.getElementById('breedPageForm').reset();
+            document.getElementById('breedMainImagePreview').innerHTML = '';
+            currentBreedMainImage = null;
+        });
+    }
+
+    function removeBreedMainImage() {
+        currentBreedMainImage = null;
+        document.getElementById('breedMainImagePreview').innerHTML = '';
+        document.getElementById('breedMainImage').value = '';
+    }
+
+    // Редактирование страницы породы
+    function editBreedPage(breedId) {
+        const breedPages = storageService.getBreedPages();
+        const breedData = breedPages[breedId] || getDefaultBreedData(breedId);
+        
+        currentBreedPageData = breedData;
+        document.getElementById('currentBreedId').value = breedId;
+        
+        // Заполняем форму данными
+        document.getElementById('breedPageTitle').value = breedData.title || '';
+        document.getElementById('breedPageDescription').value = breedData.description || '';
+        document.getElementById('breedOrigin').value = breedData.origin || '';
+        document.getElementById('breedWeight').value = breedData.weight || '';
+        document.getElementById('breedLifespan').value = breedData.lifespan || '';
+        document.getElementById('breedTemperament').value = breedData.temperament || '';
+        document.getElementById('breedCharacteristics').value = breedData.characteristics ? breedData.characteristics.join(', ') : '';
+        document.getElementById('breedHeroDescription').value = breedData.heroDescription || '';
+        
+        // Показываем текущее изображение если есть
+        const preview = document.getElementById('breedMainImagePreview');
+        if (breedData.mainImage && breedData.mainImage.startsWith('data:')) {
+            preview.innerHTML = `
+                <div class="uploaded-image">
+                    <img src="${breedData.mainImage}" alt="Current breed image">
+                    <div class="remove-image" onclick="removeBreedMainImage()">
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+            `;
+        } else {
+            preview.innerHTML = '';
+        }
+        
+        // Переключаемся на вкладку редактирования
+        document.querySelector('[data-subtab="edit-breed-page"]').click();
+    }
+
+    // Получение данных по умолчанию для породы
+    function getDefaultBreedData(breedId) {
+        const defaults = {
+            'chinchilla': {
+                title: 'Золотая Шиншилла',
+                heroDescription: 'Аристократичные британцы с роскошной золотистой шерстью и королевским характером',
+                description: 'Золотые шиншиллы — одна из самых красивых и редких пород кошек. Их шерсть имеет уникальный золотистый оттенок с затемнениями на кончиках, создавая эффект сияния. Эти аристократичные кошки обладают спокойным и уравновешенным характером, идеально подходят для жизни в семье.',
+                origin: 'Великобритания',
+                weight: '4-6 кг',
+                lifespan: '12-15 лет',
+                temperament: 'Спокойный, нежный',
+                characteristics: ['Любопытный', 'Дружелюбный', 'Элегантный', 'Спокойный', 'Независимый']
+            },
+            'devon': {
+                title: 'Девон-Рекс',
+                heroDescription: 'Энергичные и любвеобильные кошки с инопланетной внешностью и собачьим характером',
+                description: 'Девон-рекс — порода домашних кошек, появившаяся в Великобритании в 1960-х годах. Эти кошки отличаются уникальной волнистой шерстью, большими ушами и выразительными глазами. Девон-рексы очень социальные и преданные кошки, которые любят быть в центре внимания.',
+                origin: 'Великобритания',
+                weight: '3-4.5 кг',
+                lifespan: '9-15 лет',
+                temperament: 'Активный, игривый',
+                characteristics: ['Ласковый', 'Игривый', 'Умный', 'Общительный', 'Энергичный']
+            },
+            'munchkin': {
+                title: 'Манчкин',
+                heroDescription: 'Очаровательные коротколапые кошки с уникальной внешностью и дружелюбным нравом',
+                description: 'Манчкины — уникальная порода кошек с короткими лапками, появившаяся в результате естественной генетической мутации. Несмотря на короткие конечности, эти кошки очень подвижны и активны. Манчкины известны своим дружелюбным и общительным характером.',
+                origin: 'США',
+                weight: '3-4 кг',
+                lifespan: '12-15 лет',
+                temperament: 'Дружелюбный, любопытный',
+                characteristics: ['Величественная', 'Умная', 'Любопытная', 'Дружелюбная', 'Общительная']
             }
         };
+        
+        return defaults[breedId] || {};
+    }
 
-        // Utility Functions
-        function showLoading(element) {
-            element.style.display = 'inline-block';
+    // Сохранение страницы породы
+    async function saveBreedPage() {
+        const breedId = document.getElementById('currentBreedId').value;
+        const title = document.getElementById('breedPageTitle').value;
+        const description = document.getElementById('breedPageDescription').value;
+        const heroDescription = document.getElementById('breedHeroDescription').value;
+        
+        if (!breedId || !title || !description || !heroDescription) {
+            showMessage('Пожалуйста, заполните обязательные поля', 'error');
+            return;
         }
-
-        function hideLoading(element) {
-            element.style.display = 'none';
+        
+        const submitText = document.getElementById('breedPageSubmitText');
+        const submitLoading = document.getElementById('breedPageSubmitLoading');
+        
+        try {
+            submitText.style.display = 'none';
+            showLoading(submitLoading);
+            
+            const breedPages = storageService.getBreedPages();
+            
+            // Обработка изображения
+            let mainImage = breedPages[breedId]?.mainImage;
+            if (currentBreedMainImage) {
+                const reader = new FileReader();
+                mainImage = await new Promise((resolve) => {
+                    reader.onload = function(e) {
+                        resolve(e.target.result);
+                    };
+                    reader.readAsDataURL(currentBreedMainImage);
+                });
+            }
+            
+            // Обновляем данные
+            breedPages[breedId] = {
+                ...breedPages[breedId],
+                title,
+                description,
+                heroDescription,
+                origin: document.getElementById('breedOrigin').value,
+                weight: document.getElementById('breedWeight').value,
+                lifespan: document.getElementById('breedLifespan').value,
+                temperament: document.getElementById('breedTemperament').value,
+                characteristics: document.getElementById('breedCharacteristics').value.split(',').map(c => c.trim()).filter(c => c),
+                mainImage: mainImage,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            storageService.saveBreedPages(breedPages);
+            
+            showMessage('Страница породы успешно обновлена!', 'success');
+            
+            // Обновляем список страниц
+            updateBreedPagesList();
+            
+        } catch (error) {
+            showMessage('Ошибка при сохранении: ' + error.message, 'error');
+        } finally {
+            submitText.style.display = 'inline';
+            hideLoading(submitLoading);
         }
+    }
 
-        function showMessage(message, type = 'info') {
-            // Create toast notification
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 20px;
-                border-radius: 5px;
-                color: white;
-                z-index: 10000;
-                max-width: 400px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                animation: slideIn 0.3s ease;
+    // Обновление списка страниц пород
+    function updateBreedPagesList() {
+        const breedPages = storageService.getBreedPages();
+        const tbody = document.getElementById('breedPagesTableBody');
+        
+        tbody.innerHTML = '';
+        
+        const breeds = [
+            { id: 'chinchilla', name: 'Золотая Шиншилла', url: '/chinchilla.html' },
+            { id: 'devon', name: 'Девон-Рекс', url: '/devon.html' },
+            { id: 'munchkin', name: 'Манчкин', url: '/munchkin.html' }
+        ];
+        
+        breeds.forEach(breed => {
+            const breedData = breedPages[breed.id];
+            const lastUpdated = breedData?.lastUpdated ? 
+                new Date(breedData.lastUpdated).toLocaleDateString('ru-RU') : 'Не обновлялась';
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${breedData?.title || breed.name}</td>
+                <td>${breed.url}</td>
+                <td>${lastUpdated}</td>
+                <td>
+                    <button class="btn btn-primary action-btn" onclick="editBreedPage('${breed.id}')">
+                        <i class="fas fa-edit"></i> Редактировать
+                    </button>
+                </td>
             `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Предпросмотр страницы
+    function previewBreedPage() {
+        const breedId = document.getElementById('currentBreedId').value;
+        if (breedId) {
+            // Для предпросмотра передаем данные через URL параметры
+            const breedPages = storageService.getBreedPages();
+            const breedData = breedPages[breedId];
             
-            if (type === 'success') {
-                toast.style.backgroundColor = '#27ae60';
-            } else if (type === 'error') {
-                toast.style.backgroundColor = '#e74c3c';
+            if (breedData) {
+                const previewData = encodeURIComponent(JSON.stringify(breedData));
+                window.open(`${breedId}.html?preview=true&data=${previewData}`, '_blank');
             } else {
-                toast.style.backgroundColor = '#3498db';
+                window.open(`${breedId}.html?preview=true`, '_blank');
             }
-            
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    document.body.removeChild(toast);
-                }, 300);
-            }, 3000);
+        }
+    }
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализируем данные
+        storageService.initData();
+        
+        // Check for existing token
+        const savedToken = localStorage.getItem('petochania_authToken');
+        
+        if (savedToken === 'admin') {
+            authToken = savedToken;
+            showAdminPanel();
         }
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check for existing token
-            const savedToken = localStorage.getItem('authToken');
-            const savedUser = localStorage.getItem('userData');
+        // Login functionality
+        document.getElementById('loginBtn').addEventListener('click', async function() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageEl = document.getElementById('loginMessage');
+            const loginText = document.getElementById('loginText');
+            const loginLoading = document.getElementById('loginLoading');
             
-            if (savedToken && savedUser) {
-                authToken = savedToken;
-                currentUser = JSON.parse(savedUser);
-                showAdminPanel();
+            if (!username || !password) {
+                messageEl.textContent = 'Пожалуйста, заполните все поля';
+                return;
             }
-
-            // Login functionality
-            document.getElementById('loginBtn').addEventListener('click', async function() {
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                const messageEl = document.getElementById('loginMessage');
-                const loginText = document.getElementById('loginText');
-                const loginLoading = document.getElementById('loginLoading');
+            
+            try {
+                loginText.style.display = 'none';
+                showLoading(loginLoading);
+                messageEl.textContent = '';
                 
-                if (!username || !password) {
-                    messageEl.textContent = 'Пожалуйста, заполните все поля';
-                    return;
-                }
-                
-                try {
-                    loginText.style.display = 'none';
-                    showLoading(loginLoading);
-                    messageEl.textContent = '';
-                    
-                    const result = await apiService.login(username, password);
-                    authToken = result.token;
-                    currentUser = result.user;
-                    
-                    localStorage.setItem('authToken', authToken);
-                    localStorage.setItem('userData', JSON.stringify(currentUser));
+                // Простая проверка логина/пароля
+                if (username === 'admin' && password === 'admin') {
+                    authToken = 'admin';
+                    localStorage.setItem('petochania_authToken', authToken);
                     
                     showAdminPanel();
                     showMessage('Успешный вход в систему!', 'success');
-                } catch (error) {
-                    messageEl.textContent = 'Ошибка входа: ' + error.message;
-                } finally {
-                    loginText.style.display = 'inline';
-                    hideLoading(loginLoading);
+                } else {
+                    throw new Error('Неверный логин или пароль');
                 }
-            });
+            } catch (error) {
+                messageEl.textContent = 'Ошибка входа: ' + error.message;
+            } finally {
+                loginText.style.display = 'inline';
+                hideLoading(loginLoading);
+            }
+        });
 
-            // Logout functionality
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                if (confirm('Вы уверены, что хотите выйти?')) {
-                    apiService.logout();
-                }
-            });
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                authToken = '';
+                localStorage.removeItem('petochania_authToken');
+                window.location.reload();
+            }
+        });
 
-            // Navigation tabs
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (this.id === 'logoutBtn') return;
+        // Navigation tabs
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (this.id === 'logoutBtn') return;
+                
+                // Update active nav link
+                document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding tab
+                const tabId = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+                
+                // Update page title
+                const pageTitles = {
+                    'dashboard': 'Дашборд',
+                    'cats': 'Кошки',
+                    'breed-pages': 'Страницы пород',
+                    'gallery': 'Галерея',
+                    'faq': 'FAQ',
+                    'reviews': 'Отзывы',
+                    'videos': 'Видео',
+                    'settings': 'Настройки'
+                };
+                document.getElementById('pageTitle').textContent = pageTitles[tabId] || this.querySelector('span').textContent;
+            });
+        });
+        
+        // Sub-tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const subtabId = this.getAttribute('data-subtab');
+                const parentTabs = this.closest('.tabs');
+                
+                // Update active sub-tab
+                parentTabs.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding sub-tab content
+                const parentContent = this.closest('.content-section');
+                parentContent.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                parentContent.querySelector('#' + subtabId).classList.add('active');
+            });
+        });
+        
+        // Quick action buttons
+        document.querySelectorAll('[data-tab]').forEach(btn => {
+            if (btn.classList.contains('btn')) {
+                btn.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
                     
                     // Update active nav link
                     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-                    this.classList.add('active');
+                    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
                     
                     // Show corresponding tab
-                    const tabId = this.getAttribute('data-tab');
                     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
                     document.getElementById(tabId).classList.add('active');
                     
                     // Update page title
-                    document.getElementById('pageTitle').textContent = this.querySelector('span').textContent;
+                    const pageTitles = {
+                        'dashboard': 'Дашборд',
+                        'cats': 'Кошки',
+                        'breed-pages': 'Страницы пород',
+                        'gallery': 'Галерея',
+                        'faq': 'FAQ',
+                        'reviews': 'Отзывы',
+                        'videos': 'Видео',
+                        'settings': 'Настройки'
+                    };
+                    document.getElementById('pageTitle').textContent = pageTitles[tabId] || document.querySelector(`[data-tab="${tabId}"] span`).textContent;
                 });
-            });
-            
-            // Sub-tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const subtabId = this.getAttribute('data-subtab');
-                    const parentTabs = this.closest('.tabs');
-                    
-                    // Update active sub-tab
-                    parentTabs.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Show corresponding sub-tab content
-                    const parentContent = this.closest('.content-section');
-                    parentContent.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                    parentContent.querySelector('#' + subtabId).classList.add('active');
-                });
-            });
-            
-            // Quick action buttons
-            document.querySelectorAll('[data-tab]').forEach(btn => {
-                if (btn.classList.contains('btn')) {
-                    btn.addEventListener('click', function() {
-                        const tabId = this.getAttribute('data-tab');
-                        
-                        // Update active nav link
-                        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-                        document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-                        
-                        // Show corresponding tab
-                        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-                        document.getElementById(tabId).classList.add('active');
-                        
-                        // Update page title
-                        document.getElementById('pageTitle').textContent = document.querySelector(`[data-tab="${tabId}"] span`).textContent;
-                    });
-                }
-            });
-            
-            // Initialize forms
-            initCatForm();
-            initGalleryForm();
-            initFAQForm();
-            initReviewForm();
-            initSettingsForm();
-            initBackupSettings();
-            
-            // Initialize edit forms
-            initEditCatForm();
-            initEditGalleryForm();
+            }
         });
-
-        async function showAdminPanel() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'flex';
-            await updateDashboard();
-            await loadCats();
-            await loadGallery();
-            await loadFAQ();
-            await loadReviews();
-            await loadSettings();
-        }
-
-        // Dashboard functions
-        async function updateDashboard() {
-            try {
-                const [cats, faq, reviews] = await Promise.all([
-                    apiService.getCats(),
-                    apiService.getFAQ(),
-                    apiService.getReviews()
-                ]);
-
-                document.getElementById('totalCats').textContent = cats.length;
-                document.getElementById('availableCats').textContent = cats.filter(cat => cat.status === 'ДОСТУПЕН').length;
-                document.getElementById('totalQuestions').textContent = faq.length;
-                document.getElementById('totalReviews').textContent = reviews.length;
-            } catch (error) {
-                console.error('Error updating dashboard:', error);
-            }
-        }
-
-        // Cats management
-        let currentCatImages = [];
-
-        async function loadCats() {
-            try {
-                const cats = await apiService.getCats();
-                const tableBody = document.getElementById('catsTableBody');
-                tableBody.innerHTML = '';
-                
-                if (cats.length === 0) {
-                    tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="6" style="text-align: center; color: #7f8c8d;">
-                                <i class="fas fa-cat" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
-                                <p>Нет добавленных кошек</p>
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-                
-                cats.forEach((cat) => {
-                    const row = document.createElement('tr');
-                    
-                    let statusBadge = '';
-                    if (cat.status === 'ДОСТУПЕН') {
-                        statusBadge = '<span class="status-badge status-available">Доступен</span>';
-                    } else if (cat.status === 'ЗАБРОНИРОВАН') {
-                        statusBadge = '<span class="status-badge status-reserved">Забронирован</span>';
-                    } else {
-                        statusBadge = '<span class="status-badge status-sold">Продан</span>';
-                    }
-                    
-                    row.innerHTML = `
-                        <td>${cat.name}</td>
-                        <td>${cat.breed}</td>
-                        <td>${cat.gender}</td>
-                        <td>${statusBadge}</td>
-                        <td>${new Date(cat.createdAt).toLocaleDateString('ru-RU')}</td>
-                        <td class="actions">
-                            <button class="action-btn btn-primary" onclick="editCat(${cat.id})"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn btn-danger" onclick="deleteCat(${cat.id})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    `;
-                    
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error loading cats:', error);
-                document.getElementById('catsTableBody').innerHTML = `
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: #e74c3c;">
-                            Ошибка загрузки данных: ${error.message}
-                        </td>
-                    </tr>
-                `;
-            }
-        }
         
-        function initCatForm() {
-            document.getElementById('catForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const catData = {
-                    name: document.getElementById('catName').value,
-                    breed: document.getElementById('catBreed').value,
-                    gender: document.getElementById('catGender').value,
-                    status: document.getElementById('catStatus').value,
-                    color: document.getElementById('catColor').value,
-                    age: document.getElementById('catAge').value,
-                    price: document.getElementById('catPrice').value,
-                    litter: document.getElementById('catLitter').value,
-                    parents: document.getElementById('catParents').value,
-                    description: document.getElementById('catDescription').value,
-                    characteristics: document.getElementById('catCharacteristics').value,
-                    images: currentCatImages
-                };
-                
-                const submitText = document.getElementById('catSubmitText');
-                const submitLoading = document.getElementById('catSubmitLoading');
-                
-                try {
-                    submitText.style.display = 'none';
-                    showLoading(submitLoading);
-                    
-                    await apiService.createCat(catData);
-                    await loadCats();
-                    await updateDashboard();
-                    
-                    showMessage('Кошка успешно добавлена!', 'success');
-                    this.reset();
-                    document.getElementById('catUploadedImages').innerHTML = '';
-                    currentCatImages = [];
-                    
-                    // Switch to list view
-                    document.querySelector('[data-subtab="cats-list"]').click();
-                } catch (error) {
-                    showMessage('Ошибка при добавлении кошки: ' + error.message, 'error');
-                } finally {
-                    submitText.style.display = 'inline';
-                    hideLoading(submitLoading);
-                }
-            });
+        // Initialize forms
+        initBreedPagesForm();
+        updateBreedPagesList();
+        initVideoForm();
+        initSettingsForm();
+    });
+
+    async function showAdminPanel() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'flex';
+        await updateDashboard();
+        await loadVideos();
+        await loadSettings();
+    }
+
+    // Dashboard functions
+    async function updateDashboard() {
+        try {
+            const videos = storageService.getVideos();
+            const faq = storageService.getFAQ();
+            const reviews = storageService.getReviews();
+            const cats = storageService.getCats();
+            const breedPages = storageService.getBreedPages();
+
+            document.getElementById('totalCats').textContent = cats.length;
+            document.getElementById('availableCats').textContent = cats.filter(cat => cat.status === 'ДОСТУПЕН').length;
+            document.getElementById('totalQuestions').textContent = faq.length;
+            document.getElementById('totalReviews').textContent = reviews.length;
+
+            // Update recent activity
+            const recentActivity = document.getElementById('recentActivity');
+            const activities = [];
             
-            document.getElementById('resetCatForm').addEventListener('click', function() {
-                document.getElementById('catForm').reset();
-                document.getElementById('catUploadedImages').innerHTML = '';
-                currentCatImages = [];
-            });
-            
-            // Image upload handling
-            document.getElementById('catImageUpload').addEventListener('click', function() {
-                document.getElementById('catImages').click();
-            });
-            
-            document.getElementById('catImages').addEventListener('change', function(e) {
-                const files = Array.from(e.target.files);
-                currentCatImages = [...currentCatImages, ...files];
-                const uploadedImages = document.getElementById('catUploadedImages');
-                
-                files.forEach(file => {
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        const imageDiv = document.createElement('div');
-                        imageDiv.className = 'uploaded-image';
-                        imageDiv.innerHTML = `
-                            <img src="${e.target.result}" alt="${file.name}">
-                            <div class="remove-image" onclick="removeCatImage('${file.name}')">
-                                <i class="fas fa-times"></i>
-                            </div>
-                        `;
-                        uploadedImages.appendChild(imageDiv);
-                    };
-                    
-                    reader.readAsDataURL(file);
-                });
-                
-                // Reset file input
-                this.value = '';
-            });
-        }
-        
-        function removeCatImage(fileName) {
-            currentCatImages = currentCatImages.filter(file => file.name !== fileName);
-            // Also remove from DOM
-            const images = document.querySelectorAll('#catUploadedImages .uploaded-image');
-            images.forEach(img => {
-                if (img.querySelector('img').alt === fileName) {
-                    img.remove();
-                }
-            });
-        }
-        
-        async function deleteCat(id) {
-            if (confirm('Вы уверены, что хотите удалить эту кошку?')) {
-                try {
-                    await apiService.deleteCat(id);
-                    await loadCats();
-                    await updateDashboard();
-                    showMessage('Кошка успешно удалена!', 'success');
-                } catch (error) {
-                    showMessage('Ошибка при удалении кошки: ' + error.message, 'error');
-                }
+            if (Object.keys(breedPages).length > 0) {
+                activities.push(`Управление ${Object.keys(breedPages).length} страницами пород`);
             }
-        }
-
-        // Edit Cat Functions
-        let currentEditCatImages = [];
-        let currentEditCat = null;
-
-        async function editCat(id) {
-            try {
-                const cats = await apiService.getCats();
-                currentEditCat = cats.find(cat => cat.id === id);
-                
-                if (!currentEditCat) {
-                    showMessage('Кошка не найдена!', 'error');
-                    return;
-                }
-
-                // Fill form with current data
-                document.getElementById('editCatId').value = currentEditCat.id;
-                document.getElementById('editCatName').value = currentEditCat.name;
-                document.getElementById('editCatBreed').value = currentEditCat.breed;
-                document.getElementById('editCatAge').value = currentEditCat.age;
-                document.getElementById('editCatDescription').value = currentEditCat.description || '';
-                document.getElementById('editCatStatus').value = currentEditCat.status;
-                document.getElementById('editCatPrice').value = currentEditCat.price || '';
-
-                // Show current images
-                const currentImagesContainer = document.getElementById('editCatCurrentImages');
-                currentImagesContainer.innerHTML = '';
-                if (currentEditCat.images && currentEditCat.images.length > 0) {
-                    currentEditCat.images.forEach(image => {
-                        const img = document.createElement('img');
-                        img.src = image;
-                        img.alt = currentEditCat.name;
-                        currentImagesContainer.appendChild(img);
-                    });
-                }
-
-                // Reset new images
-                currentEditCatImages = [];
-                document.getElementById('editCatImages').value = '';
-                document.getElementById('editCatUploadedImages').innerHTML = '';
-
-                // Show modal
-                const modal = document.getElementById('editCatModal');
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('show'), 10);
-            } catch (error) {
-                showMessage('Ошибка при загрузке данных кошки: ' + error.message, 'error');
+            if (cats.length > 0) {
+                activities.push(`Добавлено ${cats.length} кошек в систему`);
             }
-        }
+            if (videos.length > 0) {
+                activities.push(`Загружено ${videos.length} видео`);
+            }
 
-        function closeEditCatModal() {
-            const modal = document.getElementById('editCatModal');
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-            currentEditCat = null;
-            currentEditCatImages = [];
+            if (activities.length > 0) {
+                recentActivity.innerHTML = activities.map(activity => 
+                    `<p><i class="fas fa-check-circle" style="color: #27ae60;"></i> ${activity}</p>`
+                ).join('');
+            }
+        } catch (error) {
+            console.error('Error updating dashboard:', error);
         }
+    }
 
-        async function saveEditCat() {
-            const submitText = document.getElementById('editCatSubmitText');
-            const submitLoading = document.getElementById('editCatSubmitLoading');
+    // Videos management
+    let currentVideoFile = null;
+    let currentVideoPoster = null;
+
+    async function loadVideos() {
+        try {
+            const videos = storageService.getVideos();
+            const videosGrid = document.getElementById('videosGrid');
+            videosGrid.innerHTML = '';
             
-            try {
-                showLoading(submitLoading);
-                hideLoading(submitText);
-
-                const catData = {
-                    name: document.getElementById('editCatName').value,
-                    breed: document.getElementById('editCatBreed').value,
-                    age: parseInt(document.getElementById('editCatAge').value),
-                    description: document.getElementById('editCatDescription').value,
-                    status: document.getElementById('editCatStatus').value,
-                    price: parseFloat(document.getElementById('editCatPrice').value) || 0
-                };
-
-                const formData = new FormData();
-                formData.append('data', JSON.stringify(catData));
-                
-                // Add new images
-                currentEditCatImages.forEach(file => {
-                    formData.append('images', file);
-                });
-
-                await apiService.updateCat(currentEditCat.id, formData);
-                await loadCats();
-                await updateDashboard();
-                closeEditCatModal();
-                showMessage('Кошка успешно обновлена!', 'success');
-            } catch (error) {
-                showMessage('Ошибка при обновлении кошки: ' + error.message, 'error');
-            } finally {
-                hideLoading(submitLoading);
-                showLoading(submitText);
-            }
-        }
-
-        // Initialize edit cat form
-        function initEditCatForm() {
-            document.getElementById('editCatImages').addEventListener('change', function(e) {
-                const files = Array.from(e.target.files);
-                currentEditCatImages = [...currentEditCatImages, ...files];
-                
-                files.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imageDiv = document.createElement('div');
-                        imageDiv.className = 'uploaded-image';
-                        
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.alt = file.name;
-                        
-                        const removeBtn = document.createElement('button');
-                        removeBtn.className = 'remove-btn';
-                        removeBtn.innerHTML = '×';
-                        removeBtn.onclick = () => removeEditCatImage(file.name);
-                        
-                        imageDiv.appendChild(img);
-                        imageDiv.appendChild(removeBtn);
-                        document.getElementById('editCatUploadedImages').appendChild(imageDiv);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            });
-        }
-
-        function removeEditCatImage(fileName) {
-            currentEditCatImages = currentEditCatImages.filter(file => file.name !== fileName);
-            // Remove from DOM
-            const images = document.querySelectorAll('#editCatUploadedImages .uploaded-image');
-            images.forEach(img => {
-                if (img.querySelector('img').alt === fileName) {
-                    img.remove();
-                }
-            });
-        }
-
-        // Gallery management
-        let currentGalleryImage = null;
-
-        async function loadGallery() {
-            try {
-                const gallery = await apiService.getGallery();
-                const galleryGrid = document.getElementById('galleryGrid');
-                galleryGrid.innerHTML = '';
-                
-                if (gallery.length === 0) {
-                    galleryGrid.innerHTML = `
-                        <div class="card">
-                            <div class="card-body" style="text-align: center; color: #7f8c8d;">
-                                <i class="fas fa-images" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
-                                <p>Галерея пуста</p>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                gallery.forEach((item) => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    
-                    card.innerHTML = `
-                        <div class="card-header">
-                            <h4>${item.title}</h4>
-                        </div>
-                        <div class="card-body">
-                            ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 10px; border-radius: 5px;">` : ''}
-                            <p>${item.description}</p>
-                            ${item.category ? `<div style="margin-top: 10px;"><span class="status-badge status-available">${item.category}</span></div>` : ''}
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-primary" onclick="editGallery(${item.id})" style="margin-right: 10px;"><i class="fas fa-edit"></i> Редактировать</button>
-                            <button class="btn btn-danger" onclick="deleteGalleryItem(${item.id})"><i class="fas fa-trash"></i> Удалить</button>
-                        </div>
-                    `;
-                    
-                    galleryGrid.appendChild(card);
-                });
-            } catch (error) {
-                console.error('Error loading gallery:', error);
-                document.getElementById('galleryGrid').innerHTML = `
+            if (videos.length === 0) {
+                videosGrid.innerHTML = `
                     <div class="card">
-                        <div class="card-body" style="text-align: center; color: #e74c3c;">
-                            Ошибка загрузки галереи: ${error.message}
+                        <div class="card-body" style="text-align: center; color: #7f8c8d;">
+                            <i class="fas fa-video" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
+                            <p>Нет добавленных видео</p>
                         </div>
                     </div>
                 `;
+                return;
             }
-        }
-
-        function initGalleryForm() {
-            document.getElementById('galleryForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const galleryData = {
-                    title: document.getElementById('galleryTitle').value,
-                    description: document.getElementById('galleryDescription').value,
-                    category: document.getElementById('galleryCategory').value,
-                    image: currentGalleryImage
-                };
-                
-                const submitText = document.getElementById('gallerySubmitText');
-                const submitLoading = document.getElementById('gallerySubmitLoading');
-                
-                try {
-                    submitText.style.display = 'none';
-                    showLoading(submitLoading);
-                    
-                    await apiService.createGalleryItem(galleryData);
-                    await loadGallery();
-                    
-                    showMessage('Фотография успешно добавлена в галерею!', 'success');
-                    this.reset();
-                    document.getElementById('galleryUploadedImage').innerHTML = '';
-                    currentGalleryImage = null;
-                    
-                    // Switch to list view
-                    document.querySelector('[data-subtab="gallery-list"]').click();
-                } catch (error) {
-                    showMessage('Ошибка при добавлении в галерею: ' + error.message, 'error');
-                } finally {
-                    submitText.style.display = 'inline';
-                    hideLoading(submitLoading);
-                }
-            });
             
-            document.getElementById('resetGalleryForm').addEventListener('click', function() {
-                document.getElementById('galleryForm').reset();
-                document.getElementById('galleryUploadedImage').innerHTML = '';
-                currentGalleryImage = null;
-            });
-            
-            // Image upload for gallery
-            document.getElementById('galleryImageUpload').addEventListener('click', function() {
-                document.getElementById('galleryImage').click();
-            });
-            
-            document.getElementById('galleryImage').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                currentGalleryImage = file;
-                const uploadedImage = document.getElementById('galleryUploadedImage');
+            videos.forEach((video) => {
+                const card = document.createElement('div');
+                card.className = 'card';
                 
-                if (file) {
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        uploadedImage.innerHTML = `
-                            <div class="uploaded-image">
-                                <img src="${e.target.result}" alt="Uploaded image">
-                                <div class="remove-image" onclick="removeGalleryImage()">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                            </div>
-                        `;
-                    };
-                    
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        function removeGalleryImage() {
-            currentGalleryImage = null;
-            document.getElementById('galleryUploadedImage').innerHTML = '';
-            document.getElementById('galleryImage').value = '';
-        }
-
-        async function deleteGalleryItem(id) {
-            if (confirm('Вы уверены, что хотите удалить этот элемент из галереи?')) {
-                try {
-                    await apiService.deleteGalleryItem(id);
-                    await loadGallery();
-                    showMessage('Элемент галереи успешно удален!', 'success');
-                } catch (error) {
-                    showMessage('Ошибка при удалении элемента: ' + error.message, 'error');
-                }
-            }
-        }
-
-        // Edit Gallery Functions
-        let currentEditGalleryImage = null;
-        let currentEditGallery = null;
-
-        async function editGallery(id) {
-            try {
-                const gallery = await apiService.getGallery();
-                currentEditGallery = gallery.find(item => item.id === id);
-                
-                if (!currentEditGallery) {
-                    showMessage('Элемент галереи не найден!', 'error');
-                    return;
-                }
-
-                // Fill form with current data
-                document.getElementById('editGalleryId').value = currentEditGallery.id;
-                document.getElementById('editGalleryTitle').value = currentEditGallery.title;
-                document.getElementById('editGalleryDescription').value = currentEditGallery.description || '';
-
-                // Show current image
-                const currentImageContainer = document.getElementById('editGalleryCurrentImage');
-                currentImageContainer.innerHTML = '';
-                if (currentEditGallery.image) {
-                    const img = document.createElement('img');
-                    img.src = currentEditGallery.image;
-                    img.alt = currentEditGallery.title;
-                    currentImageContainer.appendChild(img);
-                }
-
-                // Reset new image
-                currentEditGalleryImage = null;
-                document.getElementById('editGalleryImage').value = '';
-                document.getElementById('editGalleryUploadedImage').innerHTML = '';
-
-                // Show modal
-                const modal = document.getElementById('editGalleryModal');
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('show'), 10);
-            } catch (error) {
-                showMessage('Ошибка при загрузке данных галереи: ' + error.message, 'error');
-            }
-        }
-
-        function closeEditGalleryModal() {
-            const modal = document.getElementById('editGalleryModal');
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-            currentEditGallery = null;
-            currentEditGalleryImage = null;
-        }
-
-        async function saveEditGallery() {
-            const submitText = document.getElementById('editGallerySubmitText');
-            const submitLoading = document.getElementById('editGallerySubmitLoading');
-            
-            try {
-                showLoading(submitLoading);
-                hideLoading(submitText);
-
-                const galleryData = {
-                    title: document.getElementById('editGalleryTitle').value,
-                    description: document.getElementById('editGalleryDescription').value
-                };
-
-                const formData = new FormData();
-                formData.append('data', JSON.stringify(galleryData));
-                
-                // Add new image if selected
-                if (currentEditGalleryImage) {
-                    formData.append('image', currentEditGalleryImage);
-                }
-
-                await apiService.updateGalleryItem(currentEditGallery.id, formData);
-                await loadGallery();
-                closeEditGalleryModal();
-                showMessage('Элемент галереи успешно обновлен!', 'success');
-            } catch (error) {
-                showMessage('Ошибка при обновлении элемента галереи: ' + error.message, 'error');
-            } finally {
-                hideLoading(submitLoading);
-                showLoading(submitText);
-            }
-        }
-
-        // Initialize edit gallery form
-        function initEditGalleryForm() {
-            document.getElementById('editGalleryImage').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                currentEditGalleryImage = file;
-                
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imageDiv = document.createElement('div');
-                        imageDiv.className = 'uploaded-image';
-                        
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.alt = file.name;
-                        
-                        const removeBtn = document.createElement('button');
-                        removeBtn.className = 'remove-btn';
-                        removeBtn.innerHTML = '×';
-                        removeBtn.onclick = () => removeEditGalleryImage();
-                        
-                        imageDiv.appendChild(img);
-                        imageDiv.appendChild(removeBtn);
-                        document.getElementById('editGalleryUploadedImage').appendChild(imageDiv);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        function removeEditGalleryImage() {
-            currentEditGalleryImage = null;
-            document.getElementById('editGalleryImage').value = '';
-            document.getElementById('editGalleryUploadedImage').innerHTML = '';
-        }
-
-        // FAQ management
-        async function loadFAQ() {
-            try {
-                const faq = await apiService.getFAQ();
-                const tableBody = document.getElementById('faqTableBody');
-                tableBody.innerHTML = '';
-                
-                if (faq.length === 0) {
-                    tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="4" style="text-align: center; color: #7f8c8d;">
-                                <i class="fas fa-question-circle" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
-                                <p>Нет добавленных вопросов</p>
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-                
-                faq.forEach((item) => {
-                    const row = document.createElement('tr');
-                    
-                    row.innerHTML = `
-                        <td>${item.question}</td>
-                        <td>${getCategoryName(item.category)}</td>
-                        <td><span class="status-badge status-available">Активен</span></td>
-                        <td class="actions">
-                            <button class="action-btn btn-primary" onclick="editFAQ(${item.id})"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn btn-danger" onclick="deleteFAQ(${item.id})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    `;
-                    
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error loading FAQ:', error);
-                document.getElementById('faqTableBody').innerHTML = `
-                    <tr>
-                        <td colspan="4" style="text-align: center; color: #e74c3c;">
-                            Ошибка загрузки вопросов: ${error.message}
-                        </td>
-                    </tr>
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h4>${video.title}</h4>
+                    </div>
+                    <div class="card-body">
+                        ${video.poster ? `<img src="${video.poster}" alt="${video.title}" style="width: 100%; height: 200px; object-fit: cover; margin-bottom: 10px; border-radius: 5px;">` : 
+                        `<div style="width: 100%; height: 200px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; border-radius: 5px;">
+                            <i class="fas fa-video" style="font-size: 48px; color: #ddd;"></i>
+                        </div>`}
+                        <p>${video.description || ''}</p>
+                        <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                            <strong>Файл:</strong> ${video.fileName || 'Не указан'}
+                        </div>
+                        ${video.order ? `<div style="margin-top: 5px;"><span class="status-badge status-available">Порядок: ${video.order}</span></div>` : ''}
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-danger" onclick="deleteVideo('${video.id}')"><i class="fas fa-trash"></i> Удалить</button>
+                    </div>
                 `;
-            }
-        }
-
-        function initFAQForm() {
-            document.getElementById('faqForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
                 
-                const faqItem = {
-                    question: document.getElementById('faqQuestion').value,
-                    answer: document.getElementById('faqAnswer').value,
-                    category: document.getElementById('faqCategory').value,
-                    order: document.getElementById('faqOrder').value || 1
-                };
-                
-                const submitText = document.getElementById('faqSubmitText');
-                const submitLoading = document.getElementById('faqSubmitLoading');
-                
-                try {
-                    submitText.style.display = 'none';
-                    showLoading(submitLoading);
-                    
-                    await apiService.createFAQ(faqItem);
-                    await loadFAQ();
-                    await updateDashboard();
-                    
-                    showMessage('Вопрос успешно добавлен в FAQ!', 'success');
-                    this.reset();
-                    
-                    // Switch to list view
-                    document.querySelector('[data-subtab="faq-list"]').click();
-                } catch (error) {
-                    showMessage('Ошибка при добавлении вопроса: ' + error.message, 'error');
-                } finally {
-                    submitText.style.display = 'inline';
-                    hideLoading(submitLoading);
-                }
+                videosGrid.appendChild(card);
             });
+        } catch (error) {
+            console.error('Error loading videos:', error);
+            document.getElementById('videosGrid').innerHTML = `
+                <div class="card">
+                    <div class="card-body" style="text-align: center; color: #e74c3c;">
+                        Ошибка загрузки видео: ${error.message}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    function initVideoForm() {
+        document.getElementById('videoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            document.getElementById('resetFaqForm').addEventListener('click', function() {
-                document.getElementById('faqForm').reset();
-            });
-        }
-
-        async function deleteFAQ(id) {
-            if (confirm('Вы уверены, что хотите удалить этот вопрос?')) {
-                try {
-                    await apiService.deleteFAQ(id);
-                    await loadFAQ();
-                    await updateDashboard();
-                    showMessage('Вопрос успешно удален!', 'success');
-                } catch (error) {
-                    showMessage('Ошибка при удалении вопроса: ' + error.message, 'error');
-                }
+            const title = document.getElementById('videoTitle').value;
+            const description = document.getElementById('videoDescription').value;
+            const order = document.getElementById('videoOrder').value || 1;
+            
+            if (!title) {
+                showMessage('Пожалуйста, введите название видео', 'error');
+                return;
             }
-        }
-
-        // Edit FAQ Functions
-        let currentEditFAQ = null;
-
-        async function editFAQ(id) {
-            try {
-                const faq = await apiService.getFAQ();
-                currentEditFAQ = faq.find(item => item.id === id);
-                
-                if (!currentEditFAQ) {
-                    showMessage('Вопрос не найден!', 'error');
-                    return;
-                }
-
-                // Fill form with current data
-                document.getElementById('editFAQId').value = currentEditFAQ.id;
-                document.getElementById('editFAQQuestion').value = currentEditFAQ.question;
-                document.getElementById('editFAQAnswer').value = currentEditFAQ.answer;
-
-                // Show modal
-                const modal = document.getElementById('editFAQModal');
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('show'), 10);
-            } catch (error) {
-                showMessage('Ошибка при загрузке данных вопроса: ' + error.message, 'error');
+            
+            if (!currentVideoFile) {
+                showMessage('Пожалуйста, выберите видеофайл', 'error');
+                return;
             }
-        }
-
-        function closeEditFAQModal() {
-            const modal = document.getElementById('editFAQModal');
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-            currentEditFAQ = null;
-        }
-
-        async function saveEditFAQ() {
-            const submitText = document.getElementById('editFAQSubmitText');
-            const submitLoading = document.getElementById('editFAQSubmitLoading');
+            
+            const submitText = document.getElementById('videoSubmitText');
+            const submitLoading = document.getElementById('videoSubmitLoading');
             
             try {
+                submitText.style.display = 'none';
                 showLoading(submitLoading);
-                hideLoading(submitText);
-
-                const faqData = {
-                    question: document.getElementById('editFAQQuestion').value,
-                    answer: document.getElementById('editFAQAnswer').value
-                };
-
-                await apiService.updateFAQ(currentEditFAQ.id, faqData);
-                await loadFAQ();
-                await updateDashboard();
-                closeEditFAQModal();
-                showMessage('Вопрос успешно обновлен!', 'success');
-            } catch (error) {
-                showMessage('Ошибка при обновлении вопроса: ' + error.message, 'error');
-            } finally {
-                hideLoading(submitLoading);
-                showLoading(submitText);
-            }
-        }
-
-        // Reviews management
-        let currentReviewImage = null;
-
-        async function loadReviews() {
-            try {
-                const reviews = await apiService.getReviews();
-                const tableBody = document.getElementById('reviewsTableBody');
-                tableBody.innerHTML = '';
                 
-                if (reviews.length === 0) {
-                    tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="5" style="text-align: center; color: #7f8c8d;">
-                                <i class="fas fa-star" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
-                                <p>Нет добавленных отзывов</p>
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-                
-                reviews.forEach((review) => {
-                    const row = document.createElement('tr');
-                    
-                    let stars = '';
-                    for (let i = 0; i < 5; i++) {
-                        if (i < review.rating) {
-                            stars += '<i class="fas fa-star" style="color: #ffc107;"></i>';
-                        } else {
-                            stars += '<i class="far fa-star" style="color: #ffc107;"></i>';
-                        }
-                    }
-                    
-                    row.innerHTML = `
-                        <td>${review.name || review.author}</td>
-                        <td>${review.text.substring(0, 50)}${review.text.length > 50 ? '...' : ''}</td>
-                        <td>${stars}</td>
-                        <td>${review.date ? new Date(review.date).toLocaleDateString('ru-RU') : new Date(review.createdAt).toLocaleDateString('ru-RU')}</td>
-                        <td class="actions">
-                            <button class="action-btn btn-primary" onclick="editReview(${review.id})"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn btn-danger" onclick="deleteReview(${review.id})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    `;
-                    
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error loading reviews:', error);
-                document.getElementById('reviewsTableBody').innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center; color: #e74c3c;">
-                            Ошибка загрузки отзывов: ${error.message}
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-
-        function initReviewForm() {
-            document.getElementById('reviewForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const reviewData = {
-                    name: document.getElementById('reviewAuthor').value,
-                    location: document.getElementById('reviewLocation').value,
-                    text: document.getElementById('reviewText').value,
-                    rating: parseInt(document.getElementById('reviewRating').value),
-                    date: document.getElementById('reviewDate').value,
-                    image: currentReviewImage
-                };
-                
-                const submitText = document.getElementById('reviewSubmitText');
-                const submitLoading = document.getElementById('reviewSubmitLoading');
-                
-                try {
-                    submitText.style.display = 'none';
-                    showLoading(submitLoading);
-                    
-                    await apiService.createReview(reviewData);
-                    await loadReviews();
-                    await updateDashboard();
-                    
-                    showMessage('Отзыв успешно добавлен!', 'success');
-                    this.reset();
-                    document.getElementById('reviewUploadedImage').innerHTML = '';
-                    currentReviewImage = null;
-                    
-                    // Switch to list view
-                    document.querySelector('[data-subtab="reviews-list"]').click();
-                } catch (error) {
-                    showMessage('Ошибка при добавлении отзыва: ' + error.message, 'error');
-                } finally {
-                    submitText.style.display = 'inline';
-                    hideLoading(submitLoading);
-                }
-            });
-            
-            document.getElementById('resetReviewForm').addEventListener('click', function() {
-                document.getElementById('reviewForm').reset();
-                document.getElementById('reviewUploadedImage').innerHTML = '';
-                currentReviewImage = null;
-            });
-            
-            // Image upload for reviews
-            document.getElementById('reviewImageUpload').addEventListener('click', function() {
-                document.getElementById('reviewImage').click();
-            });
-            
-            document.getElementById('reviewImage').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                currentReviewImage = file;
-                const uploadedImage = document.getElementById('reviewUploadedImage');
-                
-                if (file) {
+                // Обработка видеофайла
+                const videoUrl = await new Promise((resolve) => {
                     const reader = new FileReader();
-                    
                     reader.onload = function(e) {
-                        uploadedImage.innerHTML = `
-                            <div class="uploaded-image">
-                                <img src="${e.target.result}" alt="Uploaded image">
-                                <div class="remove-image" onclick="removeReviewImage()">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                            </div>
-                        `;
+                        resolve(e.target.result);
                     };
-                    
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        function removeReviewImage() {
-            currentReviewImage = null;
-            document.getElementById('reviewUploadedImage').innerHTML = '';
-            document.getElementById('reviewImage').value = '';
-        }
-
-        async function deleteReview(id) {
-            if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
-                try {
-                    await apiService.deleteReview(id);
-                    await loadReviews();
-                    await updateDashboard();
-                    showMessage('Отзыв успешно удален!', 'success');
-                } catch (error) {
-                    showMessage('Ошибка при удалении отзыва: ' + error.message, 'error');
-                }
-            }
-        }
-
-        // Edit Review Functions
-        let currentEditReview = null;
-
-        async function editReview(id) {
-            try {
-                const reviews = await apiService.getReviews();
-                currentEditReview = reviews.find(review => review.id === id);
+                    reader.readAsDataURL(currentVideoFile);
+                });
                 
-                if (!currentEditReview) {
-                    showMessage('Отзыв не найден!', 'error');
+                // Обработка постера
+                let posterUrl = null;
+                if (currentVideoPoster) {
+                    posterUrl = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            resolve(e.target.result);
+                        };
+                        reader.readAsDataURL(currentVideoPoster);
+                    });
+                }
+                
+                // Сохраняем видео
+                const videos = storageService.getVideos();
+                const newVideo = {
+                    id: Date.now().toString(),
+                    title: title,
+                    description: description,
+                    order: parseInt(order),
+                    fileName: currentVideoFile.name,
+                    videoUrl: videoUrl,
+                    poster: posterUrl,
+                    createdAt: new Date().toISOString()
+                };
+                
+                videos.push(newVideo);
+                storageService.saveVideos(videos);
+                
+                await loadVideos();
+                await updateDashboard();
+                
+                showMessage('Видео успешно добавлено!', 'success');
+                this.reset();
+                document.getElementById('videoPosterPreview').innerHTML = '';
+                document.getElementById('videoFilePreview').innerHTML = '';
+                currentVideoPoster = null;
+                currentVideoFile = null;
+                
+                // Switch to list view
+                document.querySelector('[data-subtab="videos-list"]').click();
+            } catch (error) {
+                showMessage('Ошибка при добавлении видео: ' + error.message, 'error');
+            } finally {
+                submitText.style.display = 'inline';
+                hideLoading(submitLoading);
+            }
+        });
+        
+        document.getElementById('resetVideoForm').addEventListener('click', function() {
+            document.getElementById('videoForm').reset();
+            document.getElementById('videoPosterPreview').innerHTML = '';
+            document.getElementById('videoFilePreview').innerHTML = '';
+            currentVideoPoster = null;
+            currentVideoFile = null;
+        });
+        
+        // Video file upload handling
+        document.getElementById('videoFileUpload').addEventListener('click', function() {
+            document.getElementById('videoFile').click();
+        });
+        
+        document.getElementById('videoFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            currentVideoFile = file;
+            const uploadedVideo = document.getElementById('videoFilePreview');
+            
+            if (file) {
+                // Проверка размера файла (макс. 50MB)
+                if (file.size > 50 * 1024 * 1024) {
+                    showMessage('Файл слишком большой. Максимальный размер: 50MB', 'error');
+                    this.value = '';
+                    currentVideoFile = null;
                     return;
                 }
-
-                // Fill form with current data
-                document.getElementById('editReviewId').value = currentEditReview.id;
-                document.getElementById('editReviewName').value = currentEditReview.name || currentEditReview.author;
-                document.getElementById('editReviewRating').value = currentEditReview.rating;
-                document.getElementById('editReviewText').value = currentEditReview.text;
-
-                // Show modal
-                const modal = document.getElementById('editReviewModal');
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('show'), 10);
-            } catch (error) {
-                showMessage('Ошибка при загрузке данных отзыва: ' + error.message, 'error');
-            }
-        }
-
-        function closeEditReviewModal() {
-            const modal = document.getElementById('editReviewModal');
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-            currentEditReview = null;
-        }
-
-        async function saveEditReview() {
-            const submitText = document.getElementById('editReviewSubmitText');
-            const submitLoading = document.getElementById('editReviewSubmitLoading');
-            
-            try {
-                showLoading(submitLoading);
-                hideLoading(submitText);
-
-                const reviewData = {
-                    name: document.getElementById('editReviewName').value,
-                    rating: parseInt(document.getElementById('editReviewRating').value),
-                    text: document.getElementById('editReviewText').value
+                
+                const videoElement = document.createElement('video');
+                videoElement.src = URL.createObjectURL(file);
+                videoElement.controls = true;
+                videoElement.style.width = '150px';
+                videoElement.style.height = '100px';
+                videoElement.style.objectFit = 'cover';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = () => {
+                    currentVideoFile = null;
+                    uploadedVideo.innerHTML = '';
+                    document.getElementById('videoFile').value = '';
                 };
-
-                await apiService.updateReview(currentEditReview.id, reviewData);
-                await loadReviews();
-                await updateDashboard();
-                closeEditReviewModal();
-                showMessage('Отзыв успешно обновлен!', 'success');
-            } catch (error) {
-                showMessage('Ошибка при обновлении отзыва: ' + error.message, 'error');
-            } finally {
-                hideLoading(submitLoading);
-                showLoading(submitText);
+                
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'uploaded-video';
+                videoContainer.appendChild(videoElement);
+                videoContainer.appendChild(removeBtn);
+                
+                uploadedVideo.innerHTML = '';
+                uploadedVideo.appendChild(videoContainer);
             }
-        }
-
-        // Settings management
-        async function loadSettings() {
-            try {
-                const settings = await apiService.getSettings();
+        });
+        
+        // Poster upload for videos
+        document.getElementById('videoPosterUpload').addEventListener('click', function() {
+            document.getElementById('videoPoster').click();
+        });
+        
+        document.getElementById('videoPoster').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            currentVideoPoster = file;
+            const uploadedPoster = document.getElementById('videoPosterPreview');
+            
+            if (file) {
+                const reader = new FileReader();
                 
-                document.getElementById('siteTitle').value = settings.siteTitle || 'Petochania';
-                document.getElementById('siteSlogan').value = settings.siteSlogan || 'Питомник элитных кошек';
-                document.getElementById('siteDescription').value = settings.siteDescription || 'Международный питомник элитных породистых котят';
-                document.getElementById('contactPhone').value = settings.contactPhone || '8 926 150 2870';
-                document.getElementById('contactEmail').value = settings.contactEmail || '';
-                document.getElementById('contactAddress').value = settings.contactAddress || '';
-                document.getElementById('workingHours').value = settings.workingHours || '';
-                
-                // Load social links
-                const socialLinksContainer = document.getElementById('socialLinks');
-                socialLinksContainer.innerHTML = '';
-                
-                const socialLinks = settings.socialLinks || [];
-                socialLinks.forEach((link, index) => {
-                    const linkDiv = document.createElement('div');
-                    linkDiv.className = 'form-row';
-                    linkDiv.style.marginBottom = '10px';
-                    
-                    linkDiv.innerHTML = `
-                        <input type="text" class="form-control social-name" placeholder="Название" value="${link.name}" style="flex: 1;">
-                        <input type="text" class="form-control social-url" placeholder="URL" value="${link.url}" style="flex: 2;">
-                        <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                reader.onload = function(e) {
+                    uploadedPoster.innerHTML = `
+                        <div class="uploaded-image">
+                            <img src="${e.target.result}" alt="Uploaded poster">
+                            <div class="remove-image" onclick="removeVideoPoster()">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
                     `;
-                    
-                    socialLinksContainer.appendChild(linkDiv);
-                });
-            } catch (error) {
-                console.error('Error loading settings:', error);
-                showMessage('Ошибка загрузки настроек: ' + error.message, 'error');
-            }
-        }
-
-        function initSettingsForm() {
-            document.getElementById('settingsForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                // Collect social links
-                const socialLinks = [];
-                document.querySelectorAll('#socialLinks .form-row').forEach(row => {
-                    const name = row.querySelector('.social-name').value;
-                    const url = row.querySelector('.social-url').value;
-                    
-                    if (name && url) {
-                        socialLinks.push({ name, url });
-                    }
-                });
-                
-                const settings = {
-                    siteTitle: document.getElementById('siteTitle').value,
-                    siteSlogan: document.getElementById('siteSlogan').value,
-                    siteDescription: document.getElementById('siteDescription').value,
-                    contactPhone: document.getElementById('contactPhone').value,
-                    contactEmail: document.getElementById('contactEmail').value,
-                    contactAddress: document.getElementById('contactAddress').value,
-                    workingHours: document.getElementById('workingHours').value,
-                    socialLinks
                 };
                 
-                const submitText = document.getElementById('settingsSubmitText');
-                const submitLoading = document.getElementById('settingsSubmitLoading');
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    function removeVideoPoster() {
+        currentVideoPoster = null;
+        document.getElementById('videoPosterPreview').innerHTML = '';
+        document.getElementById('videoPoster').value = '';
+    }
+
+    async function deleteVideo(id) {
+        if (confirm('Вы уверены, что хотите удалить это видео?')) {
+            try {
+                const videos = storageService.getVideos();
+                const updatedVideos = videos.filter(video => video.id !== id);
+                storageService.saveVideos(updatedVideos);
                 
-                try {
-                    submitText.style.display = 'none';
-                    showLoading(submitLoading);
-                    
-                    await apiService.updateSettings(settings);
-                    showMessage('Настройки успешно сохранены!', 'success');
-                } catch (error) {
-                    showMessage('Ошибка при сохранении настроек: ' + error.message, 'error');
-                } finally {
-                    submitText.style.display = 'inline';
-                    hideLoading(submitLoading);
-                }
-            });
+                await loadVideos();
+                await updateDashboard();
+                showMessage('Видео успешно удалено!', 'success');
+            } catch (error) {
+                showMessage('Ошибка при удалении видео: ' + error.message, 'error');
+            }
+        }
+    }
+
+    // Settings management
+    async function loadSettings() {
+        try {
+            const settings = storageService.getSettings();
             
-            document.getElementById('addSocialLink').addEventListener('click', function() {
-                const socialLinksContainer = document.getElementById('socialLinks');
+            document.getElementById('siteTitle').value = settings.siteTitle || 'Petochania';
+            document.getElementById('siteSlogan').value = settings.siteSlogan || 'Питомник элитных кошек';
+            document.getElementById('siteDescription').value = settings.siteDescription || 'Международный питомник элитных породистых котят';
+            document.getElementById('contactPhone').value = settings.contactPhone || '8 926 150 2870';
+            document.getElementById('contactEmail').value = settings.contactEmail || '';
+            document.getElementById('contactAddress').value = settings.contactAddress || '';
+            document.getElementById('workingHours').value = settings.workingHours || '';
+            
+            // Load social links
+            const socialLinksContainer = document.getElementById('socialLinks');
+            socialLinksContainer.innerHTML = '';
+            
+            const socialLinks = settings.socialLinks || [];
+            socialLinks.forEach((link, index) => {
                 const linkDiv = document.createElement('div');
                 linkDiv.className = 'form-row';
                 linkDiv.style.marginBottom = '10px';
                 
                 linkDiv.innerHTML = `
-                    <input type="text" class="form-control social-name" placeholder="Название" style="flex: 1;">
-                    <input type="text" class="form-control social-url" placeholder="URL" style="flex: 2;">
+                    <input type="text" class="form-control social-name" placeholder="Название" value="${link.name}" style="flex: 1;">
+                    <input type="text" class="form-control social-url" placeholder="URL" value="${link.url}" style="flex: 2;">
                     <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
                 `;
                 
                 socialLinksContainer.appendChild(linkDiv);
             });
-            
-            document.getElementById('saveUserSettings').addEventListener('click', async function() {
-                const username = document.getElementById('adminUsername').value;
-                const email = document.getElementById('adminEmail').value;
-                const newPassword = document.getElementById('adminPassword').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                
-                if (!username) {
-                    showMessage('Логин администратора обязателен', 'error');
-                    return;
-                }
-                
-                if (newPassword && newPassword !== confirmPassword) {
-                    showMessage('Пароли не совпадают!', 'error');
-                    return;
-                }
-                
-                const userData = { username };
-                if (email) userData.email = email;
-                if (newPassword) userData.password = newPassword;
-                
-                const loadingElement = document.getElementById('userSettingsLoading');
-                
-                try {
-                    showLoading(loadingElement);
-                    
-                    await apiService.updateUser(userData);
-                    showMessage('Настройки пользователя сохранены!', 'success');
-                    
-                    document.getElementById('adminPassword').value = '';
-                    document.getElementById('confirmPassword').value = '';
-                } catch (error) {
-                    showMessage('Ошибка при сохранении настроек пользователя: ' + error.message, 'error');
-                } finally {
-                    hideLoading(loadingElement);
-                }
-            });
+        } catch (error) {
+            console.error('Error loading settings:', error);
+            showMessage('Ошибка загрузки настроек: ' + error.message, 'error');
         }
+    }
 
-        // Backup settings
-        function initBackupSettings() {
-            document.getElementById('createBackup').addEventListener('click', async function() {
-                if (confirm('Создать резервную копию всех данных?')) {
-                    try {
-                        const result = await apiService.createBackup();
-                        showMessage('Резервная копия успешно создана!', 'success');
-                    } catch (error) {
-                        showMessage('Ошибка при создании резервной копии: ' + error.message, 'error');
-                    }
+    function initSettingsForm() {
+        document.getElementById('settingsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Collect social links
+            const socialLinks = [];
+            document.querySelectorAll('#socialLinks .form-row').forEach(row => {
+                const name = row.querySelector('.social-name').value;
+                const url = row.querySelector('.social-url').value;
+                
+                if (name && url) {
+                    socialLinks.push({ name, url });
                 }
             });
             
-            document.getElementById('restoreBackup').addEventListener('click', function() {
-                alert('Функция восстановления из резервной копии будет реализована в следующей версии');
-            });
-            
-            document.getElementById('saveBackupSettings').addEventListener('click', function() {
-                showMessage('Настройки резервного копирования сохранены!', 'success');
-            });
-        }
-
-        // Utility function
-        function getCategoryName(category) {
-            const categories = {
-                'purchase': 'Покупка котенка',
-                'care': 'Уход и содержание',
-                'delivery': 'Доставка',
-                'documents': 'Документы',
-                'health': 'Здоровье',
-                'breeding': 'Разведение'
+            const settings = {
+                siteTitle: document.getElementById('siteTitle').value,
+                siteSlogan: document.getElementById('siteSlogan').value,
+                siteDescription: document.getElementById('siteDescription').value,
+                contactPhone: document.getElementById('contactPhone').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                contactAddress: document.getElementById('contactAddress').value,
+                workingHours: document.getElementById('workingHours').value,
+                socialLinks
             };
             
-            return categories[category] || category;
-        }
-
-        // Add CSS animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
+            const submitText = document.getElementById('settingsSubmitText');
+            const submitLoading = document.getElementById('settingsSubmitLoading');
             
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
+            try {
+                submitText.style.display = 'none';
+                showLoading(submitLoading);
+                
+                storageService.saveSettings(settings);
+                showMessage('Настройки успешно сохранены!', 'success');
+            } catch (error) {
+                showMessage('Ошибка при сохранении настроек: ' + error.message, 'error');
+            } finally {
+                submitText.style.display = 'inline';
+                hideLoading(submitLoading);
             }
-        `;
-        document.head.appendChild(style);
-    </script>
+        });
+        
+        document.getElementById('addSocialLink').addEventListener('click', function() {
+            const socialLinksContainer = document.getElementById('socialLinks');
+            const linkDiv = document.createElement('div');
+            linkDiv.className = 'form-row';
+            linkDiv.style.marginBottom = '10px';
+            
+            linkDiv.innerHTML = `
+                <input type="text" class="form-control social-name" placeholder="Название" style="flex: 1;">
+                <input type="text" class="form-control social-url" placeholder="URL" style="flex: 2;">
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            `;
+            
+            socialLinksContainer.appendChild(linkDiv);
+        });
+    }
+
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
 </body>
 </html>
