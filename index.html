@@ -230,10 +230,175 @@
         .geogr-text {
             color: #C8A97E;
         }
+        
+        /* Стили для секции котят - ПЕРЕМЕЩЕНА ПЕРЕД "О ПИТОМНИКЕ" */
+        .kittens-section {
+            padding: 80px 20px;
+            background: white;
+        }
 
-        .h2 {
-            color: black;
-            text-shadow: 1px 1px 4px #444;
+        .kittens-section .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(28px, 6vw, 42px);
+            color: #333;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            font-size: clamp(16px, 4vw, 20px);
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .kittens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .kitten-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            text-align: center;
+        }
+
+        .kitten-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .kitten-image {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        /* КРУГЛЫЕ ФОТОГРАФИИ */
+        .kitten-photo {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .kitten-card:hover .kitten-photo {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+        }
+
+        .kitten-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .kitten-content {
+            padding: 0 30px 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kitten-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .kitten-description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .kitten-features {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #C8A97E;
+            font-weight: 500;
+        }
+
+        .feature i {
+            font-size: 12px;
+        }
+
+        .kitten-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 25px;
+            background: #C8A97E;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            border: 2px solid #C8A97E;
+            margin: 0 auto;
+        }
+
+        .kitten-button:hover {
+            background: white;
+            color: #C8A97E;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(200, 169, 126, 0.3);
+        }
+
+        .kittens-cta {
+            text-align: center;
+            padding: 40px 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+
+        .kittens-cta p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
         }
         
         /* Reviews секция для мобильных - ОБНОВЛЕННАЯ */
@@ -637,312 +802,266 @@ footer {
     width: 100%;
 }
 
-/* Адаптация для мобильных */
-@media (max-width: 768px) {
-    footer {
-        padding: 40px 15px 25px;
-        margin-top: 40px;
-    }
-    
-    .footer-phone {
-        font-size: 24px;
-    }
-    
-    .footer-links {
-        gap: 15px;
-    }
-    
-    .footer-links a {
-        font-size: 13px;
-    }
-    
-    .social-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-    }
-    
-    .footer-social {
-        gap: 12px;
+/* Text section адаптация для мобильных - ТЕПЕРЬ ТЕКСТ ПОД ЛЕНТОЙ */
+.text-section {
+    padding: 80px 20px;
+    background: #f8f9fa;
+}
+
+@media (min-width: 768px) {
+    .text-section {
+        padding: 100px 20px;
     }
 }
 
-@media (max-width: 480px) {
-    .footer-phone {
-        font-size: 22px;
-    }
-    
-    .footer-links {
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .social-icon {
-        width: 38px;
-        height: 38px;
-        font-size: 15px;
+.text-section .wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.text-section .image {
+    width: 100%;
+}
+
+.text-section .text {
+    width: 100%;
+    text-align: center;
+}
+
+.text-section h3 {
+    font-size: clamp(24px, 5vw, 36px);
+    margin-bottom: 20px;
+    color: #333;
+    font-family: 'Playfair Display', serif;
+}
+
+.text-section .subtitle {
+    font-size: clamp(16px, 4vw, 20px);
+    color: #C8A97E;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.text-section p {
+    font-size: clamp(14px, 4vw, 16px);
+    line-height: 1.6;
+    color: #666;
+    margin-bottom: 15px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* География секция для мобильных - ВОССТАНОВЛЕНА */
+.geography-section {
+    padding: 50px 15px;
+    background: white;
+}
+
+@media (min-width: 768px) {
+    .geography-section {
+        padding: 80px 20px;
     }
 }
-        
-        /* Text section адаптация для мобильных - ТЕПЕРЬ ТЕКСТ ПОД ЛЕНТОЙ */
-        .text-section {
-            padding: 60px 15px 40px;
+
+.geography-section h2 {
+    font-size: clamp(24px, 6vw, 36px);
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    letter-spacing: 1px;
+    line-height: 1.2;
+}
+
+.geography-section h2 span {
+    font-weight: 700;
+}
+
+.geography-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .geography-content {
+        flex-direction: row;
+        align-items: center;
+        gap: 50px;
+    }
+}
+
+.geography-image {
+    flex: 1;
+    min-width: 0;
+}
+
+.geography-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+}
+
+.geography-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.geography-text p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+    .geography-text p {
+        font-size: 16px;
+        margin-bottom: 25px;
+        max-width: 400px;
         }
-        
-        @media (min-width: 768px) {
-            .text-section {
-                padding: 80px 20px 60px;
-            }
+}
+
+.countries-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 480px) {
+    .countries-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.country-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.country-dot {
+    width: 6px;
+    height: 6px;
+    background: #C8A97E;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.country-name {
+    font-size: 13px;
+    color: #333;
+}
+
+.geography-note {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #888;
+    font-style: italic;
+}
+
+@media (min-width: 768px) {
+    .geography-note {
+        font-size: 14px;
         }
-        
-        .text-section .wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-        }
-        
-        .text-section .image {
-            width: 100%;
-        }
-        
-        .text-section .text {
-            width: 100%;
-            text-align: center;
-        }
-        
-        .text-section h3 {
-            font-size: clamp(24px, 5vw, 36px);
-            margin-bottom: 20px;
-            color: #333;
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .text-section .subtitle {
-            font-size: clamp(16px, 4vw, 20px);
-            color: #C8A97E;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-        
-        .text-section p {
-            font-size: clamp(14px, 4vw, 16px);
-            line-height: 1.6;
-            color: #666;
-            margin-bottom: 15px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        /* География секция для мобильных - ВОССТАНОВЛЕНА */
-        .geography-section {
-            padding: 50px 15px;
-            background: white;
-        }
-        
-        @media (min-width: 768px) {
-            .geography-section {
-                padding: 80px 20px;
-            }
-        }
-        
-        .geography-section h2 {
-            font-size: clamp(24px, 6vw, 36px);
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-            font-family: 'Playfair Display', serif;
-            font-weight: 400;
-            letter-spacing: 1px;
-            line-height: 1.2;
-        }
-        
-        .geography-section h2 span {
-            font-weight: 700;
-        }
-        
-        .geography-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        @media (min-width: 768px) {
-            .geography-content {
-                flex-direction: row;
-                align-items: center;
-                gap: 50px;
-            }
-        }
-        
-        .geography-image {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .geography-image img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-        }
-        
-        .geography-text {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .geography-text p {
-            font-size: 14px;
-            line-height: 1.5;
-            color: #666;
-            margin-bottom: 20px;
-        }
-        
-        @media (min-width: 768px) {
-            .geography-text p {
-                font-size: 16px;
-                margin-bottom: 25px;
-                max-width: 400px;
-                }
-        }
-        
-        .countries-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        @media (min-width: 480px) {
-            .countries-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        
-        .country-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .country-dot {
-            width: 6px;
-            height: 6px;
-            background: #C8A97E;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        
-        .country-name {
-            font-size: 13px;
-            color: #333;
-        }
-        
-        .geography-note {
-            font-size: 12px;
-            line-height: 1.4;
-            color: #888;
-            font-style: italic;
-        }
-        
-        @media (min-width: 768px) {
-            .geography-note {
-                font-size: 14px;
-                }
-        }
-        
-        /* Мобильное меню - ИСПРАВЛЕННЫЕ СТИЛИ */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #333;
-            cursor: pointer;
-            padding: 5px;
-            z-index: 1002;
-        }
-        
-        @media (max-width: 1024px) {
-            .nav-center, .nav-right {
-                display: none;
-            }
-            
-            .menu-toggle {
-                display: block;
-            }
-            
-            .mobile-menu {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100vh;
-                background: rgba(255, 255, 255, 0.98);
-                z-index: 1001;
-                padding: 80px 20px 20px;
-                overflow-y: auto;
-            }
-            
-            .mobile-menu.active {
-                display: block;
-            }
-            
-            .mobile-menu-content {
-                display: flex;
-                flex-direction: column;
-                gap: 0;
-            }
-            
-            .mobile-menu a {
-                padding: 16px 20px;
-                border-bottom: 1px solid #f0f0f0;
-                font-size: 18px;
-                color: #333;
-                text-decoration: none;
-                font-weight: 500;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                transition: all 0.3s;
-            }
-            
-            .mobile-menu a:hover {
-                color: #C8A97E;
-                background: #f9f9f9;
-            }
-            
-            .mobile-menu a:last-child {
-                border-bottom: none;
-            }
-            
-            .mobile-phone {
-                display: block;
-                padding: 16px 20px;
-                border-top: 2px solid #C8A97E;
-                margin-top: 20px;
-                font-weight: 600;
-                background: #f8f9fa;
-            }
-            
-            .close-menu {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                background: none;
-                border: none;
-                font-size: 24px;
-                color: #333;
-                cursor: pointer;
-                z-index: 1003;
-            }
-        }
+}
+
+/* Мобильное меню - ИСПРАВЛЕННЫЕ СТИЛИ */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 1002;
+}
+
+@media (max-width: 1024px) {
+    .nav-center, .nav-right {
+        display: none;
+    }
+    
+    .menu-toggle {
+        display: block;
+    }
+    
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.98);
+        z-index: 1001;
+        padding: 80px 20px 20px;
+        overflow-y: auto;
+    }
+    
+    .mobile-menu.active {
+        display: block;
+    }
+    
+    .mobile-menu-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .mobile-menu a {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 18px;
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+    
+    .mobile-menu a:hover {
+        color: #C8A97E;
+        background: #f9f9f9;
+    }
+    
+    .mobile-menu a:last-child {
+        border-bottom: none;
+    }
+    
+    .mobile-phone {
+        display: block;
+        padding: 16px 20px;
+        border-top: 2px solid #C8A97E;
+        margin-top: 20px;
+        font-weight: 600;
+        background: #f8f9fa;
+    }
+    
+    .close-menu {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #333;
+        cursor: pointer;
+        z-index: 1003;
+    }
+}
 
         /* Дополнительные отступы для фиксированного хедера */
         html {
@@ -966,118 +1085,6 @@ footer {
             }
         }
         
-        /* ОБНОВЛЕННЫЕ стили для карточек пород */
-        .breed-cards-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto 40px;
-        }
-
-        @media (min-width: 768px) {
-            .breed-cards-container {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 25px;
-            }
-        }
-
-        .breed-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .breed-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
-        }
-
-        .breed-image {
-            width: 100%;
-            height: 280px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .breed-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        .breed-card:hover .breed-image img {
-            transform: scale(1.08);
-        }
-
-        .breed-content {
-            padding: 25px 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .breed-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 15px;
-            font-family: 'Playfair Display', serif;
-            line-height: 1.2;
-        }
-
-        .breed-description {
-            font-size: 15px;
-            line-height: 1.5;
-            color: #666;
-            margin-bottom: 20px;
-            flex: 1;
-        }
-
-        .breed-arrow {
-            font-size: 24px;
-            color: #C8A97E;
-            font-weight: bold;
-            text-align: right;
-            transition: transform 0.3s ease;
-        }
-
-        .breed-card:hover .breed-arrow {
-            transform: translateX(5px);
-        }
-
-        /* Адаптация для мобильных */
-        @media (max-width: 767px) {
-            .breed-cards-container {
-                gap: 20px;
-            }
-            
-            .breed-image {
-                height: 220px;
-            }
-            
-            .breed-content {
-                padding: 20px 15px;
-            }
-            
-            .breed-title {
-                font-size: 20px;
-            }
-            
-            .breed-description {
-                font-size: 14px;
-            }
-        }
-
         /* Стили для ленты видео вместо фотографий */
         .video-strip-container {
             width: 100%;
@@ -1125,30 +1132,6 @@ footer {
             object-fit: cover;
             transition: transform 0.4s;
             pointer-events: none;
-        }
-
-        .video-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(200, 169, 126, 0.15);
-            backdrop-filter: blur(5px);
-            color: white;
-            padding: 15px 10px;
-            font-size: 16px;
-            font-weight: 700;
-            text-align: center;
-            font-family: 'Lato', sans-serif;
-            letter-spacing: 0.5px;
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-            pointer-events: none;
-            line-height: 1.2;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         .video-play-icon {
@@ -1411,6 +1394,110 @@ footer {
         .video-strip-item:active {
             transform: scale(0.95);
         }
+
+        /* Адаптация для мобильных - карточки котят */
+        @media (max-width: 768px) {
+            .kittens-section {
+                padding: 60px 15px;
+            }
+            
+            .kittens-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .kitten-image {
+                height: 250px;
+                padding: 20px;
+            }
+            
+            .kitten-photo {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .kitten-content {
+                padding: 0 20px 20px;
+            }
+            
+            .kitten-title {
+                font-size: 22px;
+            }
+            
+            .kitten-description {
+                font-size: 14px;
+            }
+            
+            .kittens-cta {
+                padding: 30px 15px;
+            }
+            
+            .kittens-cta p {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kittens-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .kitten-features {
+                justify-content: center;
+            }
+            
+            .kitten-photo {
+                width: 160px;
+                height: 160px;
+            }
+        }
+
+        /* Адаптация для футера */
+        @media (max-width: 768px) {
+            footer {
+                padding: 40px 15px 25px;
+                margin-top: 40px;
+            }
+            
+            .footer-phone {
+                font-size: 24px;
+            }
+            
+            .footer-links {
+                gap: 15px;
+            }
+            
+            .footer-links a {
+                font-size: 13px;
+            }
+            
+            .social-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .footer-social {
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-phone {
+                font-size: 22px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .social-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1430,10 +1517,10 @@ footer {
                 <!-- Центральное меню -->
                 <div class="nav-center">
                     <div class="nav-links">
+                        <a href="#kittens">Наши котята</a>
                         <a href="#about">О питомнике</a>
                         <a href="#testimonials">Отзывы</a>
                         <a href="#contact">Контакты</a>
-                        <a href="gallery.html" class="active">Наши кошки</a>
                         <a href="#faq-main">Частые вопросы</a>
                     </div>
                 </div>
@@ -1457,10 +1544,10 @@ footer {
             <i class="fas fa-times"></i>
         </button>
         <div class="mobile-menu-content">
+            <a href="#kittens">Наши котята</a>
             <a href="#about">О питомнике</a>
             <a href="#testimonials">Отзывы</a>
             <a href="#contact">Контакты</a>
-            <a href="gallery.html" class="active">Наши кошки</a>
             <a href="#faq-main">Частые вопросы</a>
             <a href="tel:+79261502870" class="mobile-phone">+7 926 150 2870</a>
         </div>
@@ -1486,57 +1573,119 @@ footer {
             </div>
         </section>
 
-        <!-- Раздел "О питомнике" с карточками пород -->
-        <section id="about" class="text-section">	
-            <div class="wrapper">
-                <div class="image">
-                    <!-- Текст над карточками пород -->
-                    <div class="choose-kitten-text" style="text-align: center; margin-bottom: 40px;">
-                        <h3 style="font-size: 26px; color: #C8A97E; font-weight: bold; font-family: 'Playfair Display', serif;">
-                            ВЫБРАТЬ КОТЁНКА
-                        </h3>
+        <!-- НОВАЯ СЕКЦИЯ: Наши котята в формате карточек - ПЕРЕД "О ПИТОМНИКЕ" -->
+        <section id="kittens" class="kittens-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Наши котята</h2>
+                    <p>Выберите своего будущего питомца</p>
+                </div>
+                
+                <div class="kittens-grid">
+                    <!-- Карточка 1: Девон-рекс -->
+                    <div class="kitten-card">
+                        <div class="kitten-image">
+                            <div class="kitten-photo">
+                                <img src="img/devon-reks.JPG" alt="Девон-рекс котенок">
+                            </div>
+                        </div>
+                        <div class="kitten-content">
+                            <h3 class="kitten-title">Девон-рекс</h3>
+                            <p class="kitten-description">Энергичные и любвеобильные котятa с инопланетной внешностью и собачьим характером</p>
+                            <div class="kitten-features">
+                                <div class="feature">
+                                    <i class="fas fa-paw"></i>
+                                    <span>Игривые</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-heart"></i>
+                                    <span>Ласковые</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-users"></i>
+                                    <span>Общительные</span>
+                                </div>
+                            </div>
+<a href="devon.html" class="kitten-button">
+    Смотреть котят <i class="fas fa-arrow-right"></i>
+</a>
+                            </a>
+                        </div>
                     </div>
                     
-                    <!-- Карточки пород вместо ленты фотографий -->
-                    <div class="breed-cards-container">
-                        <!-- Карточка Девон-рекс -->
-                        <div class="breed-card" onclick="window.location.href='gallery.html'">
-                            <div class="breed-image">
-                                <img src="img/devon-reks.JPG" alt="Девон-рекс">
-                            </div>
-                            <div class="breed-content">
-                                <h3 class="breed-title">Девон-рекс</h3>
-                                <p class="breed-description">Они будто прилетели с другой планеты. Но обнимаются, мурчат и любят — как никто на Земле.</p>
-                                <div class="breed-arrow">→</div>
+                    <!-- Карточка 2: Золотая шиншилла -->
+                    <div class="kitten-card">
+                        <div class="kitten-image">
+                            <div class="kitten-photo">
+                                <img src="img/goldshinshina.JPG" alt="Золотая шиншилла котенок">
                             </div>
                         </div>
-                        
-                        <!-- Карточка Золотая шиншилла -->
-                        <div class="breed-card" onclick="window.location.href='gallery.html'">
-                            <div class="breed-image">
-                                <img src="img/goldshinshina.JPG" alt="Золотая шиншилла">
+                        <div class="kitten-content">
+                            <h3 class="kitten-title">Золотая шиншилла</h3>
+                            <p class="kitten-description">Аристократичные британцы с роскошной золотистой шерстью и королевским характером</p>
+                            <div class="kitten-features">
+                                <div class="feature">
+                                    <i class="fas fa-crown"></i>
+                                    <span>Аристократы</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-gem"></i>
+                                    <span>Роскошные</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-home"></i>
+                                    <span>Спокойные</span>
+                                </div>
                             </div>
-                            <div class="breed-content">
-                                <h3 class="breed-title">Золотая шиншилла</h3>
-                                <p class="breed-description">Аристократичные британские котята драгоценных окрасов, созданные для красоты, уюта и любви</p>
-                                <div class="breed-arrow">→</div>
+<a href="chinchilla.html" class="kitten-button">
+    Смотреть котят <i class="fas fa-arrow-right"></i>
+</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Карточка 3: Манчкин -->
+                    <div class="kitten-card">
+                        <div class="kitten-image">
+                            <div class="kitten-photo">
+                                <img src="img/machkin.JPG" alt="Манчкин котенок" style="object-position: center 30%;">
                             </div>
                         </div>
-                        
-                        <!-- Карточка Манчкин -->
-                        <div class="breed-card" onclick="window.location.href='gallery.html'">
-                            <div class="breed-image">
-                                <img src="img/machkin.JPG" alt="Манчкин" style="object-position: center 30%;">
+                        <div class="kitten-content">
+                            <h3 class="kitten-title">Манчкин</h3>
+                            <p class="kitten-description">Очаровательные коротколапые котятa с уникальной внешностью и дружелюбным нравом</p>
+                            <div class="kitten-features">
+                                <div class="feature">
+                                    <i class="fas fa-star"></i>
+                                    <span>Эксклюзив</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-smile"></i>
+                                    <span>Дружелюбные</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-magic"></i>
+                                    <span>Уникальные</span>
+                                </div>
                             </div>
-                            <div class="breed-content">
-                                <h3 class="breed-title">Манчкин</h3>
-                                <p class="breed-description">Эксклюзивные харизматичные коротколапики. Когда хочешь не просто котёнка</p>
-                                <div class="breed-arrow">→</div>
-                            </div>
+<a href="munchkin.html" class="kitten-button">
+    Смотреть котят <i class="fas fa-arrow-right"></i>
+</a>
                         </div>
                     </div>
                 </div>
                 
+                <div class="kittens-cta">
+                    <p>Не нашли подходящего котенка?<br>Мы поможем с выбором!</p>
+                    <a href="https://wa.me/message/Y4ZYRHELPNHUE1" class="cta-button">
+                        <i class="fab fa-whatsapp"></i> Проконсультироваться
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Раздел "О питомнике" - ТЕПЕРЬ ПОСЛЕ КАРТОЧЕК КОТЯТ -->
+        <section id="about" class="text-section">	
+            <div class="wrapper">
                 <!-- Остальной текст о питомнике -->
                 <div class="text">
                     <h3>О питомнике</h3>
@@ -1549,7 +1698,7 @@ footer {
                     <p>Мы всегда остаёмся на связи с владельцами наших выпускников, помогая растить их счастливыми и здоровыми.</p>
                 </div>
                 
-                <!-- ЗАМЕНА: Лента с 5 видео вместо фотографий -->
+                <!-- ЗАМЕНА: Лента с видео из папки videos -->
                 <div class="video-strip-container">
                     <div class="video-strip" id="videoStrip">
                         <!-- Видео будут добавлены динамически через JavaScript -->
@@ -1760,10 +1909,10 @@ footer {
         
         <!-- Навигационные ссылки -->
         <div class="footer-links">
+            <a href="index.html#kittens">Наши котята</a>
             <a href="index.html#about">О питомнике</a>
             <a href="index.html#testimonials">Отзывы</a>
             <a href="index.html#contact">Контакты</a>
-            <a href="gallery.html">Наши кошки</a>
             <a href="faq.html">Частые вопросы</a>
         </div>
         
@@ -1846,68 +1995,38 @@ footer {
                 faqItems[0].classList.add('active');
             }
         }
-        
-        // Данные для видео (замените на реальные пути к вашим видео)
-        const videoData = [
-            {
-                src: "videos/video1.mp4",
-                poster: "img/video-poster1.jpg",
-                alt: "Девон-рекс играет",
-                caption: "Девон-рекс"
-            },
-            {
-                src: "videos/video2.mp4",
-                poster: "img/video-poster2.jpg",
-                alt: "Золотая шиншилла",
-                caption: "Золотая шиншилла"
-            },
-            {
-                src: "videos/video3.mp4",
-                poster: "img/video-poster3.jpg",
-                alt: "Манчкин",
-                caption: "Манчкин"
-            },
-        ];
 
-        // Функция для создания элемента видео с автовоспроизведением
+        // Функция для создания элемента видео
         function createVideoItem(video, index) {
             const item = document.createElement('div');
             item.className = 'video-strip-item';
             item.setAttribute('data-index', index);
             
             const videoElement = document.createElement('video');
-            videoElement.src = video.src;
-            videoElement.poster = video.poster;
-            videoElement.alt = video.alt;
+            videoElement.src = video.videoUrl || video.url;
+            videoElement.poster = video.poster || '';
+            videoElement.alt = video.title;
             videoElement.muted = true;
             videoElement.loop = true;
             videoElement.playsInline = true;
-            videoElement.autoplay = true; // Автовоспроизведение
+            videoElement.autoplay = true;
             
             const playIcon = document.createElement('div');
             playIcon.className = 'video-play-icon';
             playIcon.innerHTML = '<i class="fas fa-play"></i>';
             
-            const caption = document.createElement('div');
-            caption.className = 'video-caption';
-            caption.textContent = video.caption;
-            
             item.appendChild(videoElement);
             item.appendChild(playIcon);
-            item.appendChild(caption);
             
             // Автоматически запускаем воспроизведение
             const playPromise = videoElement.play();
             
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    // Видео успешно запущено
                     item.classList.add('playing');
                 }).catch(error => {
-                    // Автовоспроизведение заблокировано
                     console.log('Автовоспроизведение заблокировано браузером:', error);
                     
-                    // Добавляем обработчики для ручного воспроизведения
                     item.addEventListener('mouseenter', function() {
                         videoElement.play().catch(e => console.log('Воспроизведение заблокировано:', e));
                         item.classList.add('playing');
@@ -1921,7 +2040,6 @@ footer {
                 });
             }
             
-            // Обработчики событий для управления видимостью иконки
             videoElement.addEventListener('playing', function() {
                 item.classList.add('playing');
             });
@@ -1930,7 +2048,6 @@ footer {
                 item.classList.remove('playing');
             });
             
-            // Для мобильных устройств - воспроизведение по клику
             item.addEventListener('click', function(e) {
                 e.preventDefault();
                 if (videoElement.paused) {
@@ -1946,139 +2063,225 @@ footer {
             return item;
         }
 
-        // Функция для создания бесконечной ленты видео
-        function createInfiniteVideoStrip(stripElement, videos, repetitions = 4) {
-            // Очищаем существующий контент
-            stripElement.innerHTML = '';
-            
-            // Создаем несколько копий видео для бесконечного эффекта
-            for (let i = 0; i < repetitions; i++) {
-                videos.forEach((video, index) => {
-                    const videoItem = createVideoItem(video, index);
-                    stripElement.appendChild(videoItem);
-                });
+        // Функция для загрузки видео из API
+        async function loadVideosFromAPI() {
+            try {
+                const response = await fetch('/api/videos');
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки видео');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Error loading videos from API:', error);
+                return [];
             }
         }
 
-        // Функция для создания бесконечной ленты видео с возможностью ручной прокрутки
-        function initInfiniteVideoStrip() {
-            const videoStrip = document.getElementById('videoStrip');
+       // Функция для создания бесконечной ленты видео
+async function createInfiniteVideoStrip() {
+    const videoStrip = document.getElementById('videoStrip');
+    
+    if (videoStrip) {
+        try {
+            // Загружаем видео из localStorage
+            const videos = await loadVideosFromStorage();
             
-            if (videoStrip) {
-                createInfiniteVideoStrip(videoStrip, videoData, 4);
-                
-                const stripWidth = videoStrip.scrollWidth / 2;
-                
-                let position = 0;
-                const speed = 0.9;
-                let animationId;
-                let isPaused = false;
-                let isDragging = false;
-                let startX = 0;
-                let scrollLeft = 0;
-                const container = videoStrip.parentElement;
-                
-                // Функция авто-прокрутки
-                function animateStrip() {
-                    if (!isPaused && !isDragging) {
-                        position -= speed;
-                        
-                        if (Math.abs(position) >= stripWidth) {
-                            position = 0;
-                        }
-                        
-                        videoStrip.style.transform = `translateX(${position}px)`;
+            // Очищаем существующий контент
+            videoStrip.innerHTML = '';
+            
+            if (videos.length === 0) {
+                // Если нет видео, показываем демо-видео из папки videos
+                showDemoVideos(videoStrip);
+                return;
+            }
+            
+            // Создаем элементы для реальных видео
+            for (let i = 0; i < 2; i++) { // 2 копии для бесконечного эффекта
+                videos.forEach((video, index) => {
+                    const videoItem = createVideoItem(video, index);
+                    videoStrip.appendChild(videoItem);
+                });
+            }
+            
+            initVideoStripAnimation(videoStrip);
+            
+        } catch (error) {
+            console.error('Error creating video strip:', error);
+            // В случае ошибки показываем демо-видео
+            showDemoVideos(videoStrip);
+        }
+    }
+}
+
+// Функция для загрузки видео из localStorage
+function loadVideosFromStorage() {
+    return new Promise((resolve) => {
+        try {
+            const videos = JSON.parse(localStorage.getItem('videos')) || [];
+            resolve(videos);
+        } catch (error) {
+            console.error('Error loading videos from storage:', error);
+            resolve([]);
+        }
+    });
+}
+
+// Функция для показа демо-видео из папки videos
+function showDemoVideos(videoStrip) {
+    // Предполагаем, что у вас есть видеофайлы в папке videos
+    const demoVideos = [
+        {
+            title: 'Наши котята',
+            videoUrl: 'videos/video1.mp4',
+            poster: ''
+        },
+        {
+            title: 'Питомник',
+            videoUrl: 'videos/video2.mp4', 
+            poster: ''
+        },
+        {
+            title: 'Забота о кошках',
+            videoUrl: 'videos/video3.mp4',
+            poster: ''
+        }
+    ];
+    
+    // Создаем элементы для демо-видео
+    for (let i = 0; i < 4; i++) {
+        demoVideos.forEach((video, index) => {
+            const videoItem = createVideoItem(video, index);
+            videoStrip.appendChild(videoItem);
+        });
+    }
+    
+    initVideoStripAnimation(videoStrip);
+                    
+                } 
+        
+
+        function initVideoStripAnimation(videoStrip) {
+            const stripWidth = videoStrip.scrollWidth / 2;
+            
+            let position = 0;
+            const speed = 0.9;
+            let animationId;
+            let isPaused = false;
+            let isDragging = false;
+            let startX = 0;
+            let scrollLeft = 0;
+            const container = videoStrip.parentElement;
+            
+            function animateStrip() {
+                if (!isPaused && !isDragging) {
+                    position -= speed;
+                    
+                    if (Math.abs(position) >= stripWidth) {
+                        position = 0;
                     }
                     
-                    animationId = requestAnimationFrame(animateStrip);
-                }
-                
-                // Запускаем анимацию
-                animateStrip();
-                
-                // Обработчики для паузы при наведении
-                container.addEventListener('mouseenter', () => {
-                    isPaused = true;
-                });
-                
-                container.addEventListener('mouseleave', () => {
-                    isPaused = false;
-                });
-                
-                // Функции для ручной прокрутки (drag & drop)
-                function startDrag(e) {
-                    isDragging = true;
-                    isPaused = true;
-                    startX = e.pageX || e.touches[0].pageX;
-                    scrollLeft = position;
-                    container.style.cursor = 'grabbing';
-                    e.preventDefault();
-                }
-                
-                function duringDrag(e) {
-                    if (!isDragging) return;
-                    const x = e.pageX || e.touches[0].pageX;
-                    const walk = (x - startX) * 2;
-                    position = scrollLeft - walk;
                     videoStrip.style.transform = `translateX(${position}px)`;
                 }
                 
-                function endDrag() {
-                    isDragging = false;
-                    isPaused = false;
-                    container.style.cursor = 'grab';
-                }
-                
-                // Добавляем обработчики
-                container.addEventListener('mousedown', startDrag);
-                document.addEventListener('mousemove', duringDrag);
-                document.addEventListener('mouseup', endDrag);
-                container.addEventListener('touchstart', startDrag);
-                document.addEventListener('touchmove', duringDrag);
-                document.addEventListener('touchend', endDrag);
-                
-                // Останавливаем анимацию при уходе со страницы
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) {
-                        isPaused = true;
-                    } else {
-                        isPaused = false;
-                    }
-                });
+                animationId = requestAnimationFrame(animateStrip);
             }
+            
+            // Запускаем анимацию
+            animateStrip();
+            
+            // Обработчики для паузы при наведении
+            container.addEventListener('mouseenter', () => {
+                isPaused = true;
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                isPaused = false;
+            });
+            
+            // Функции для ручной прокрутки (drag & drop)
+            function startDrag(e) {
+                isDragging = true;
+                isPaused = true;
+                startX = e.pageX || e.touches[0].pageX;
+                scrollLeft = position;
+                container.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+            
+            function duringDrag(e) {
+                if (!isDragging) return;
+                const x = e.pageX || e.touches[0].pageX;
+                const walk = (x - startX) * 2;
+                position = scrollLeft - walk;
+                videoStrip.style.transform = `translateX(${position}px)`;
+            }
+            
+            function endDrag() {
+                isDragging = false;
+                isPaused = false;
+                container.style.cursor = 'grab';
+            }
+            
+            // Добавляем обработчики
+            container.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', duringDrag);
+            document.addEventListener('mouseup', endDrag);
+            container.addEventListener('touchstart', startDrag);
+            document.addEventListener('touchmove', duringDrag);
+            document.addEventListener('touchend', endDrag);
+            
+            // Останавливаем анимацию при уходе со страницы
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    isPaused = true;
+                } else {
+                    isPaused = false;
+                }
+            });
         }
 
-        // Обработчики для карточек пород
-        function initBreedCards() {
-            const breedCards = document.querySelectorAll('.breed-card');
+        // Обработчики для карточек котят
+        function initKittenCards() {
+            const kittenCards = document.querySelectorAll('.kitten-card');
             
-            breedCards.forEach(card => {
+            kittenCards.forEach(card => {
                 // Для десктопов - обычный клик
-                card.addEventListener('click', function() {
-                    window.location.href = 'gallery.html';
+                card.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+                        const link = this.querySelector('.kitten-button');
+                        if (link) {
+                            window.location.href = link.href;
+                        }
+                    }
                 });
                 
                 // Для мобильных устройств - обработка касаний
                 card.addEventListener('touchstart', function(e) {
-                    this.style.transform = 'scale(0.98)';
+                    if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+                        this.style.transform = 'scale(0.98)';
+                    }
                 }, { passive: true });
                 
                 card.addEventListener('touchend', function(e) {
-                    this.style.transform = '';
-                    // Небольшая задержка для визуальной обратной связи
-                    setTimeout(() => {
-                        window.location.href = 'gallery.html';
-                    }, 150);
+                    if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+                        this.style.transform = '';
+                        const link = this.querySelector('.kitten-button');
+                        if (link) {
+                            setTimeout(() => {
+                                window.location.href = link.href;
+                            }, 150);
+                        }
+                    }
                 }, { passive: true });
             });
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализируем карточки пород
-            initBreedCards();
+            // Инициализируем карточки котят
+            initKittenCards();
             
             // Инициализируем бесконечную ленту видео
-            initInfiniteVideoStrip();
+            createInfiniteVideoStrip();
             
             // Инициализируем FAQ аккордеон
             initFAQAccordion();
@@ -2145,118 +2348,6 @@ footer {
                 }
                 updateReview();
             }, 10000);
-        });
-
-        // Автоматическое определение базового URL
-        function getBaseURL() {
-            return window.location.origin;
-        }
-
-        // Функция для загрузки данных с сервера
-        async function loadDataFromAPI() {
-            try {
-                const baseURL = getBaseURL();
-                
-                // Загрузка кошек
-                const catsResponse = await fetch(`${baseURL}/api/cats`);
-                const cats = await catsResponse.json();
-                
-                // Загрузка отзывов
-                const reviewsResponse = await fetch(`${baseURL}/api/reviews`);
-                const reviews = await reviewsResponse.json();
-                
-                // Загрузка FAQ
-                const faqResponse = await fetch(`${baseURL}/api/faq`);
-                const faq = await faqResponse.json();
-                
-                // Обновление интерфейса
-                updateCatsOnHomePage(cats);
-                updateReviewsOnHomePage(reviews);
-                updateFAQOnHomePage(faq);
-                
-            } catch (error) {
-                console.error('Ошибка загрузки данных:', error);
-            }
-        }
-
-        // Функция для обновления отзывов на главной странице
-        function updateReviewsOnHomePage(reviews) {
-            const reviewsContainer = document.querySelector('.reviews-container');
-            if (!reviewsContainer) return;
-            
-            // Если нет отзывов с сервера, оставляем статичные
-            if (!reviews || reviews.length === 0) return;
-            
-            reviewsContainer.innerHTML = '';
-            
-            reviews.forEach((review, index) => {
-                const reviewHTML = `
-                    <div class="review-card ${index === 0 ? 'active' : ''}">
-                        <div class="review-left">
-                            <div class="review-photo">
-                                ${review.image ? `<img src="${getBaseURL()}${review.image}" alt="${review.name || review.author}">` : '<img src="img/machkin.JPG" alt="Отзыв">'}
-                            </div>
-                            <div class="review-author-info">
-                                <div class="author-name">${review.name || review.author}</div>
-                                <div class="author-location">
-                                    <i class="fas fa-map-marker-alt"></i> ${review.location || 'Москва, Россия'}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="review-right">
-                            <div class="review-meta">
-                                <div class="rating">
-                                    ${'<i class="fas fa-star"></i>'.repeat(review.rating || 5)}
-                                </div>
-                            </div>
-                            <div class="review-text">
-                                "${review.text}"
-                            </div>
-                        </div>
-                    </div>
-                `;
-                reviewsContainer.innerHTML += reviewHTML;
-            });
-        }
-
-        // Функция для обновления кошек на главной странице
-        function updateCatsOnHomePage(cats) {
-            // Пока что оставляем статичные карточки пород
-            // В будущем можно добавить динамическое обновление
-            console.log('Кошки загружены:', cats.length);
-        }
-
-        // Функция для обновления FAQ на главной странице
-        function updateFAQOnHomePage(faq) {
-            const faqContainer = document.querySelector('#faq-main .faq-container');
-            if (!faqContainer || !faq || faq.length === 0) return;
-            
-            faqContainer.innerHTML = '';
-            
-            faq.forEach((item, index) => {
-                const faqHTML = `
-                    <div class="faq-item ${index === 0 ? 'active' : ''}">
-                        <div class="faq-question">
-                            <h3>${item.question}</h3>
-                            <div class="faq-icon">
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>
-                        <div class="faq-answer">
-                            <p>${item.answer}</p>
-                        </div>
-                    </div>
-                `;
-                faqContainer.innerHTML += faqHTML;
-            });
-            
-            // Переинициализируем аккордеон
-            initFAQAccordion();
-        }
-
-        // Загрузка данных при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDataFromAPI();
         });
     </script>
 </body>
