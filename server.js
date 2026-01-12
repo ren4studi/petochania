@@ -3,25 +3,22 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
-// Middleware
+// Middleware - УВЕЛИЧИВАЕМ ЛИМИТ ДЛЯ BASE64 ИЗОБРАЖЕНИЙ
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' })); // Увеличиваем лимит для JSON
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use('/uploads', express.static('uploads'));
+app.use(express.static('.'));
 
 // Ensure uploads directory exists
 if (!fs.existsSync('uploads')) {
     fs.mkdirSync('uploads');
     fs.mkdirSync('uploads/cats');
-    fs.mkdirSync('uploads/gallery');
-    fs.mkdirSync('uploads/reviews');
+    fs.mkdirSync('uploads/breeds');
 }
 
 // Multer configuration for file uploads
@@ -29,8 +26,12 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         let folder = 'uploads/';
         if (req.baseUrl.includes('cats')) folder += 'cats/';
-        else if (req.baseUrl.includes('gallery')) folder += 'gallery/';
-        else if (req.baseUrl.includes('reviews')) folder += 'reviews/';
+        else if (req.baseUrl.includes('breeds')) folder += 'breeds/';
+        else folder += 'other/';
+        
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder, { recursive: true });
+        }
         cb(null, folder);
     },
     filename: (req, file, cb) => {
@@ -40,7 +41,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    limits: { 
+        fileSize: 10 * 1024 * 1024, // 10MB limit per file
+        fieldSize: 50 * 1024 * 1024 // 50MB limit for fields
+    },
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
@@ -50,132 +54,364 @@ const upload = multer({
     }
 });
 
-// Simple in-memory database (replace with real database in production)
+// Database file
+const DB_FILE = 'database.json';
+
+// Initialize database
 let database = {
-    users: [{ id: 1, username: 'admin', password: bcrypt.hashSync('admin', 10) }],
+    breedPages: {
+        chinchilla: {
+            title: 'Золотая Шиншилла',
+            heroDescription: 'Аристократичные британцы с роскошной золотистой шерстью и королевским характером',
+            description: 'Золотые шиншиллы — одна из самых красивых и редких пород кошек. Их шерсть имеет уникальный золотистый оттенок с затемнениями на кончиках, создавая эффект сияния. Эти аристократичные кошки обладают спокойным и уравновешенным характером, идеально подходят для жизни в семье.',
+            origin: 'Великобритания',
+            weight: '4-6 кг',
+            lifespan: '12-15 лет',
+            temperament: 'Спокойный, нежный',
+            characteristics: ['Любопытный', 'Дружелюбный', 'Элегантный', 'Спокойный', 'Независимый'],
+            mainImage: 'img/goldshinshina.JPG',
+            lastUpdated: new Date().toISOString()
+        },
+        devon: {
+            title: 'Девон-рекс',
+            heroDescription: 'Энергичные и любвеобильные кошки с инопланетной внешностью и собачьим характером',
+            description: 'Девон-рекс — порода домашних кошек, появившаяся в Великобритании в 1960-х годах. Эти кошки отличаются уникальной волнистой шерстью, большими ушами и выразительными глазами. Девон-рексы очень социальные и преданные кошки, которые любят быть в центре внимания.',
+            origin: 'Великобритания',
+            weight: '3-4.5 кг',
+            lifespan: '9-15 лет',
+            temperament: 'Активный, игривый',
+            characteristics: ['Ласковый', 'Игривый', 'Умный', 'Общительный', 'Энергичный'],
+            mainImage: '',
+            lastUpdated: new Date().toISOString()
+        },
+        munchkin: {
+            title: 'Манчкин',
+            heroDescription: 'Очаровательные коротколапые кошки с уникальной внешностью и дружелюбным нравом',
+            description: 'Манчкины — уникальная порода кошек с короткими лапками, появившаяся в результате естественной генетической мутации. Несмотря на короткие конечности, эти кошки очень подвижны и активны. Манчкины известны своим дружелюбным и общительным характером.',
+            origin: 'США',
+            weight: '3-4 кг',
+            lifespan: '12-15 лет',
+            temperament: 'Дружелюбный, любопытный',
+            characteristics: ['Величественная', 'Умная', 'Любопытная', 'Дружелюбная', 'Общительная'],
+            mainImage: '',
+            lastUpdated: new Date().toISOString()
+        }
+    },
     cats: [],
-    gallery: [],
-    faq: [],
-    reviews: [],
-    settings: {
-        siteTitle: "Petochania",
-        siteDescription: "Питомник элитных кошек",
-        contactPhone: "8 926 150 2870",
-        contactEmail: "",
-        socialLinks: [
-            { name: "Telegram", url: "https://t.me/tata_procats" },
-            { name: "WhatsApp", url: "https://wa.me/message/Y4ZYRHELPNHUE1" },
-            { name: "VK", url: "https://vk.com/petochania" },
-            { name: "Facebook", url: "https://www.facebook.com/share/1A33qj8Nbm/?mibextid=wwXIfr" },
-            { name: "TikTok", url: "https://www.tiktok.com/@tata.vygodnaya?_t=ZS-90PLbDoj2kE&_r=1" },
-            { name: "Instagram", url: "https://www.instagram.com/petochania?igsh=MWR3bHhpNjhnd3g3dw%3D%3D&utm_source=qr" }
-        ]
-    }
+    lastSync: null
 };
 
-// Load data from file if exists
-if (fs.existsSync('database.json')) {
+// Load database from file
+function loadDatabase() {
     try {
-        const data = fs.readFileSync('database.json', 'utf8');
-        database = JSON.parse(data);
+        if (fs.existsSync(DB_FILE)) {
+            const data = fs.readFileSync(DB_FILE, 'utf8');
+            const parsed = JSON.parse(data);
+            
+            // Merge with defaults
+            database = {
+                ...database,
+                ...parsed,
+                breedPages: {
+                    ...database.breedPages,
+                    ...(parsed.breedPages || {})
+                },
+                cats: parsed.cats || [],
+                lastSync: parsed.lastSync || new Date().toISOString()
+            };
+            console.log('Database loaded from file');
+        } else {
+            console.log('No database file found, using defaults');
+        }
     } catch (error) {
-        console.log('Error loading database, using default data');
+        console.error('Error loading database:', error);
     }
 }
 
-// Save data to file
+// Save database to file
 function saveDatabase() {
-    fs.writeFileSync('database.json', JSON.stringify(database, null, 2));
+    try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(database, null, 2));
+        console.log('Database saved to file');
+        return true;
+    } catch (error) {
+        console.error('Error saving database:', error);
+        return false;
+    }
 }
 
-// Authentication middleware
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+// Initialize
+loadDatabase();
 
-    if (!token) {
-        return res.status(401).json({ error: 'Access token required' });
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ error: 'Invalid token' });
-        }
-        req.user = user;
+// Auth middleware (simple check)
+const authenticate = (req, res, next) => {
+    const token = req.headers.authorization;
+    
+    // Simple token check (in production use JWT)
+    if (token && (token === 'Bearer admin' || token === 'Bearer demo_token')) {
         next();
-    });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
 };
 
-// Auth routes
-app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    const user = database.users.find(u => u.username === username);
-    if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
+// Helper function to save base64 image to file
+function saveBase64Image(base64Data, folder = 'cats') {
     try {
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+        // Extract image type and data
+        const matches = base64Data.match(/^data:image\/([A-Za-z-+\/]+);base64,(.+)$/);
+        if (!matches || matches.length !== 3) {
+            throw new Error('Invalid base64 image data');
         }
-
-        const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '24h' });
-        res.json({ token, user: { id: user.id, username: user.username } });
+        
+        const imageType = matches[1];
+        const imageData = matches[2];
+        const buffer = Buffer.from(imageData, 'base64');
+        
+        // Create filename
+        const filename = `${Date.now()}-${Math.round(Math.random() * 1E9)}.${imageType}`;
+        const filepath = path.join('uploads', folder, filename);
+        
+        // Ensure directory exists
+        const dir = path.join('uploads', folder);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        
+        // Save file
+        fs.writeFileSync(filepath, buffer);
+        
+        return `/uploads/${folder}/${filename}`;
     } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+        console.error('Error saving base64 image:', error);
+        return null;
+    }
+}
+
+// ========== API ROUTES ==========
+
+// Get all data for sync
+app.get('/api/sync-data', (req, res) => {
+    res.json({
+        breedPages: database.breedPages || {},
+        cats: database.cats || [],
+        lastSync: database.lastSync || new Date().toISOString()
+    });
+});
+
+// Update all data (admin only)
+app.post('/api/sync-data', authenticate, (req, res) => {
+    try {
+        const { breedPages, cats } = req.body;
+        
+        if (breedPages) {
+            database.breedPages = breedPages;
+        }
+        
+        if (cats) {
+            // Process base64 images in cats
+            const processedCats = cats.map(cat => {
+                if (cat.images && Array.isArray(cat.images)) {
+                    const processedImages = cat.images.map(image => {
+                        // Check if it's base64
+                        if (image && image.startsWith('data:image/')) {
+                            const filepath = saveBase64Image(image, 'cats');
+                            return filepath || image;
+                        }
+                        return image;
+                    });
+                    return { ...cat, images: processedImages };
+                }
+                return cat;
+            });
+            
+            database.cats = processedCats;
+        }
+        
+        database.lastSync = new Date().toISOString();
+        
+        if (saveDatabase()) {
+            res.json({ success: true, message: 'Данные синхронизированы' });
+        } else {
+            res.status(500).json({ error: 'Ошибка сохранения данных' });
+        }
+    } catch (error) {
+        console.error('Error in sync-data:', error);
+        res.status(500).json({ error: error.message });
     }
 });
 
-// Cats routes
+// Get breed pages
+app.get('/api/breed-pages', (req, res) => {
+    res.json({ breedPages: database.breedPages || {} });
+});
+
+// Get specific breed page
+app.get('/api/breed-pages/:id', (req, res) => {
+    const breedId = req.params.id;
+    const breedPage = database.breedPages[breedId];
+    
+    if (!breedPage) {
+        return res.status(404).json({ error: 'Breed page not found' });
+    }
+    
+    res.json(breedPage);
+});
+
+// Update breed page (admin only)
+app.post('/api/breed-pages/:id', authenticate, (req, res) => {
+    try {
+        const breedId = req.params.id;
+        const breedData = req.body;
+        
+        if (!database.breedPages[breedId]) {
+            return res.status(404).json({ error: 'Breed page not found' });
+        }
+        
+        // Handle base64 image for breed
+        if (breedData.mainImage && breedData.mainImage.startsWith('data:image/')) {
+            const filepath = saveBase64Image(breedData.mainImage, 'breeds');
+            if (filepath) {
+                breedData.mainImage = filepath;
+            }
+        }
+        
+        // Update breed data
+        database.breedPages[breedId] = {
+            ...database.breedPages[breedId],
+            ...breedData,
+            lastUpdated: new Date().toISOString()
+        };
+        
+        // Parse characteristics if it's a string
+        if (typeof database.breedPages[breedId].characteristics === 'string') {
+            database.breedPages[breedId].characteristics = 
+                database.breedPages[breedId].characteristics
+                    .split(',')
+                    .map(c => c.trim())
+                    .filter(c => c);
+        }
+        
+        if (saveDatabase()) {
+            res.json({ breedPage: database.breedPages[breedId] });
+        } else {
+            res.status(500).json({ error: 'Ошибка сохранения' });
+        }
+    } catch (error) {
+        console.error('Error updating breed page:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get all cats
 app.get('/api/cats', (req, res) => {
-    res.json(database.cats);
+    console.log('GET /api/cats - Returning', database.cats.length, 'cats');
+    res.json({ cats: database.cats || [] });
 });
 
-app.post('/api/cats', authenticateToken, upload.array('images', 10), (req, res) => {
-    const catData = JSON.parse(req.body.data || '{}');
-    const images = req.files ? req.files.map(file => `/uploads/cats/${file.filename}`) : [];
-
-    const newCat = {
-        id: Date.now(),
-        ...catData,
-        images,
-        createdAt: new Date().toISOString()
-    };
-
-    database.cats.push(newCat);
-    saveDatabase();
-    res.json(newCat);
-});
-
-app.put('/api/cats/:id', authenticateToken, upload.array('images', 10), (req, res) => {
-    const catId = parseInt(req.params.id);
-    const catData = JSON.parse(req.body.data || '{}');
-    const newImages = req.files ? req.files.map(file => `/uploads/cats/${file.filename}`) : [];
-
-    const catIndex = database.cats.findIndex(cat => cat.id === catId);
-    if (catIndex === -1) {
+// Get specific cat
+app.get('/api/cats/:id', (req, res) => {
+    const catId = req.params.id;
+    const cat = database.cats.find(c => c.id === catId);
+    
+    if (!cat) {
         return res.status(404).json({ error: 'Cat not found' });
     }
-
-    // Merge existing images with new ones
-    const existingImages = database.cats[catIndex].images || [];
-    const allImages = [...existingImages, ...newImages];
-
-    database.cats[catIndex] = {
-        ...database.cats[catIndex],
-        ...catData,
-        images: allImages,
-        updatedAt: new Date().toISOString()
-    };
-
-    saveDatabase();
-    res.json(database.cats[catIndex]);
+    
+    res.json(cat);
 });
 
-app.delete('/api/cats/:id', authenticateToken, (req, res) => {
-    const catId = parseInt(req.params.id);
+// Add cat (admin only)
+app.post('/api/cats', authenticate, (req, res) => {
+    try {
+        // ПОЛУЧАЕМ ДАННЫЕ НАПРЯМУЮ ИЗ ТЕЛА ЗАПРОСА
+        const catData = req.body;
+        console.log('Received cat data:', JSON.stringify(catData, null, 2));
+        
+        // Process base64 images
+        let processedImages = [];
+        if (catData.images && Array.isArray(catData.images)) {
+            processedImages = catData.images.map(image => {
+                // Check if it's base64
+                if (image && image.startsWith('data:image/')) {
+                    const filepath = saveBase64Image(image, 'cats');
+                    return filepath || image;
+                }
+                return image;
+            });
+        }
+
+        const newCat = {
+            id: Date.now().toString(),
+            ...catData,
+            images: processedImages,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+
+        console.log('Adding new cat to database:', newCat.id, newCat.name);
+        database.cats.push(newCat);
+        
+        if (saveDatabase()) {
+            console.log('Cat saved successfully');
+            res.json(newCat);
+        } else {
+            console.error('Failed to save database');
+            res.status(500).json({ error: 'Ошибка сохранения в базе данных' });
+        }
+    } catch (error) {
+        console.error('Error adding cat:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update cat (admin only)
+app.put('/api/cats/:id', authenticate, (req, res) => {
+    try {
+        const catId = req.params.id;
+        const catData = req.body;
+        console.log('Updating cat:', catId, catData);
+
+        const catIndex = database.cats.findIndex(cat => cat.id === catId);
+        if (catIndex === -1) {
+            return res.status(404).json({ error: 'Cat not found' });
+        }
+
+        // Process new base64 images
+        let processedImages = [...(database.cats[catIndex].images || [])];
+        if (catData.images && Array.isArray(catData.images)) {
+            const newImages = catData.images.map(image => {
+                // Check if it's base64
+                if (image && image.startsWith('data:image/')) {
+                    const filepath = saveBase64Image(image, 'cats');
+                    return filepath || image;
+                }
+                return image;
+            });
+            processedImages = [...processedImages, ...newImages];
+        }
+
+        database.cats[catIndex] = {
+            ...database.cats[catIndex],
+            ...catData,
+            images: processedImages,
+            updatedAt: new Date().toISOString()
+        };
+
+        if (saveDatabase()) {
+            res.json(database.cats[catIndex]);
+        } else {
+            res.status(500).json({ error: 'Ошибка сохранения' });
+        }
+    } catch (error) {
+        console.error('Error updating cat:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Delete cat (admin only)
+app.delete('/api/cats/:id', authenticate, (req, res) => {
+    const catId = req.params.id;
     const catIndex = database.cats.findIndex(cat => cat.id === catId);
     
     if (catIndex === -1) {
@@ -183,208 +419,66 @@ app.delete('/api/cats/:id', authenticateToken, (req, res) => {
     }
 
     database.cats.splice(catIndex, 1);
-    saveDatabase();
-    res.json({ message: 'Cat deleted successfully' });
-});
-
-// Gallery routes
-app.get('/api/gallery', (req, res) => {
-    res.json(database.gallery);
-});
-
-app.post('/api/gallery', authenticateToken, upload.single('image'), (req, res) => {
-    const galleryData = JSON.parse(req.body.data || '{}');
-    const image = req.file ? `/uploads/gallery/${req.file.filename}` : '';
-
-    const newItem = {
-        id: Date.now(),
-        ...galleryData,
-        image,
-        createdAt: new Date().toISOString()
-    };
-
-    database.gallery.push(newItem);
-    saveDatabase();
-    res.json(newItem);
-});
-
-app.put('/api/gallery/:id', authenticateToken, upload.single('image'), (req, res) => {
-    const galleryId = parseInt(req.params.id);
-    const galleryData = JSON.parse(req.body.data || '{}');
-    const newImage = req.file ? `/uploads/gallery/${req.file.filename}` : '';
-
-    const galleryIndex = database.gallery.findIndex(item => item.id === galleryId);
-    if (galleryIndex === -1) {
-        return res.status(404).json({ error: 'Gallery item not found' });
-    }
-
-    // Keep existing image if no new one provided
-    const image = newImage || database.gallery[galleryIndex].image;
-
-    database.gallery[galleryIndex] = {
-        ...database.gallery[galleryIndex],
-        ...galleryData,
-        image,
-        updatedAt: new Date().toISOString()
-    };
-
-    saveDatabase();
-    res.json(database.gallery[galleryIndex]);
-});
-
-app.delete('/api/gallery/:id', authenticateToken, (req, res) => {
-    const galleryId = parseInt(req.params.id);
-    const galleryIndex = database.gallery.findIndex(item => item.id === galleryId);
     
-    if (galleryIndex === -1) {
-        return res.status(404).json({ error: 'Gallery item not found' });
+    if (saveDatabase()) {
+        res.json({ success: true, message: 'Cat deleted successfully' });
+    } else {
+        res.status(500).json({ error: 'Ошибка сохранения' });
     }
-
-    database.gallery.splice(galleryIndex, 1);
-    saveDatabase();
-    res.json({ message: 'Gallery item deleted successfully' });
 });
 
-// FAQ routes
-app.get('/api/faq', (req, res) => {
-    res.json(database.faq);
-});
-
-app.post('/api/faq', authenticateToken, (req, res) => {
-    const newFaq = {
-        id: Date.now(),
-        ...req.body,
-        createdAt: new Date().toISOString()
-    };
-
-    database.faq.push(newFaq);
-    saveDatabase();
-    res.json(newFaq);
-});
-
-app.put('/api/faq/:id', authenticateToken, (req, res) => {
-    const faqId = parseInt(req.params.id);
-    const faqIndex = database.faq.findIndex(item => item.id === faqId);
-    
-    if (faqIndex === -1) {
-        return res.status(404).json({ error: 'FAQ item not found' });
-    }
-
-    database.faq[faqIndex] = {
-        ...database.faq[faqIndex],
-        ...req.body,
-        updatedAt: new Date().toISOString()
-    };
-
-    saveDatabase();
-    res.json(database.faq[faqIndex]);
-});
-
-app.delete('/api/faq/:id', authenticateToken, (req, res) => {
-    const faqId = parseInt(req.params.id);
-    const faqIndex = database.faq.findIndex(item => item.id === faqId);
-    
-    if (faqIndex === -1) {
-        return res.status(404).json({ error: 'FAQ item not found' });
-    }
-
-    database.faq.splice(faqIndex, 1);
-    saveDatabase();
-    res.json({ message: 'FAQ item deleted successfully' });
-});
-
-// Reviews routes
-app.get('/api/reviews', (req, res) => {
-    res.json(database.reviews);
-});
-
-app.post('/api/reviews', authenticateToken, upload.single('image'), (req, res) => {
-    const reviewData = JSON.parse(req.body.data || '{}');
-    const image = req.file ? `/uploads/reviews/${req.file.filename}` : '';
-
-    const newReview = {
-        id: Date.now(),
-        ...reviewData,
-        image,
-        createdAt: new Date().toISOString()
-    };
-
-    database.reviews.push(newReview);
-    saveDatabase();
-    res.json(newReview);
-});
-
-app.put('/api/reviews/:id', authenticateToken, upload.single('image'), (req, res) => {
-    const reviewId = parseInt(req.params.id);
-    const reviewData = JSON.parse(req.body.data || '{}');
-    const newImage = req.file ? `/uploads/reviews/${req.file.filename}` : '';
-
-    const reviewIndex = database.reviews.findIndex(item => item.id === reviewId);
-    if (reviewIndex === -1) {
-        return res.status(404).json({ error: 'Review not found' });
-    }
-
-    // Keep existing image if no new one provided
-    const image = newImage || database.reviews[reviewIndex].image;
-
-    database.reviews[reviewIndex] = {
-        ...database.reviews[reviewIndex],
-        ...reviewData,
-        image,
-        updatedAt: new Date().toISOString()
-    };
-
-    saveDatabase();
-    res.json(database.reviews[reviewIndex]);
-});
-
-app.delete('/api/reviews/:id', authenticateToken, (req, res) => {
-    const reviewId = parseInt(req.params.id);
-    const reviewIndex = database.reviews.findIndex(item => item.id === reviewId);
-    
-    if (reviewIndex === -1) {
-        return res.status(404).json({ error: 'Review not found' });
-    }
-
-    database.reviews.splice(reviewIndex, 1);
-    saveDatabase();
-    res.json({ message: 'Review deleted successfully' });
-});
-
-// Settings routes
-app.get('/api/settings', (req, res) => {
-    res.json(database.settings);
-});
-
-app.put('/api/settings', authenticateToken, (req, res) => {
-    database.settings = { ...database.settings, ...req.body };
-    saveDatabase();
-    res.json(database.settings);
-});
-
-// User routes
-app.put('/api/user', authenticateToken, async (req, res) => {
+// Login (simple for admin panel)
+app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     
-    if (password) {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        database.users[0].password = hashedPassword;
+    if (username === 'admin' && password === 'admin') {
+        res.json({ 
+            success: true, 
+            token: 'demo_token_' + Date.now(),
+            user: { username: 'admin' }
+        });
+    } else {
+        res.status(401).json({ error: 'Invalid credentials' });
     }
-    
-    if (username) {
-        database.users[0].username = username;
-    }
-    
-    saveDatabase();
-    res.json({ message: 'User updated successfully' });
 });
 
-// Serve static files
-app.use(express.static('.'));
+// Health check
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'ok', 
+        timestamp: new Date().toISOString(),
+        data: {
+            catsCount: database.cats.length,
+            breedsCount: Object.keys(database.breedPages).length,
+            lastSync: database.lastSync
+        }
+    });
+});
 
+// Serve admin panel
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin-panel-backend.html'));
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Server error:', err);
+    
+    if (err.type === 'entity.too.large') {
+        return res.status(413).json({ 
+            error: 'Payload too large',
+            message: 'Изображение слишком большое. Пожалуйста, используйте изображения меньшего размера.'
+        });
+    }
+    
+    res.status(500).json({ error: 'Internal server error', message: err.message });
+});
+
+// Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`Admin panel: ${BASE_URL}/admin-panel-backend.html`);
-    console.log(`Main site: ${BASE_URL}/index.html`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Admin panel: http://localhost:${PORT}/admin-panel-backend.html`);
+    console.log(`Main site: http://localhost:${PORT}/index.html`);
+    console.log(`API: http://localhost:${PORT}/api/sync-data`);
+    console.log(`Cats API: http://localhost:${PORT}/api/cats`);
 });
