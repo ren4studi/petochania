@@ -1,69 +1,429 @@
 // data-sync.js - Синхронизация данных между страницами
-(function() {
-    'use strict';
-    
-    const DATA_KEY = 'petochania_sync_data';
-    
-    // Функция для получения данных
-    function getData() {
-        try {
-            // Пробуем получить из sessionStorage (кросс-доменный доступ)
-            const sessionData = sessionStorage.getItem('petochania_data');
-            if (sessionData) {
-                return JSON.parse(sessionData);
-            }
-            
-            // Пробуем получить из localStorage
-            const localData = localStorage.getItem(DATA_KEY);
-            if (localData) {
-                return JSON.parse(localData);
-            }
-            
-            return null;
-        } catch (error) {
-            console.error('Ошибка получения данных:', error);
-            return null;
+console.log('data-sync.js загружается...');
+
+class DataSync {
+    constructor() {
+        this.STORAGE_KEY = 'petochania_sync_data';
+        this.BREED_PAGES_KEY = 'breedPages';
+        this.CATS_KEY = 'cats';
+        this.SETTINGS_KEY = 'settings';
+        console.log('DataSync конструктор вызван');
+        this.init();
+    }
+
+    init() {
+        console.log('DataSync инициализируется');
+        this.loadInitialData();
+        this.setupStorageListener();
+        console.log('DataSync готов к работе');
+    }
+
+    loadInitialData() {
+        console.log('Загрузка начальных данных...');
+        
+        // Проверяем основные данные
+        let allData = this.getAllData();
+        
+        if (Object.keys(allData).length === 0 || !allData.breedPages) {
+            console.log('Нет данных или нет пород, создаем начальные...');
+            allData = {
+                breedPages: this.getDefaultBreedPages(),
+                cats: [],
+                settings: this.getDefaultSettings(),
+                lastSync: new Date().toISOString()
+            };
+            this.saveAllData(allData);
+        }
+        
+        // Проверяем отдельные хранилища
+        if (!localStorage.getItem(this.BREED_PAGES_KEY)) {
+            localStorage.setItem(this.BREED_PAGES_KEY, JSON.stringify(allData.breedPages));
+        }
+        
+        if (!localStorage.getItem(this.CATS_KEY)) {
+            localStorage.setItem(this.CATS_KEY, JSON.stringify(allData.cats));
         }
     }
-    
-    // Функция для сохранения данных
-    function saveData(data) {
+
+    // В классе DataSync добавьте:
+getBreedCats(breedName) {
+    try {
+        console.log('Поиск котят для породы:', breedName);
+        const cats = this.getAllCats();
+        console.log('Всего кошек в системе:', cats.length);
+        
+        const filteredCats = cats.filter(cat => {
+            if (!cat.breed) {
+                console.log('Коша без породы:', cat.name);
+                return false;
+            }
+            
+            const catBreedLower = cat.breed.toLowerCase();
+            const searchNameLower = breedName.toLowerCase();
+            
+            const matches = catBreedLower.includes(searchNameLower) || 
+                           searchNameLower.includes(catBreedLower);
+            
+            if (matches) {
+                console.log('Найден котенок:', cat.name, 'порода:', cat.breed);
+            }
+            
+            return matches;
+        });
+        
+        console.log('Найдено котят для породы', breedName + ':', filteredCats.length);
+        return filteredCats;
+    } catch (error) {
+        console.error('Error getting breed cats:', error);
+        return [];
+    }
+}
+
+    getDefaultBreedPages() {
+        return {
+            'chinchilla': {
+                id: 'chinchilla',
+                title: 'Золотая Шиншилла',
+                heroDescription: 'Аристократичные британцы с роскошной золотистой шерстью и королевским характером',
+                description: 'Золотые шиншиллы — одна из самых красивых и редких пород кошек. Их шерсть имеет уникальный золотистый оттенок с затемнениями на кончиках, создавая эффект сияния. Эти аристократичные кошки обладают спокойным и уравновешенным характером, идеально подходят для жизни в семье.',
+                origin: 'Великобритания',
+                weight: '4-6 кг',
+                lifespan: '12-15 лет',
+                temperament: 'Спокойный, нежный',
+                characteristics: ['Любопытный', 'Дружелюбный', 'Элегантный', 'Спокойный', 'Независимый'],
+                mainImage: 'img/goldshinshina.JPG',
+                lastUpdated: new Date().toISOString()
+            },
+            'devon': {
+                id: 'devon',
+                title: 'Девон-рекс',
+                heroDescription: 'Энергичные и любвеобильные кошки с инопланетной внешностью и собачьим характером',
+                description: 'Девон-рекс — порода домашних кошек, появившаяся в Великобритании в 1960-х годах. Эти кошки отличаются уникальной волнистой шерстью, большими ушами и выразительными глазами. Девон-рексы очень социальные и преданные кошки, которые любят быть в центре внимания.',
+                origin: 'Великобритания',
+                weight: '3-4.5 кг',
+                lifespan: '9-15 лет',
+                temperament: 'Активный, игривый',
+                characteristics: ['Ласковый', 'Игривый', 'Умный', 'Общительный', 'Энергичный'],
+                mainImage: 'img/devon-reks.JPG',
+                lastUpdated: new Date().toISOString()
+            },
+            'munchkin': {
+                id: 'munchkin',
+                title: 'Манчкин',
+                heroDescription: 'Очаровательные коротколапые кошки с уникальной внешностью и дружелюбным нравом',
+                description: 'Манчкины — уникальная порода кошек с короткими лапками, появившаяся в результате естественной генетической мутации. Несмотря на короткие конечности, эти кошки очень подвижны и активны. Манчкины известны своим дружелюбным и общительным характером.',
+                origin: 'США',
+                weight: '3-4 кг',
+                lifespan: '12-15 лет',
+                temperament: 'Дружелюбный, любопытный',
+                characteristics: ['Величественная', 'Умная', 'Любопытная', 'Дружелюбная', 'Общительная'],
+                mainImage: 'img/machkin.JPG',
+                lastUpdated: new Date().toISOString()
+            }
+        };
+    }
+
+    getDefaultSettings() {
+        return {
+            siteTitle: "Petochania",
+            siteDescription: "Питомник элитных кошек",
+            contactPhone: "8 926 150 2870",
+            contactEmail: "",
+            socialLinks: [
+                { name: "Telegram", url: "https://t.me/tata_procats" },
+                { name: "WhatsApp", url: "https://wa.me/message/Y4ZYRHELPNHUE1" },
+                { name: "VK", url: "https://vk.com/petochania" },
+                { name: "Facebook", url: "https://www.facebook.com/share/1A33qj8Nbm/?mibextid=wwXIfr" },
+                { name: "TikTok", url: "https://www.tiktok.com/@tata.vygodnaya?_t=ZS-90PLbDoj2kE&_r=1" },
+                { name: "Instagram", url: "https://www.instagram.com/petochania?igsh=MWR3bHhpNjhnd3g3dw%3D%3D&utm_source=qr" }
+            ]
+        };
+    }
+
+    setupStorageListener() {
+        window.addEventListener('storage', (event) => {
+            if (event.key === this.STORAGE_KEY || 
+                event.key === this.BREED_PAGES_KEY || 
+                event.key === this.CATS_KEY) {
+                console.log('Данные обновлены, триггерим событие...');
+                this.triggerUpdateEvent();
+            }
+        });
+    }
+
+    triggerUpdateEvent() {
         try {
-            // Сохраняем в sessionStorage для кросс-доменного доступа
-            sessionStorage.setItem('petochania_data', JSON.stringify(data));
+            const updateEvent = new CustomEvent('dataSyncUpdate', {
+                detail: { 
+                    timestamp: new Date().toISOString(),
+                    source: 'DataSync'
+                }
+            });
+            window.dispatchEvent(updateEvent);
+        } catch (error) {
+            console.error('Ошибка при триггере события:', error);
+        }
+    }
+
+    // ========== ОСНОВНЫЕ МЕТОДЫ ==========
+    
+    getAllData() {
+        try {
+            const data = localStorage.getItem(this.STORAGE_KEY);
+            return data ? JSON.parse(data) : {};
+        } catch (error) {
+            console.error('Error getting all data:', error);
+            return {};
+        }
+    }
+
+    saveAllData(data) {
+        try {
+            const dataToSave = {
+                ...data,
+                lastSync: new Date().toISOString()
+            };
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(dataToSave));
             
-            // Сохраняем в localStorage как резерв
-            localStorage.setItem(DATA_KEY, JSON.stringify(data));
+            // Также сохраняем в отдельных ключах для быстрого доступа
+            if (data.breedPages) {
+                localStorage.setItem(this.BREED_PAGES_KEY, JSON.stringify(data.breedPages));
+            }
+            if (data.cats) {
+                localStorage.setItem(this.CATS_KEY, JSON.stringify(data.cats));
+            }
+            if (data.settings) {
+                localStorage.setItem(this.SETTINGS_KEY, JSON.stringify(data.settings));
+            }
             
+            // Триггерим обновление
+            this.triggerUpdateEvent();
             return true;
         } catch (error) {
-            console.error('Ошибка сохранения данных:', error);
+            console.error('Error saving data:', error);
             return false;
         }
     }
+
+    // ========== МЕТОДЫ ДЛЯ ПОРОД ==========
     
-    // Функция для получения данных конкретной породы
-    function getBreedData(breedId) {
-        const allData = getData();
-        if (allData && allData.breedPages) {
-            return allData.breedPages[breedId];
+    getAllBreeds() {
+        try {
+            const breedPages = JSON.parse(localStorage.getItem(this.BREED_PAGES_KEY) || '{}');
+            return breedPages;
+        } catch (error) {
+            console.error('Error getting all breeds:', error);
+            return this.getDefaultBreedPages();
         }
-        return null;
     }
-    
-    // Функция для получения видео
-    function getVideos() {
-        const allData = getData();
-        return allData?.videos || [];
+
+    getBreedData(breedId) {
+        try {
+            // Пробуем из быстрого хранилища
+            const breedPages = JSON.parse(localStorage.getItem(this.BREED_PAGES_KEY) || '{}');
+            if (breedPages[breedId]) {
+                return breedPages[breedId];
+            }
+            
+            // Пробуем из основного хранилища
+            const allData = this.getAllData();
+            if (allData.breedPages && allData.breedPages[breedId]) {
+                return allData.breedPages[breedId];
+            }
+            
+            // Возвращаем данные по умолчанию
+            return this.getDefaultBreedPages()[breedId];
+            
+        } catch (error) {
+            console.error('Error getting breed data:', error);
+            return this.getDefaultBreedPages()[breedId];
+        }
     }
+
+    updateBreedData(breedId, breedData) {
+        try {
+            const allData = this.getAllData();
+            if (!allData.breedPages) allData.breedPages = {};
+            
+            allData.breedPages[breedId] = {
+                ...breedData,
+                id: breedId,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            return this.saveAllData(allData);
+        } catch (error) {
+            console.error('Error updating breed data:', error);
+            return false;
+        }
+    }
+
+    // ========== МЕТОДЫ ДЛЯ КОШЕК ==========
     
-    // Экспортируем функции в глобальную область видимости
-    window.PetochaniaData = {
-        getData,
-        saveData,
-        getBreedData,
-        getVideos
-    };
+    getAllCats() {
+        try {
+            // Пробуем из быстрого хранилища
+            const cats = JSON.parse(localStorage.getItem(this.CATS_KEY) || '[]');
+            if (cats.length > 0) {
+                return cats;
+            }
+            
+            // Пробуем из основного хранилища
+            const allData = this.getAllData();
+            return allData.cats || [];
+        } catch (error) {
+            console.error('Error getting cats:', error);
+            return [];
+        }
+    }
+
+    getBreedCats(breedName) {
+        try {
+            const cats = this.getAllCats();
+            return cats.filter(cat => {
+                if (!cat.breed) return false;
+                return cat.breed.toLowerCase().includes(breedName.toLowerCase());
+            });
+        } catch (error) {
+            console.error('Error getting breed cats:', error);
+            return [];
+        }
+    }
+
+    updateCat(catData) {
+        try {
+            const cats = this.getAllCats();
+            const index = cats.findIndex(c => c.id == catData.id);
+            
+            if (index !== -1) {
+                // Обновляем существующую кошку
+                cats[index] = { 
+                    ...cats[index], 
+                    ...catData, 
+                    updatedAt: new Date().toISOString() 
+                };
+            } else {
+                // Добавляем новую кошку
+                const newCat = {
+                    id: Date.now().toString(),
+                    ...catData,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                cats.push(newCat);
+            }
+            
+            const allData = this.getAllData();
+            allData.cats = cats;
+            return this.saveAllData(allData);
+            
+        } catch (error) {
+            console.error('Error updating cat:', error);
+            return false;
+        }
+    }
+
+    deleteCat(catId) {
+        try {
+            const cats = this.getAllCats();
+            const filteredCats = cats.filter(c => c.id != catId);
+            
+            const allData = this.getAllData();
+            allData.cats = filteredCats;
+            return this.saveAllData(allData);
+            
+        } catch (error) {
+            console.error('Error deleting cat:', error);
+            return false;
+        }
+    }
+
+    // ========== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ==========
     
-    console.log('Petochania Data Sync loaded');
-})();
+    clearAllData() {
+        try {
+            localStorage.removeItem(this.STORAGE_KEY);
+            localStorage.removeItem(this.BREED_PAGES_KEY);
+            localStorage.removeItem(this.CATS_KEY);
+            localStorage.removeItem(this.SETTINGS_KEY);
+            this.loadInitialData();
+            this.triggerUpdateEvent();
+            return true;
+        } catch (error) {
+            console.error('Error clearing data:', error);
+            return false;
+        }
+    }
+
+    checkForUpdates() {
+        try {
+            const lastUpdate = localStorage.getItem('petochania_last_update') || '0';
+            const currentTime = Date.now();
+            const lastUpdateTime = parseInt(lastUpdate);
+            
+            return (currentTime - lastUpdateTime) < 30000;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    markAsUpdated() {
+        localStorage.setItem('petochania_last_update', Date.now().toString());
+    }
+
+    // Для отладки
+    debug() {
+        console.log('=== DataSync Debug ===');
+        console.log('Все данные:', this.getAllData());
+        console.log('Все породы:', this.getAllBreeds());
+        console.log('Все кошки:', this.getAllCats());
+        console.log('Storage Key:', this.STORAGE_KEY);
+        console.log('=====================');
+        return {
+            allData: this.getAllData(),
+            breeds: this.getAllBreeds(),
+            cats: this.getAllCats()
+        };
+    }
+}
+
+// Экспортируем класс
+window.DataSync = DataSync;
+
+// Создаем глобальный экземпляр
+try {
+    window.dataSync = new DataSync();
+    console.log('Глобальный экземпляр dataSync создан');
+} catch (error) {
+    console.error('Ошибка при создании глобального экземпляра:', error);
+}
+
+// Для обратной совместимости
+window.PetochaniaData = {
+    getData: () => {
+        const ds = window.dataSync || new DataSync();
+        return ds.getAllData();
+    },
+    saveData: (data) => {
+        const ds = window.dataSync || new DataSync();
+        return ds.saveAllData(data);
+    },
+    getBreedData: (breedId) => {
+        const ds = window.dataSync || new DataSync();
+        return ds.getBreedData(breedId);
+    },
+    getCatsByBreed: (breedName) => {
+        const ds = window.dataSync || new DataSync();
+        return ds.getBreedCats(breedName);
+    }
+};
+
+console.log('✅ data-sync.js загружен успешно');
+
+// Автоматическая отладка при загрузке
+setTimeout(() => {
+    if (window.dataSync) {
+        console.log('Авто-отладка DataSync:');
+        window.dataSync.debug();
+    }
+}, 500);
