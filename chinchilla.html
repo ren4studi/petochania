@@ -724,8 +724,7 @@
                         <a href="index.html#about">О питомнике</a>
                         <a href="index.html#testimonials">Отзывы</a>
                         <a href="index.html#contact">Контакты</a>
-                        <a href="gallery.html">Наши кошки</a>
-                        <a href="faq.html">Частые вопросы</a>
+                        <a href="index.html#faq-main">Частые вопросы</a>
                     </div>
                 </div>
                 
@@ -977,48 +976,6 @@
         }
     });
 
-    // Добавьте эту функцию в chinchilla.html в раздел <script>
-function setupRealTimeUpdates() {
-    // Слушаем события обновления из админ-панели
-    window.addEventListener('storage', function(event) {
-        if (event.key === 'cats_updated' || event.key === 'petochania_cats') {
-            console.log('Данные кошек обновились, перезагружаем...');
-            loadBreedPageData();
-        }
-    });
-    
-    // Также слушаем custom events
-    window.addEventListener('dataSyncUpdate', function(event) {
-        console.log('Получено событие обновления данных:', event.detail);
-        loadBreedPageData();
-    });
-    
-    // Периодическая проверка обновлений
-    setInterval(() => {
-        const lastUpdate = localStorage.getItem('cats_updated');
-        if (lastUpdate) {
-            const lastUpdateTime = parseInt(lastUpdate);
-            const currentTime = Date.now();
-            
-            // Если обновление было менее 30 секунд назад, перезагружаем
-            if (currentTime - lastUpdateTime < 30000) {
-                console.log('Обнаружены свежие данные, перезагружаем...');
-                loadBreedPageData();
-            }
-        }
-    }, 5000); // Проверяем каждые 5 секунд
-}
-
-// Вызовите эту функцию в DOMContentLoaded:
-document.addEventListener('DOMContentLoaded', async function() {
-    // ... существующий код ...
-    
-    // Добавьте эту строку:
-    setupRealTimeUpdates();
-    
-    // ... остальной код ...
-});
-
     // Функция для загрузки данных страницы породы
     async function loadBreedPageData() {
         try {
@@ -1144,6 +1101,48 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
     }
+
+    // Добавьте эту функцию в chinchilla.html в раздел <script>
+function setupRealTimeUpdates() {
+    // Слушаем события обновления из админ-панели
+    window.addEventListener('storage', function(event) {
+        if (event.key === 'cats_updated' || event.key === 'petochania_cats') {
+            console.log('Данные кошек обновились, перезагружаем...');
+            loadBreedPageData();
+        }
+    });
+    
+    // Также слушаем custom events
+    window.addEventListener('dataSyncUpdate', function(event) {
+        console.log('Получено событие обновления данных:', event.detail);
+        loadBreedPageData();
+    });
+    
+    // Периодическая проверка обновлений
+    setInterval(() => {
+        const lastUpdate = localStorage.getItem('cats_updated');
+        if (lastUpdate) {
+            const lastUpdateTime = parseInt(lastUpdate);
+            const currentTime = Date.now();
+            
+            // Если обновление было менее 30 секунд назад, перезагружаем
+            if (currentTime - lastUpdateTime < 30000) {
+                console.log('Обнаружены свежие данные, перезагружаем...');
+                loadBreedPageData();
+            }
+        }
+    }, 5000); // Проверяем каждые 5 секунд
+}
+
+// Вызовите эту функцию в DOMContentLoaded:
+document.addEventListener('DOMContentLoaded', async function() {
+    // ... существующий код ...
+    
+    // Добавьте эту строку:
+    setupRealTimeUpdates();
+    
+    // ... остальной код ...
+});
 
     // Функция обновления списка котят
     function updateBreedCats(cats) {
