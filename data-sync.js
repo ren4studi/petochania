@@ -427,3 +427,131 @@ setTimeout(() => {
         window.dataSync.debug();
     }
 }, 500);
+
+// ========== ДОПОЛНИТЕЛЬНЫЕ МЕТОДЫ ДЛЯ НОВЫХ РАЗДЕЛОВ ==========
+
+// FAQ методы
+DataSync.prototype.getFAQ = function() {
+    try {
+        const faqs = JSON.parse(localStorage.getItem('petochania_faq') || '[]');
+        return Array.isArray(faqs) ? faqs : [];
+    } catch (error) {
+        console.error('Error getting FAQ:', error);
+        return [];
+    }
+};
+
+DataSync.prototype.getActiveFAQ = function() {
+    try {
+        const faqs = this.getFAQ();
+        return faqs.filter(faq => faq.active !== false)
+                   .sort((a, b) => (a.order || 999) - (b.order || 999));
+    } catch (error) {
+        console.error('Error getting active FAQ:', error);
+        return [];
+    }
+};
+
+// Reviews методы
+DataSync.prototype.getReviews = function() {
+    try {
+        const reviews = JSON.parse(localStorage.getItem('petochania_reviews') || '[]');
+        return Array.isArray(reviews) ? reviews : [];
+    } catch (error) {
+        console.error('Error getting reviews:', error);
+        return [];
+    }
+};
+
+DataSync.prototype.getActiveReviews = function() {
+    try {
+        const reviews = this.getReviews();
+        return reviews.filter(review => review.active !== false)
+                      .sort((a, b) => {
+                          const dateA = new Date(a.date || a.createdAt);
+                          const dateB = new Date(b.date || b.createdAt);
+                          return dateB - dateA;
+                      });
+    } catch (error) {
+        console.error('Error getting active reviews:', error);
+        return [];
+    }
+};
+
+// Videos методы
+DataSync.prototype.getVideos = function() {
+    try {
+        const videos = JSON.parse(localStorage.getItem('petochania_videos') || '[]');
+        return Array.isArray(videos) ? videos : [];
+    } catch (error) {
+        console.error('Error getting videos:', error);
+        return [];
+    }
+};
+
+DataSync.prototype.getMainVideos = function() {
+    try {
+        const videos = this.getVideos();
+        return videos.filter(video => 
+            video.active !== false && 
+            video.category === 'main'
+        ).sort((a, b) => (a.order || 999) - (b.order || 999));
+    } catch (error) {
+        console.error('Error getting main videos:', error);
+        return [];
+    }
+};
+
+// Settings методы
+DataSync.prototype.getSiteSettings = function() {
+    try {
+        return JSON.parse(localStorage.getItem('petochania_site_settings') || '{}');
+    } catch (error) {
+        console.error('Error getting site settings:', error);
+        return {};
+    }
+};
+
+DataSync.prototype.getSocialSettings = function() {
+    try {
+        const settings = JSON.parse(localStorage.getItem('petochania_social_settings') || '[]');
+        return Array.isArray(settings) ? settings : [];
+    } catch (error) {
+        console.error('Error getting social settings:', error);
+        return [];
+    }
+};
+
+// Для обратной совместимости обновите PetochaniaData
+window.PetochaniaData = {
+    getData: () => {
+        const ds = window.dataSync || new DataSync();
+        return ds.getAllData();
+    },
+    saveData: (data) => {
+        const ds = window.dataSync || new DataSync();
+        return ds.saveAllData(data);
+    },
+    getBreedData: (breedId) => {
+        const ds = window.dataSync || new DataSync();
+        return ds.getBreedData(breedId);
+    },
+    getCatsByBreed: (breedName) => {
+        const ds = window.dataSync || new DataSync();
+        return ds.getBreedCats(breedName);
+    },
+    getFAQ: () => {
+        const ds = window.dataSync || new DataSync();
+        return ds.getFAQ();
+    },
+    getReviews: () => {
+        const ds = window.dataSync || new DataSync();
+        return ds.getReviews();
+    },
+    getVideos: () => {
+        const ds = window.dataSync || new DataSync();
+        return ds.getVideos();
+    }
+};
+
+console.log('✅ data-sync.js обновлен с поддержкой новых разделов');
