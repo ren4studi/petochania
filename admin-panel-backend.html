@@ -573,7 +573,7 @@
             </div>
             <div class="form-group">
                 <label for="password">Пароль</label>
-                <input type="password" id="password" class="form-control" placeholder="Введите пароль" value="admin">
+                <input type="password" id="password" class="form-control" placeholder="Введите пароль" value="admin123">
             </div>
             <button id="loginBtn" class="btn btn-primary" style="width: 100%;">
                 <span id="loginText">Войти</span>
@@ -594,7 +594,6 @@
                 <a href="#" class="active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> <span>Дашборд</span></a>
                 <a href="#" data-tab="cats"><i class="fas fa-cat"></i> <span>Кошки</span></a>
                 <a href="#" data-tab="breed-pages"><i class="fas fa-file-alt"></i> <span>Страницы пород</span></a>
-                <a href="#" data-tab="gallery"><i class="fas fa-images"></i> <span>Галерея</span></a>
                 <a href="#" data-tab="faq"><i class="fas fa-question-circle"></i> <span>FAQ</span></a>
                 <a href="#" data-tab="reviews"><i class="fas fa-star"></i> <span>Отзывы</span></a>
                 <a href="#" data-tab="videos"><i class="fas fa-video"></i> <span>Видео</span></a>
@@ -608,8 +607,8 @@
             <div class="header">
                 <h2 id="pageTitle">Дашборд</h2>
                 <div class="admin-info">
-                    <div class="admin-avatar">A</div>
-                    <span>Администратор</span>
+                    <div class="admin-avatar" id="adminAvatar">A</div>
+                    <span id="adminName">Администратор</span>
                 </div>
             </div>
 
@@ -815,7 +814,7 @@
                             </div>
                             
                             <div class="form-row">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" id="saveCatBtn">
                                     <span id="catSubmitText">Добавить кошку</span>
                                     <div id="catSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
                                 </button>
@@ -946,7 +945,7 @@
                             </div>
                             
                             <div class="form-row">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" id="saveBreedPageBtn">
                                     <span id="breedPageSubmitText">Сохранить изменения</span>
                                     <div id="breedPageSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
                                 </button>
@@ -959,35 +958,352 @@
                 </div>
             </div>
 
-            <!-- Gallery Tab -->
-            <div id="gallery" class="tab-content">
-                <div class="content-section">
-                    <h3 class="section-title">Управление галереей</h3>
-                    <p>Раздел в разработке...</p>
-                </div>
-            </div>
-
             <!-- FAQ Tab -->
             <div id="faq" class="tab-content">
                 <div class="content-section">
-                    <h3 class="section-title">Управление FAQ</h3>
-                    <p>Раздел в разработке...</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 class="section-title" style="margin: 0;">Управление FAQ</h3>
+                        <button class="btn btn-success" id="addFaqBtn">
+                            <i class="fas fa-plus"></i> Добавить вопрос
+                        </button>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-subtab="faq-list">Все вопросы</div>
+                        <div class="tab" data-subtab="edit-faq">Редактировать вопрос</div>
+                    </div>
+                    
+                    <!-- FAQ List -->
+                    <div id="faq-list" class="tab-content active">
+                        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" id="searchFaq" class="form-control" placeholder="Поиск по вопросу или ответу...">
+                            <button class="btn btn-secondary" onclick="loadFaqList()" title="Обновить список">
+                                <i class="fas fa-redo"></i> Обновить
+                            </button>
+                        </div>
+                        
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="50">#</th>
+                                    <th>Вопрос</th>
+                                    <th>Ответ</th>
+                                    <th>Категория</th>
+                                    <th>Порядок</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="faqTableBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center;">Загрузка вопросов...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Edit FAQ Form -->
+                    <div id="edit-faq" class="tab-content">
+                        <form id="faqForm">
+                            <input type="hidden" id="editingFaqId" value="">
+                            
+                            <div class="form-group">
+                                <label for="faqQuestion">Вопрос *</label>
+                                <input type="text" id="faqQuestion" class="form-control" required placeholder="Введите вопрос">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="faqAnswer">Ответ *</label>
+                                <textarea id="faqAnswer" class="form-control" required rows="6" placeholder="Введите ответ"></textarea>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="faqCategory">Категория</label>
+                                    <input type="text" id="faqCategory" class="form-control" placeholder="Например: Общие вопросы">
+                                </div>
+                                <div class="form-group">
+                                    <label for="faqOrder">Порядок отображения</label>
+                                    <input type="number" id="faqOrder" class="form-control" min="1" max="100" value="1">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="faqTags">Теги (через запятую)</label>
+                                <input type="text" id="faqTags" class="form-control" placeholder="котята, документы, доставка">
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input type="checkbox" id="faqActive" class="form-check-input" checked>
+                                    <label class="form-check-label" for="faqActive">Активный вопрос (отображается на сайте)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <button type="submit" class="btn btn-primary" id="saveFaqBtn">
+                                    <span id="faqSubmitText">Сохранить вопрос</span>
+                                    <div id="faqSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="resetFaqForm">Очистить форму</button>
+                                <button type="button" class="btn btn-danger" id="deleteFaqBtn" style="display: none;">Удалить вопрос</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
             <!-- Reviews Tab -->
             <div id="reviews" class="tab-content">
                 <div class="content-section">
-                    <h3 class="section-title">Управление отзывы</h3>
-                    <p>Раздел в разработке...</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 class="section-title" style="margin: 0;">Управление отзывами</h3>
+                        <button class="btn btn-success" id="addReviewBtn">
+                            <i class="fas fa-plus"></i> Добавить отзыв
+                        </button>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-subtab="reviews-list">Все отзывы</div>
+                        <div class="tab" data-subtab="edit-review">Редактировать отзыв</div>
+                    </div>
+                    
+                    <!-- Reviews List -->
+                    <div id="reviews-list" class="tab-content active">
+                        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" id="searchReviews" class="form-control" placeholder="Поиск по имени или тексту...">
+                            <button class="btn btn-secondary" onclick="loadReviewsList()" title="Обновить список">
+                                <i class="fas fa-redo"></i> Обновить
+                            </button>
+                        </div>
+                        
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Автор</th>
+                                    <th>Текст отзыва</th>
+                                    <th>Рейтинг</th>
+                                    <th>Город</th>
+                                    <th>Дата</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviewsTableBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center;">Загрузка отзывов...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Edit Review Form -->
+                    <div id="edit-review" class="tab-content">
+                        <form id="reviewForm">
+                            <input type="hidden" id="editingReviewId" value="">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="reviewAuthor">Имя автора *</label>
+                                    <input type="text" id="reviewAuthor" class="form-control" required placeholder="Введите имя">
+                                </div>
+                                <div class="form-group">
+                                    <label for="reviewCity">Город</label>
+                                    <input type="text" id="reviewCity" class="form-control" placeholder="Например: Москва">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="reviewRating">Рейтинг (1-5)</label>
+                                    <div class="rating-input">
+                                        <div id="ratingStars" style="display: flex; gap: 5px; font-size: 24px;">
+                                            <i class="fas fa-star" data-rating="1" style="cursor: pointer; color: #ddd;"></i>
+                                            <i class="fas fa-star" data-rating="2" style="cursor: pointer; color: #ddd;"></i>
+                                            <i class="fas fa-star" data-rating="3" style="cursor: pointer; color: #ddd;"></i>
+                                            <i class="fas fa-star" data-rating="4" style="cursor: pointer; color: #ddd;"></i>
+                                            <i class="fas fa-star" data-rating="5" style="cursor: pointer; color: #ddd;"></i>
+                                        </div>
+                                        <input type="hidden" id="reviewRating" value="5">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reviewDate">Дата отзыва</label>
+                                    <input type="date" id="reviewDate" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reviewText">Текст отзыва *</label>
+                                <textarea id="reviewText" class="form-control" required rows="6" placeholder="Введите текст отзыва"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Фотография автора</label>
+                                <div class="file-upload" id="reviewImageUpload">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Перетащите сюда изображение или нажмите для загрузки</p>
+                                    <input type="file" id="reviewImage" accept="image/*" style="display: none;">
+                                </div>
+                                <div class="uploaded-images" id="reviewImagePreview">
+                                    <!-- Uploaded image will appear here -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" id="reviewFeatured" class="form-check-input">
+                                        <label class="form-check-label" for="reviewFeatured">Показать на главной странице</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" id="reviewActive" class="form-check-input" checked>
+                                        <label class="form-check-label" for="reviewActive">Активный отзыв</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <button type="submit" class="btn btn-primary" id="saveReviewBtn">
+                                    <span id="reviewSubmitText">Сохранить отзыв</span>
+                                    <div id="reviewSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="resetReviewForm">Очистить форму</button>
+                                <button type="button" class="btn btn-danger" id="deleteReviewBtn" style="display: none;">Удалить отзыв</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
             <!-- Videos Tab -->
             <div id="videos" class="tab-content">
                 <div class="content-section">
-                    <h3 class="section-title">Управление видео</h3>
-                    <p>Раздел в разработке...</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 class="section-title" style="margin: 0;">Управление видео</h3>
+                        <button class="btn btn-success" id="addVideoBtn">
+                            <i class="fas fa-plus"></i> Добавить видео
+                        </button>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-subtab="videos-list">Все видео</div>
+                        <div class="tab" data-subtab="edit-video">Редактировать видео</div>
+                    </div>
+                    
+                    <!-- Videos List -->
+                    <div id="videos-list" class="tab-content active">
+                        <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" id="searchVideos" class="form-control" placeholder="Поиск по названию...">
+                            <button class="btn btn-secondary" onclick="loadVideosList()" title="Обновить список">
+                                <i class="fas fa-redo"></i> Обновить
+                            </button>
+                        </div>
+                        
+                        <div class="videos-grid" id="videosGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                            <!-- Videos will be loaded here -->
+                            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #7f8c8d;">
+                                <i class="fas fa-video" style="font-size: 48px; margin-bottom: 20px; display: block;"></i>
+                                <p>Загрузка видео...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Edit Video Form -->
+                    <div id="edit-video" class="tab-content">
+                        <form id="videoForm">
+                            <input type="hidden" id="editingVideoId" value="">
+                            
+                            <div class="form-group">
+                                <label for="videoTitle">Название видео *</label>
+                                <input type="text" id="videoTitle" class="form-control" required placeholder="Введите название">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="videoUrl">URL видео (YouTube или прямой ссылка) *</label>
+                                    <input type="url" id="videoUrl" class="form-control" required placeholder="https://youtube.com/watch?v=... или https://example.com/video.mp4">
+                                    <small class="text-muted">Поддерживаются YouTube ссылки и прямые ссылки на MP4/WebM файлы</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="videoType">Тип видео</label>
+                                    <select id="videoType" class="form-control">
+                                        <option value="youtube">YouTube</option>
+                                        <option value="direct">Прямая ссылка</option>
+                                        <option value="uploaded">Загруженное</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="videoDescription">Описание</label>
+                                <textarea id="videoDescription" class="form-control" rows="4" placeholder="Описание видео"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Превью-изображение (постер)</label>
+                                <div class="file-upload" id="videoThumbnailUpload">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Перетащите сюда изображение или нажмите для загрузки</p>
+                                    <input type="file" id="videoThumbnail" accept="image/*" style="display: none;">
+                                </div>
+                                <div class="uploaded-images" id="videoThumbnailPreview">
+                                    <!-- Uploaded thumbnail will appear here -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Или загрузите видео файл</label>
+                                <div class="file-upload" id="videoFileUpload">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Перетащите сюда видео файл (MP4, WebM) или нажмите для загрузки</p>
+                                    <input type="file" id="videoFile" accept="video/*" style="display: none;">
+                                </div>
+                                <div class="uploaded-videos" id="videoFilePreview">
+                                    <!-- Uploaded video will appear here -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="videoOrder">Порядок отображения</label>
+                                    <input type="number" id="videoOrder" class="form-control" min="1" max="100" value="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="videoCategory">Категория</label>
+                                    <select id="videoCategory" class="form-control">
+                                        <option value="main">Главная страница</option>
+                                        <option value="about">О питомнике</option>
+                                        <option value="breed">Породы</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" id="videoActive" class="form-check-input" checked>
+                                        <label class="form-check-label" for="videoActive">Активное видео</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input type="checkbox" id="videoAutoplay" class="form-check-input" checked>
+                                        <label class="form-check-label" for="videoAutoplay">Автовоспроизведение</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <button type="submit" class="btn btn-primary" id="saveVideoBtn">
+                                    <span id="videoSubmitText">Сохранить видео</span>
+                                    <div id="videoSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="resetVideoForm">Очистить форму</button>
+                                <button type="button" class="btn btn-danger" id="deleteVideoBtn" style="display: none;">Удалить видео</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -995,260 +1311,224 @@
             <div id="settings" class="tab-content">
                 <div class="content-section">
                     <h3 class="section-title">Настройки сайта</h3>
-                    <p>Раздел в разработке...</p>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-subtab="site-settings">Основные настройки</div>
+                        <div class="tab" data-subtab="social-settings">Социальные сети</div>
+                        <div class="tab" data-subtab="seo-settings">SEO</div>
+                    </div>
+                    
+                    <!-- Site Settings -->
+                    <div id="site-settings" class="tab-content active">
+                        <form id="siteSettingsForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="siteTitle">Название сайта *</label>
+                                    <input type="text" id="siteTitle" class="form-control" required value="Petochania">
+                                </div>
+                                <div class="form-group">
+                                    <label for="siteTagline">Слоган</label>
+                                    <input type="text" id="siteTagline" class="form-control" value="Питомник элитных кошек">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contactPhone">Телефон *</label>
+                                    <input type="tel" id="contactPhone" class="form-control" required value="8 926 150 2870">
+                                </div>
+                                <div class="form-group">
+                                    <label for="contactEmail">Email</label>
+                                    <input type="email" id="contactEmail" class="form-control" placeholder="info@petochania.ru">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contactAddress">Адрес</label>
+                                    <input type="text" id="contactAddress" class="form-control" placeholder="Москва, Россия">
+                                </div>
+                                <div class="form-group">
+                                    <label for="workingHours">Время работы</label>
+                                    <input type="text" id="workingHours" class="form-control" placeholder="Ежедневно 10:00 - 20:00">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="siteDescription">Описание сайта</label>
+                                <textarea id="siteDescription" class="form-control" rows="4" placeholder="Описание для поисковых систем"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Логотип сайта</label>
+                                <div class="file-upload" id="siteLogoUpload">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Перетащите сюда логотип или нажмите для загрузки</p>
+                                    <input type="file" id="siteLogo" accept="image/*" style="display: none;">
+                                </div>
+                                <div class="uploaded-images" id="siteLogoPreview">
+                                    <!-- Uploaded logo will appear here -->
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <button type="submit" class="btn btn-primary" id="saveSettingsBtn">
+                                    <span id="settingsSubmitText">Сохранить настройки</span>
+                                    <div id="settingsSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Social Settings -->
+                    <div id="social-settings" class="tab-content">
+                        <form id="socialSettingsForm">
+                            <div id="socialLinksContainer">
+                                <!-- Social links will be loaded here -->
+                            </div>
+                            
+                            <button type="button" class="btn btn-secondary" onclick="addSocialLink()" style="margin-bottom: 20px;">
+                                <i class="fas fa-plus"></i> Добавить социальную сеть
+                            </button>
+                            
+                            <div class="form-row">
+                                <button type="submit" class="btn btn-primary" id="saveSocialBtn">
+                                    <span id="socialSubmitText">Сохранить социальные сети</span>
+                                    <div id="socialSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- SEO Settings -->
+                    <div id="seo-settings" class="tab-content">
+                        <form id="seoSettingsForm">
+                            <div class="form-group">
+                                <label for="metaTitle">Meta Title (главная)</label>
+                                <input type="text" id="metaTitle" class="form-control" placeholder="До 60 символов">
+                                <small class="text-muted" id="metaTitleCounter">0/60</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="metaDescription">Meta Description (главная)</label>
+                                <textarea id="metaDescription" class="form-control" rows="3" placeholder="До 160 символов"></textarea>
+                                <small class="text-muted" id="metaDescriptionCounter">0/160</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="metaKeywords">Ключевые слова</label>
+                                <input type="text" id="metaKeywords" class="form-control" placeholder="через запятую">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="googleAnalytics">Код Google Analytics</label>
+                                <textarea id="googleAnalytics" class="form-control" rows="4" placeholder="Вставьте код отслеживания"></textarea>
+                            </div>
+                            
+                            <div class="form-row">
+                                <button type="submit" class="btn btn-primary" id="saveSeoBtn">
+                                    <span id="seoSubmitText">Сохранить SEO настройки</span>
+                                    <div id="seoSubmitLoading" class="loading" style="display: none; margin-left: 10px;"></div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Configuration
-        const API_BASE = `${window.location.origin}/api`;
-        let authToken = localStorage.getItem('petochania_authToken') || '';
-        let currentUser = null;
+        // ============================================
+        // КОНФИГУРАЦИЯ И БАЗОВЫЕ ФУНКЦИИ
+        // ============================================
 
-        // API Service для работы с сервером
-        const apiService = {
-            async request(endpoint, options = {}) {
-                const url = `${API_BASE}${endpoint}`;
-                const headers = {
-                    'Content-Type': 'application/json',
-                    ...options.headers
-                };
-
-                if (authToken) {
-                    headers['Authorization'] = `Bearer ${authToken}`;
-                }
-
-                try {
-                    const response = await fetch(url, {
-                        ...options,
-                        headers
-                    });
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
-                    }
-
-                    return await response.json();
-                } catch (error) {
-                    console.error(`API Error (${endpoint}):`, error);
-                    return null;
-                }
-            },
-
-            // Кошки
-            async getCats() {
-                try {
-                    const data = await this.request('/cats');
-                    return data?.cats || [];
-                } catch (error) {
-                    console.error('Error getting cats:', error);
-                    return [];
-                }
-            },
-
-            async getCat(id) {
-                try {
-                    const cats = await this.getCats();
-                    return cats.find(cat => cat.id == id);
-                } catch (error) {
-                    console.error('Error getting cat:', error);
-                    return null;
-                }
-            },
-
-            async createCat(catData) {
-                try {
-                    const response = await fetch(`${API_BASE}/cats`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authToken}`
-                        },
-                        body: JSON.stringify(catData)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
-                    }
-                    
-                    return await response.json();
-                } catch (error) {
-                    console.error('Error creating cat:', error);
-                    // Сохраняем локально если сервер недоступен
-                    const cats = JSON.parse(localStorage.getItem('petochania_cats') || '[]');
-                    cats.push(catData);
-                    localStorage.setItem('petochania_cats', JSON.stringify(cats));
-                    return { success: true, cat: catData };
-                }
-            },
-
-            async updateCat(id, catData) {
-                try {
-                    const response = await fetch(`${API_BASE}/cats/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authToken}`
-                        },
-                        body: JSON.stringify(catData)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
-                    }
-                    
-                    return await response.json();
-                } catch (error) {
-                    console.error('Error updating cat:', error);
-                    // Обновляем локально если сервер недоступен
-                    const cats = JSON.parse(localStorage.getItem('petochania_cats') || '[]');
-                    const index = cats.findIndex(c => c.id == id);
-                    if (index !== -1) {
-                        cats[index] = { ...cats[index], ...catData };
-                        localStorage.setItem('petochania_cats', JSON.stringify(cats));
-                    }
-                    return { success: true, cat: catData };
-                }
-            },
-
-            async deleteCat(id) {
-                try {
-                    const response = await fetch(`${API_BASE}/cats/${id}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${authToken}`
-                        }
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
-                    }
-                    
-                    return await response.json();
-                } catch (error) {
-                    console.error('Error deleting cat:', error);
-                    // Удаляем локально если сервер недоступен
-                    const cats = JSON.parse(localStorage.getItem('petochania_cats') || '[]');
-                    const filteredCats = cats.filter(c => c.id != id);
-                    localStorage.setItem('petochania_cats', JSON.stringify(filteredCats));
-                    return { success: true };
-                }
-            },
-
-            // Страницы пород
-            async getBreedPages() {
-                try {
-                    const data = await this.request('/breed-pages');
-                    return data?.breedPages || {};
-                } catch (error) {
-                    console.error('Error getting breed pages:', error);
-                    return {};
-                }
-            },
-
-            async getBreedPage(id) {
-                try {
-                    const breedPages = await this.getBreedPages();
-                    return breedPages[id];
-                } catch (error) {
-                    console.error('Error getting breed page:', error);
-                    return null;
-                }
-            },
-
-            async updateBreedPage(id, breedData) {
-                try {
-                    const response = await fetch(`${API_BASE}/breed-pages/${id}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authToken}`
-                        },
-                        body: JSON.stringify(breedData)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
-                    }
-                    
-                    return await response.json();
-                } catch (error) {
-                    console.error('Error updating breed page:', error);
-                    return { success: false, error: error.message };
-                }
-            },
-
-            // Авторизация
-            async login(username, password) {
-                try {
-                    const response = await fetch(`${API_BASE}/login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ username, password })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('Неверный логин или пароль');
-                    }
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        authToken = data.token;
-                        localStorage.setItem('petochania_authToken', authToken);
-                        return data;
-                    } else {
-                        throw new Error(data.error || 'Ошибка авторизации');
-                    }
-                } catch (error) {
-                    console.error('Login error:', error);
-                    // Для демо, если сервер недоступен
-                    if (username === 'admin' && password === 'admin') {
-                        authToken = 'demo_token_' + Date.now();
-                        localStorage.setItem('petochania_authToken', authToken);
-                        return { success: true, token: authToken };
-                    }
-                    throw error;
-                }
+        // Автоматическое определение URL API
+        const getApiBase = () => {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return 'http://localhost:3000/api';
             }
+            return '/api';
         };
 
-        // Utility Functions
-        function showLoading(element) {
-            element.style.display = 'inline-block';
-        }
+        const API_BASE = getApiBase();
+        let authToken = localStorage.getItem('petochania_authToken') || '';
+        let currentUser = JSON.parse(localStorage.getItem('petochania_user') || '{}');
 
-        function hideLoading(element) {
-            element.style.display = 'none';
-        }
+        // Глобальные переменные для загрузки файлов
+        let currentCatImages = [];
+        let currentBreedMainImage = null;
+        let currentReviewImage = null;
+        let currentVideoThumbnail = null;
+        let currentVideoFile = null;
 
-        function showAlert(message, type = 'success') {
-            const existingAlerts = document.querySelectorAll('.alert');
-            existingAlerts.forEach(alert => alert.remove());
-            
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            
-            const firstContentSection = document.querySelector('.content-section');
-            if (firstContentSection) {
-                firstContentSection.insertBefore(alert, firstContentSection.firstChild);
-            } else {
-                document.body.appendChild(alert);
+        // Универсальный метод для API запросов
+        async function apiRequest(endpoint, options = {}) {
+            const url = `${API_BASE}${endpoint}`;
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+
+            if (authToken) {
+                headers['Authorization'] = `Bearer ${authToken}`;
             }
-            
-            setTimeout(() => {
-                if (alert.parentNode) {
-                    alert.remove();
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    headers,
+                    credentials: 'include'
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    throw new Error('Сессия истекла. Пожалуйста, войдите снова.');
                 }
-            }, 5000);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Ошибка ${response.status}: ${errorText || response.statusText}`);
+                }
+
+                if (response.status === 204 || options.method === 'DELETE') {
+                    return { success: true };
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error(`API Error (${endpoint}):`, error);
+                throw error;
+            }
         }
 
+        // Загрузка файлов на сервер
+        async function uploadFile(file, type = 'image') {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('type', type);
+
+            try {
+                const response = await fetch(`${API_BASE}/upload`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки файла');
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Upload error:', error);
+                throw error;
+            }
+        }
+
+        // Отображение сообщений
         function showMessage(message, type = 'info') {
             const toast = document.createElement('div');
             toast.style.cssText = `
@@ -1262,18 +1542,17 @@
                 max-width: 400px;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);
                 animation: slideIn 0.3s ease;
+                font-family: 'Lato', sans-serif;
             `;
             
-            if (type === 'success') {
-                toast.style.backgroundColor = '#27ae60';
-            } else if (type === 'error') {
-                toast.style.backgroundColor = '#e74c3c';
-            } else if (type === 'warning') {
-                toast.style.backgroundColor = '#f39c12';
-            } else {
-                toast.style.backgroundColor = '#3498db';
-            }
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                warning: '#f39c12',
+                info: '#3498db'
+            };
             
+            toast.style.backgroundColor = colors[type] || colors.info;
             toast.textContent = message;
             document.body.appendChild(toast);
             
@@ -1287,15 +1566,16 @@
             }, 3000);
         }
 
-        // Breed Pages Management
-        let currentBreedPageData = null;
-        let currentBreedMainImage = null;
+        // Управление загрузкой
+        function showLoading(element) {
+            if (element) element.style.display = 'inline-block';
+        }
 
-        // Cats Management
-        let currentCatImages = [];
-        let editingCatId = null;
+        function hideLoading(element) {
+            if (element) element.style.display = 'none';
+        }
 
-        // Получение бейджа статуса
+        // Вспомогательные функции
         function getStatusBadge(status) {
             const statusClasses = {
                 'ДОСТУПЕН': 'status-available',
@@ -1306,137 +1586,298 @@
             return `<span class="status-badge ${statusClasses[status] || ''}">${status}</span>`;
         }
 
-        // Инициализация формы страниц пород
-        function initBreedPagesForm() {
-            document.getElementById('breedPageForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                await saveBreedPage();
-            });
+        // ============================================
+        // АУТЕНТИФИКАЦИЯ
+        // ============================================
 
-            // Загрузка главного изображения
-            document.getElementById('breedMainImageUpload').addEventListener('click', function() {
-                document.getElementById('breedMainImage').click();
-            });
-            
-            document.getElementById('breedMainImage').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file && !file.type.startsWith('image/')) {
-                    showMessage('Пожалуйста, выберите изображение', 'error');
-                    return;
-                }
-                
-                if (file && file.size > 5 * 1024 * 1024) {
-                    showMessage('Изображение слишком большое (макс. 5MB)', 'error');
-                    return;
-                }
-                
-                currentBreedMainImage = file;
-                const preview = document.getElementById('breedMainImagePreview');
-                
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.innerHTML = `
-                            <div class="uploaded-image">
-                                <img src="${e.target.result}" alt="Uploaded breed image">
-                                <div class="remove-image" onclick="removeBreedMainImage()">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                            </div>
-                        `;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+        async function login(username, password) {
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
 
-            // Предпросмотр
-            document.getElementById('previewBreedPage').addEventListener('click', function() {
-                previewBreedPage();
-            });
-
-            // Сброс формы
-            document.getElementById('resetBreedPageForm').addEventListener('click', function() {
-                if (confirm('Вы уверены, что хотите очистить форму? Все несохраненные изменения будут потеряны.')) {
-                    document.getElementById('breedPageForm').reset();
-                    document.getElementById('breedMainImagePreview').innerHTML = '';
-                    currentBreedMainImage = null;
-                    currentBreedPageData = null;
-                    document.getElementById('currentBreedId').value = '';
-                    document.getElementById('deleteBreedPage').style.display = 'none';
-                    showMessage('Форма очищена', 'info');
+                if (!response.ok) {
+                    throw new Error('Неверный логин или пароль');
                 }
-            });
 
-            // Удаление страницы
-            document.getElementById('deleteBreedPage').addEventListener('click', async function() {
-                const breedId = document.getElementById('currentBreedId').value;
-                if (!breedId) return;
+                const data = await response.json();
                 
-                const breedTitle = document.getElementById('breedPageTitle').value;
-                
-                if (confirm(`Вы уверены, что хотите удалить страницу породы "${breedTitle}"? Это действие нельзя отменить.`)) {
-                    try {
-                        showMessage('Функция удаления страницы в разработке', 'warning');
-                    } catch (error) {
-                        showMessage('Ошибка удаления страницы', 'error');
-                    }
+                if (data.success && data.token) {
+                    authToken = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('petochania_authToken', authToken);
+                    localStorage.setItem('petochania_user', JSON.stringify(data.user));
+                    
+                    document.cookie = `token=${data.token}; path=/; max-age=${60 * 60 * 24 * 7}`;
+                    
+                    return data;
+                } else {
+                    throw new Error(data.error || 'Ошибка авторизации');
                 }
-            });
+            } catch (error) {
+                console.error('Login error:', error);
+                throw error;
+            }
         }
 
-        // Инициализация формы кошек
-        function initCatsForm() {
-            document.getElementById('catForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                await saveCat();
-            });
+        function logout() {
+            authToken = '';
+            currentUser = {};
+            localStorage.removeItem('petochania_authToken');
+            localStorage.removeItem('petochania_user');
+            document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+            window.location.reload();
+        }
 
-            // Загрузка изображений кошки
-            document.getElementById('catImageUpload').addEventListener('click', function() {
-                document.getElementById('catImages').click();
-            });
-            
-            document.getElementById('catImages').addEventListener('change', function(e) {
-                const files = Array.from(e.target.files);
-                handleCatImagesUpload(files);
-            });
+        async function checkAuth() {
+            if (!authToken) return false;
 
-            // Drag and drop для изображений
-            const catImageUpload = document.getElementById('catImageUpload');
-            catImageUpload.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.style.borderColor = '#C8A97E';
-                this.style.backgroundColor = '#f8f9fa';
-            });
+            try {
+                const response = await apiRequest('/auth/verify');
+                if (response.success) {
+                    return true;
+                }
+            } catch (error) {
+                console.log('Auth check failed:', error);
+            }
             
-            catImageUpload.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                this.style.borderColor = '#ddd';
-                this.style.backgroundColor = '';
-            });
-            
-            catImageUpload.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.style.borderColor = '#ddd';
-                this.style.backgroundColor = '';
-                const files = Array.from(e.dataTransfer.files);
-                handleCatImagesUpload(files);
-            });
+            return false;
+        }
 
-            // Сброс формы
-            document.getElementById('resetCatForm').addEventListener('click', function() {
+        // ============================================
+        // УПРАВЛЕНИЕ КОШКАМИ
+        // ============================================
+
+        async function loadCatsList() {
+            try {
+                const response = await apiRequest('/cats');
+                const cats = response.data || [];
+                
+                const tbody = document.getElementById('catsTableBody');
+                if (!tbody) return;
+                
+                if (cats.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #7f8c8d;">
+                                <i class="fas fa-cat" style="font-size: 48px; display: block; margin-bottom: 10px;"></i>
+                                Нет добавленных кошек
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                tbody.innerHTML = '';
+                
+                cats.forEach(cat => {
+                    const statusBadge = getStatusBadge(cat.status);
+                    const images = Array.isArray(cat.images) ? cat.images : JSON.parse(cat.images || '[]');
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                ${images.length > 0 ? 
+                                    `<img src="${API_BASE}/uploads/${images[0]}" alt="${cat.name}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">` : 
+                                    `<div style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-cat" style="color: #C8A97E;"></i>
+                                    </div>`
+                                }
+                                <strong>${cat.name || 'Без имени'}</strong>
+                            </div>
+                        </td>
+                        <td>${cat.breed || 'Не указана'}</td>
+                        <td>${cat.gender || 'Не указан'}</td>
+                        <td>${statusBadge}</td>
+                        <td>${cat.created_at ? new Date(cat.created_at).toLocaleDateString('ru-RU') : '-'}</td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn btn-primary action-btn" onclick="editCat('${cat.id}')">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </button>
+                                <button class="btn btn-danger action-btn" onclick="deleteCat('${cat.id}')">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+            } catch (error) {
+                console.error('Error loading cats:', error);
+                showMessage('Ошибка загрузки списка кошек', 'error');
+            }
+        }
+
+        async function saveCat(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('catName').value;
+            const breed = document.getElementById('catBreed').value;
+            const gender = document.getElementById('catGender').value;
+            const status = document.getElementById('catStatus').value;
+            const color = document.getElementById('catColor').value;
+            const editingId = document.getElementById('editingCatId').value;
+            
+            if (!name || !breed || !gender || !status || !color) {
+                showMessage('Пожалуйста, заполните обязательные поля', 'error');
+                return;
+            }
+            
+            const saveBtn = document.getElementById('saveCatBtn');
+            const submitText = document.getElementById('catSubmitText');
+            const submitLoading = document.getElementById('catSubmitLoading');
+            
+            try {
+                submitText.style.display = 'none';
+                showLoading(submitLoading);
+                saveBtn.disabled = true;
+                
+                // Подготавливаем данные
+                const catData = {
+                    name,
+                    breed,
+                    gender,
+                    status,
+                    color,
+                    age: document.getElementById('catAge').value || '',
+                    price: document.getElementById('catPrice').value || '',
+                    litter: document.getElementById('catLitter').value || '',
+                    parents: document.getElementById('catParents').value || '',
+                    description: document.getElementById('catDescription').value || '',
+                    characteristics: document.getElementById('catCharacteristics').value || '',
+                    images: currentCatImages.map(img => img.filename || img.url)
+                };
+                
+                // Загружаем изображения если есть новые
+                const newImages = currentCatImages.filter(img => img.file);
+                for (const img of newImages) {
+                    const uploadResult = await uploadFile(img.file, 'image');
+                    img.filename = uploadResult.filename;
+                }
+                
+                if (editingId) {
+                    catData.id = editingId;
+                    await apiRequest(`/cats/${editingId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(catData)
+                    });
+                    showMessage('Кошка успешно обновлена!', 'success');
+                } else {
+                    await apiRequest('/cats', {
+                        method: 'POST',
+                        body: JSON.stringify(catData)
+                    });
+                    showMessage('Кошка успешно добавлена!', 'success');
+                }
+                
+                // Сбрасываем форму
                 resetCatForm();
-            });
+                
+                // Обновляем списки
+                await loadCatsList();
+                await updateDashboard();
+                
+                // Переходим к списку
+                document.querySelector('[data-subtab="cats-list"]').click();
+                
+            } catch (error) {
+                console.error('Error saving cat:', error);
+                showMessage('Ошибка сохранения: ' + error.message, 'error');
+            } finally {
+                submitText.style.display = 'inline';
+                hideLoading(submitLoading);
+                saveBtn.disabled = false;
+            }
+        }
 
-            // Отмена редактирования
-            document.getElementById('cancelEdit').addEventListener('click', function() {
-                resetCatForm();
-            });
+        async function editCat(catId) {
+            try {
+                const response = await apiRequest(`/cats`);
+                const cats = response.data || [];
+                const cat = cats.find(c => c.id === catId);
+                
+                if (!cat) {
+                    showMessage('Кошка не найдена', 'error');
+                    return;
+                }
+                
+                // Заполняем форму
+                document.getElementById('catName').value = cat.name || '';
+                document.getElementById('catBreed').value = cat.breed || '';
+                document.getElementById('catGender').value = cat.gender || '';
+                document.getElementById('catStatus').value = cat.status || '';
+                document.getElementById('catColor').value = cat.color || '';
+                document.getElementById('catAge').value = cat.age || '';
+                document.getElementById('catPrice').value = cat.price || '';
+                document.getElementById('catLitter').value = cat.litter || '';
+                document.getElementById('catParents').value = cat.parents || '';
+                document.getElementById('catDescription').value = cat.description || '';
+                document.getElementById('catCharacteristics').value = cat.characteristics || '';
+                document.getElementById('editingCatId').value = catId;
+                
+                // Загружаем изображения
+                const uploadedImagesContainer = document.getElementById('catUploadedImages');
+                uploadedImagesContainer.innerHTML = '';
+                currentCatImages = [];
+                
+                const images = Array.isArray(cat.images) ? cat.images : JSON.parse(cat.images || '[]');
+                if (images.length > 0) {
+                    images.forEach((imageFilename, index) => {
+                        const imageData = {
+                            id: `existing_${index}`,
+                            url: `${API_BASE}/uploads/${imageFilename}`,
+                            filename: imageFilename
+                        };
+                        
+                        currentCatImages.push(imageData);
+                        
+                        const imageElement = document.createElement('div');
+                        imageElement.className = 'uploaded-image';
+                        imageElement.innerHTML = `
+                            <img src="${imageData.url}" alt="Cat image ${index + 1}">
+                            <div class="remove-image" onclick="removeCatImage('${imageData.id}')">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        `;
+                        
+                        uploadedImagesContainer.appendChild(imageElement);
+                    });
+                }
+                
+                // Меняем текст кнопки
+                document.getElementById('catSubmitText').textContent = 'Обновить кошку';
+                document.getElementById('cancelEdit').style.display = 'inline-block';
+                
+                // Переключаемся на форму редактирования
+                document.querySelector('[data-subtab="add-cat"]').click();
+                
+            } catch (error) {
+                console.error('Error loading cat for edit:', error);
+                showMessage('Ошибка загрузки данных кошки', 'error');
+            }
+        }
 
-            // Поиск кошек
-            document.getElementById('searchCats').addEventListener('input', function(e) {
-                filterCats(e.target.value);
-            });
+        async function deleteCat(catId) {
+            if (!confirm('Вы уверены, что хотите удалить эту кошку? Это действие нельзя отменить.')) {
+                return;
+            }
+            
+            try {
+                await apiRequest(`/cats/${catId}`, { method: 'DELETE' });
+                showMessage('Кошка удалена!', 'success');
+                await loadCatsList();
+                await updateDashboard();
+            } catch (error) {
+                console.error('Error deleting cat:', error);
+                showMessage('Ошибка удаления кошки', 'error');
+            }
         }
 
         function handleCatImagesUpload(files) {
@@ -1448,7 +1889,6 @@
                     return;
                 }
                 
-                // Проверяем размер файла
                 if (file.size > 5 * 1024 * 1024) {
                     showMessage(`Изображение "${file.name}" слишком большое. Максимальный размер: 5MB`, 'warning');
                     return;
@@ -1481,1135 +1921,34 @@
 
         function removeCatImage(imageId) {
             currentCatImages = currentCatImages.filter(img => img.id !== imageId);
-            const imageElement = document.querySelector(`[onclick="removeCatImage('${imageId}')"]`).parentElement;
-            if (imageElement) {
-                imageElement.remove();
+            const imageElement = document.querySelector(`[onclick="removeCatImage('${imageId}')"]`);
+            if (imageElement && imageElement.parentElement) {
+                imageElement.parentElement.remove();
             }
         }
 
-        function removeBreedMainImage() {
-            currentBreedMainImage = null;
-            document.getElementById('breedMainImagePreview').innerHTML = '';
-            document.getElementById('breedMainImage').value = '';
-        }
-
-        // Сброс формы кошки
         function resetCatForm() {
-            if (editingCatId && !confirm('Вы уверены, что хотите отменить редактирование? Все несохраненные изменения будут потеряны.')) {
-                return;
-            }
-            
             document.getElementById('catForm').reset();
             document.getElementById('catUploadedImages').innerHTML = '';
             currentCatImages = [];
-            editingCatId = null;
             document.getElementById('editingCatId').value = '';
             document.getElementById('catSubmitText').textContent = 'Добавить кошку';
             document.getElementById('cancelEdit').style.display = 'none';
-            showMessage('Форма очищена', 'info');
         }
 
-        // Редактирование страницы породы
-        async function editBreedPage(breedId) {
+        // ============================================
+        // УПРАВЛЕНИЕ СТРАНИЦАМИ ПОРОД
+        // ============================================
+
+        async function loadBreedPagesList() {
             try {
-                let breedData;
-                try {
-                    breedData = await apiService.getBreedPage(breedId);
-                } catch (error) {
-                    console.log('Ошибка загрузки с сервера, пробуем localStorage:', error);
-                    // Загружаем из localStorage
-                    const breedPages = JSON.parse(localStorage.getItem('petochania_breedPages') || '{}');
-                    breedData = breedPages[breedId];
-                    
-                    if (!breedData) {
-                        const breedPagesLocal = JSON.parse(localStorage.getItem('breedPages') || '{}');
-                        breedData = breedPagesLocal[breedId];
-                    }
-                }
+                const response = await apiRequest('/breed-pages');
+                const pages = response.data || [];
+                const catsResponse = await apiRequest('/cats');
+                const cats = catsResponse.data || [];
                 
-                currentBreedPageData = breedData;
-                document.getElementById('currentBreedId').value = breedId;
-                
-                // Заполняем форму данными или данными по умолчанию
-                const defaultData = getDefaultBreedData(breedId);
-                
-                document.getElementById('breedPageTitle').value = breedData?.title || defaultData.title;
-                document.getElementById('breedPageDescription').value = breedData?.description || defaultData.description;
-                document.getElementById('breedHeroDescription').value = breedData?.heroDescription || defaultData.heroDescription;
-                document.getElementById('breedOrigin').value = breedData?.origin || defaultData.origin;
-                document.getElementById('breedWeight').value = breedData?.weight || defaultData.weight;
-                document.getElementById('breedLifespan').value = breedData?.lifespan || defaultData.lifespan;
-                document.getElementById('breedTemperament').value = breedData?.temperament || defaultData.temperament;
-                document.getElementById('breedCharacteristics').value = breedData?.characteristics ? 
-                    (Array.isArray(breedData.characteristics) ? breedData.characteristics.join(', ') : breedData.characteristics) : 
-                    defaultData.characteristics.join(', ');
-                
-                // Показываем текущее изображение если есть
-                const preview = document.getElementById('breedMainImagePreview');
-                preview.innerHTML = '';
-                
-                if (breedData?.mainImage) {
-                    preview.innerHTML = `
-                        <div class="uploaded-image">
-                            <img src="${breedData.mainImage}" alt="Current breed image">
-                            <div class="remove-image" onclick="removeBreedMainImage()">
-                                <i class="fas fa-times"></i>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    // Показываем стандартное изображение
-                    const defaultImages = {
-                        'chinchilla': 'img/goldshinshina.JPG',
-                        'devon': 'img/devon-reks.JPG',
-                        'munchkin': 'img/machkin.JPG'
-                    };
-                    
-                    if (defaultImages[breedId]) {
-                        preview.innerHTML = `
-                            <div class="uploaded-image">
-                                <img src="${defaultImages[breedId]}" alt="Default breed image">
-                                <div class="remove-image" onclick="removeBreedMainImage()">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-                
-                // Показываем кнопку удаления
-                document.getElementById('deleteBreedPage').style.display = 'inline-block';
-                
-                // Загружаем котят для этой породы
-                await loadBreedKittens(breedId);
-                
-                // Переключаемся на вкладку редактирования
-                document.querySelector('[data-subtab="edit-breed-page"]').click();
-                
-                // Прокручиваем к началу формы
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                showMessage(`Редактирование страницы породы "${breedData?.title || defaultData.title}"`, 'info');
-                
-            } catch (error) {
-                console.error('Error loading breed page:', error);
-                showMessage('Ошибка загрузки страницы породы. Используются данные по умолчанию', 'warning');
-                
-                // Загружаем данные по умолчанию
-                const defaultData = getDefaultBreedData(breedId);
-                currentBreedPageData = defaultData;
-                document.getElementById('currentBreedId').value = breedId;
-                
-                // Заполняем форму данными по умолчанию
-                document.getElementById('breedPageTitle').value = defaultData.title;
-                document.getElementById('breedPageDescription').value = defaultData.description;
-                document.getElementById('breedHeroDescription').value = defaultData.heroDescription;
-                document.getElementById('breedOrigin').value = defaultData.origin;
-                document.getElementById('breedWeight').value = defaultData.weight;
-                document.getElementById('breedLifespan').value = defaultData.lifespan;
-                document.getElementById('breedTemperament').value = defaultData.temperament;
-                document.getElementById('breedCharacteristics').value = defaultData.characteristics.join(', ');
-                
-                // Загружаем котят для этой породы
-                await loadBreedKittens(breedId);
-                
-                // Переключаемся на вкладку редактирования
-                document.querySelector('[data-subtab="edit-breed-page"]').click();
-            }
-        }
-
-        // Добавление котенка к породе со страницы породы
-        function addKittenFromBreedPage() {
-            const breedId = document.getElementById('currentBreedId').value;
-            const breedTitle = document.getElementById('breedPageTitle').value;
-            
-            if (!breedId || !breedTitle) {
-                showMessage('Сначала сохраните информацию о породе', 'error');
-                return;
-            }
-            
-            // Автоматически устанавливаем породу
-            document.getElementById('catBreed').value = breedTitle;
-            
-            // Переходим к форме добавления кошки
-            document.querySelector('[data-tab="cats"]').click();
-            document.querySelector('[data-subtab="add-cat"]').click();
-            
-            // Прокручиваем к форме
-            document.getElementById('add-cat').scrollIntoView({ behavior: 'smooth' });
-            
-            showMessage(`Порода автоматически установлена: "${breedTitle}". Теперь заполните информацию о котенке`, 'info');
-        }
-
-        // Привязка существующего котенка к породе
-        async function assignExistingKittenToBreed() {
-            try {
-                const breedId = document.getElementById('currentBreedId').value;
-                const breedTitle = document.getElementById('breedPageTitle').value;
-                
-                if (!breedId || !breedTitle) {
-                    showMessage('Сначала сохраните информацию о породе', 'error');
-                    return;
-                }
-                
-                // Получаем всех кошек
-                const cats = await getCatsFromStorage();
-                
-                // Фильтруем кошек, которые не принадлежат этой породе или без породы
-                const availableCats = cats.filter(cat => {
-                    if (!cat.breed) return true;
-                    return !cat.breed.toLowerCase().includes(breedTitle.toLowerCase());
-                });
-                
-                if (availableCats.length === 0) {
-                    showMessage('Нет доступных котят для привязки', 'info');
-                    return;
-                }
-                
-                // Создаем модальное окно выбора
-                const modal = document.createElement('div');
-                modal.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0,0,0,0.7);
-                    z-index: 3000;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    padding: 20px;
-                `;
-                
-                const modalContent = document.createElement('div');
-                modalContent.style.cssText = `
-                    background: white;
-                    border-radius: 15px;
-                    padding: 30px;
-                    width: 90%;
-                    max-width: 800px;
-                    max-height: 80vh;
-                    overflow-y: auto;
-                `;
-                
-                modalContent.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="margin: 0; color: #2c3e50;">Выберите котенка для привязки к породе "${breedTitle}"</h3>
-                        <button onclick="this.closest('[style*=\"position: fixed\"]').remove()" 
-                                style="background: none; border: none; font-size: 20px; color: #666; cursor: pointer;">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <p>Выберите существующего котенка, чтобы привязать его к породе <strong>${breedTitle}</strong></p>
-                    </div>
-                    <div id="assignCatsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin-bottom: 30px;">
-                        ${availableCats.map(cat => `
-                            <div style="border: 1px solid #ddd; border-radius: 10px; padding: 15px; cursor: pointer; transition: all 0.3s;"
-                                 onclick="assignKittenToBreed('${cat.id}', '${breedTitle}', this)">
-                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                                    ${cat.images && cat.images.length > 0 ? 
-                                        `<img src="${cat.images[0]}" alt="${cat.name}" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">` : 
-                                        `<div style="width: 60px; height: 60px; border-radius: 8px; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-cat" style="color: #C8A97E;"></i>
-                                        </div>`
-                                    }
-                                    <div>
-                                        <h4 style="margin: 0; font-size: 16px;">${cat.name}</h4>
-                                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">${cat.breed || 'Без породы'}</p>
-                                    </div>
-                                </div>
-                                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                    <span style="font-size: 12px; background: #f8f9fa; padding: 3px 8px; border-radius: 4px;">${cat.gender}</span>
-                                    <span style="font-size: 12px; background: #f8f9fa; padding: 3px 8px; border-radius: 4px;">${cat.color}</span>
-                                    ${cat.age ? `<span style="font-size: 12px; background: #f8f9fa; padding: 3px 8px; border-radius: 4px;">${cat.age} мес.</span>` : ''}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div style="text-align: center;">
-                        <button onclick="this.closest('[style*=\"position: fixed\"]').remove()" 
-                                style="padding: 10px 20px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            Отмена
-                        </button>
-                    </div>
-                `;
-                
-                modal.appendChild(modalContent);
-                document.body.appendChild(modal);
-                
-            } catch (error) {
-                console.error('Error in assignExistingKittenToBreed:', error);
-                showMessage('Ошибка при выборе котенка', 'error');
-            }
-        }
-
-        async function assignKittenToBreed(catId, breedTitle, element) {
-            try {
-                // Добавляем индикатор загрузки
-                element.style.opacity = '0.5';
-                element.innerHTML = '<div style="text-align: center; padding: 20px;"><div class="loading" style="margin: 0 auto;"></div></div>';
-                
-                // Загружаем данные кошки
-                const cats = await getCatsFromStorage();
-                const cat = cats.find(c => c.id == catId);
-                
-                if (!cat) {
-                    throw new Error('Котенок не найден');
-                }
-                
-                // Обновляем породу у кошки
-                cat.breed = breedTitle;
-                await updateCatInStorage(catId, cat);
-                
-                // Закрываем модальное окно
-                const modal = document.querySelector('[style*="position: fixed"]');
-                if (modal) modal.remove();
-                
-                showMessage(`Котенок "${cat.name}" привязан к породе "${breedTitle}"`, 'success');
-                
-                // Обновляем список котят
-                const breedId = document.getElementById('currentBreedId').value;
-                await loadBreedKittens(breedId);
-                
-                // Обновляем общий список кошек
-                await loadCatsList();
-                
-            } catch (error) {
-                console.error('Error assigning kitten:', error);
-                showMessage('Ошибка при привязке котенка', 'error');
-                
-                // Восстанавливаем элемент
-                if (element) {
-                    element.style.opacity = '1';
-                }
-            }
-        }
-
-        // Загрузка котят для породы
-        async function loadBreedKittens(breedId) {
-            try {
-                const breedTitle = breedId === 'chinchilla' ? 'Золотая Шиншилла' : 
-                                  breedId === 'devon' ? 'Девон-рекс' : 'Манчкин';
-                
-                const cats = await getCatsFromStorage();
-                const breedCats = cats.filter(cat => 
-                    cat.breed && cat.breed.toLowerCase().includes(breedTitle.toLowerCase())
-                );
-                
-                const kittensContainer = document.getElementById('breedKittensContainer');
-                kittensContainer.innerHTML = '';
-                
-                if (breedCats.length === 0) {
-                    kittensContainer.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: #7f8c8d; border: 2px dashed #ddd; border-radius: 10px;">
-                            <i class="fas fa-cat" style="font-size: 48px; margin-bottom: 20px; display: block; color: #C8A97E;"></i>
-                            <h4>Нет добавленных котят</h4>
-                            <p style="margin-bottom: 20px;">Добавьте котят этой породы, чтобы они отображались на странице</p>
-                            <div style="display: flex; flex-direction: column; gap: 10px; max-width: 300px; margin: 0 auto;">
-                                <button class="btn btn-success" onclick="addKittenFromBreedPage()">
-                                    <i class="fas fa-plus"></i> Добавить нового котенка
-                                </button>
-                                <button class="btn btn-primary" onclick="assignExistingKittenToBreed()">
-                                    <i class="fas fa-link"></i> Привязать существующего котенка
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                breedCats.forEach((cat, index) => {
-                    const statusBadge = getStatusBadge(cat.status);
-                    const kittenCard = document.createElement('div');
-                    kittenCard.className = 'kitten-card-editor';
-                    kittenCard.innerHTML = `
-                        <div class="kitten-editor-header">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                ${cat.images && cat.images.length > 0 ? 
-                                    `<img src="${cat.images[0]}" alt="${cat.name}" style="width: 80px; height: 80px; border-radius: 10px; object-fit: cover;">` : 
-                                    `<div style="width: 80px; height: 80px; border-radius: 10px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; border: 2px dashed #C8A97E;">
-                                        <i class="fas fa-cat" style="color: #C8A97E; font-size: 32px;"></i>
-                                    </div>`
-                                }
-                                <div style="flex: 1;">
-                                    <h4 style="margin: 0 0 5px 0; color: #2c3e50; font-size: 18px;">${cat.name}</h4>
-                                    <div style="display: flex; gap: 10px; font-size: 14px; color: #666; flex-wrap: wrap;">
-                                        <span><strong>Порода:</strong> ${cat.breed}</span>
-                                        <span>•</span>
-                                        <span><strong>Пол:</strong> ${cat.gender}</span>
-                                        <span>•</span>
-                                        <span><strong>Окрас:</strong> ${cat.color}</span>
-                                        ${cat.age ? `<span>•</span><span><strong>Возраст:</strong> ${cat.age} мес.</span>` : ''}
-                                        ${cat.price ? `<span>•</span><span><strong>Цена:</strong> ${cat.price} руб.</span>` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                ${statusBadge}
-                                <div class="actions" style="display: flex; gap: 8px;">
-                                    <button class="btn btn-primary action-btn" onclick="editBreedKitten('${cat.id}')" style="padding: 8px 12px;">
-                                        <i class="fas fa-edit"></i> Редактировать
-                                    </button>
-                                    <button class="btn btn-danger action-btn" onclick="deleteBreedKitten('${cat.id}')" style="padding: 8px 12px;">
-                                        <i class="fas fa-trash"></i> Удалить
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        ${cat.description ? `
-                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
-                            <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.4;">
-                                <strong>Описание:</strong> ${cat.description}
-                            </p>
-                        </div>
-                        ` : ''}
-                    `;
-                    kittensContainer.appendChild(kittenCard);
-                });
-                
-                // Добавляем кнопку добавления новых котят в конец
-                const addButtonsContainer = document.createElement('div');
-                addButtonsContainer.style.marginTop = '30px';
-                addButtonsContainer.style.textAlign = 'center';
-                addButtonsContainer.style.padding = '20px';
-                addButtonsContainer.style.borderTop = '2px solid #f1f1f1';
-                addButtonsContainer.innerHTML = `
-                    <div style="display: flex; gap: 15px; justify-content: center;">
-                        <button class="btn btn-success" onclick="addKittenFromBreedPage()" style="padding: 12px 20px;">
-                            <i class="fas fa-plus"></i> Добавить нового котенка
-                        </button>
-                        <button class="btn btn-primary" onclick="assignExistingKittenToBreed()" style="padding: 12px 20px;">
-                            <i class="fas fa-link"></i> Привязать существующего котенка
-                        </button>
-                    </div>
-                `;
-                kittensContainer.appendChild(addButtonsContainer);
-                
-            } catch (error) {
-                console.error('Error loading breed kittens:', error);
-                const kittensContainer = document.getElementById('breedKittensContainer');
-                kittensContainer.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #e74c3c;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px; display: block;"></i>
-                        <h4>Ошибка загрузки котят</h4>
-                        <p>${error.message}</p>
-                        <button class="btn btn-primary" onclick="loadBreedKittens('${breedId}')" style="margin-top: 15px;">
-                            <i class="fas fa-redo"></i> Попробовать снова
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        // Редактирование котенка в контексте породы
-        async function editBreedKitten(catId) {
-            try {
-                const cats = await getCatsFromStorage();
-                const cat = cats.find(c => c.id == catId);
-                
-                if (!cat) {
-                    showMessage('Котенок не найден', 'error');
-                    return;
-                }
-                
-                editingCatId = catId;
-                
-                // Заполняем форму данными
-                document.getElementById('catName').value = cat.name || '';
-                document.getElementById('catBreed').value = cat.breed || '';
-                document.getElementById('catGender').value = cat.gender || '';
-                document.getElementById('catStatus').value = cat.status || '';
-                document.getElementById('catColor').value = cat.color || '';
-                document.getElementById('catAge').value = cat.age || '';
-                document.getElementById('catPrice').value = cat.price || '';
-                document.getElementById('catLitter').value = cat.litter || '';
-                document.getElementById('catParents').value = cat.parents || '';
-                document.getElementById('catDescription').value = cat.description || '';
-                document.getElementById('catCharacteristics').value = cat.characteristics || '';
-                document.getElementById('editingCatId').value = catId;
-                
-                // Загружаем изображения
-                const uploadedImagesContainer = document.getElementById('catUploadedImages');
-                uploadedImagesContainer.innerHTML = '';
-                currentCatImages = [];
-                
-                if (cat.images && cat.images.length > 0) {
-                    cat.images.forEach((imageUrl, index) => {
-                        const imageData = {
-                            id: `existing_${index}`,
-                            url: imageUrl
-                        };
-                        
-                        currentCatImages.push(imageData);
-                        
-                        const imageElement = document.createElement('div');
-                        imageElement.className = 'uploaded-image';
-                        imageElement.innerHTML = `
-                            <img src="${imageUrl}" alt="Cat image ${index + 1}">
-                            <div class="remove-image" onclick="removeCatImage('${imageData.id}')">
-                                <i class="fas fa-times"></i>
-                            </div>
-                        `;
-                        
-                        uploadedImagesContainer.appendChild(imageElement);
-                    });
-                }
-                
-                // Меняем текст кнопки
-                document.getElementById('catSubmitText').textContent = 'Обновить кошку';
-                document.getElementById('cancelEdit').style.display = 'inline-block';
-                
-                // Переключаемся на форму редактирования
-                document.querySelector('[data-tab="cats"]').click();
-                document.querySelector('[data-subtab="add-cat"]').click();
-                
-                // Прокручиваем к форме
-                document.getElementById('add-cat').scrollIntoView({ behavior: 'smooth' });
-                
-            } catch (error) {
-                console.error('Error loading cat:', error);
-                showMessage('Ошибка загрузки данных кошки', 'error');
-            }
-        }
-
-        // Удаление котенка из породы
-        async function deleteBreedKitten(catId) {
-            if (!confirm('Вы уверены, что хотите удалить этого котенка? Это действие нельзя отменить.')) {
-                return;
-            }
-            
-            try {
-                await deleteCatFromStorage(catId);
-                showMessage('Котенок успешно удален!', 'success');
-                
-                // Обновляем список котят
-                const breedId = document.getElementById('currentBreedId').value;
-                await loadBreedKittens(breedId);
-                
-                // Обновляем список кошек
-                await loadCatsList();
-                
-            } catch (error) {
-                console.error('Error deleting cat:', error);
-                showMessage('Ошибка удаления котенка', 'error');
-            }
-        }
-
-        // ========== ОСНОВНЫЕ ФУНКЦИИ ДЛЯ КОШЕК ==========
-
-        // Получение кошек из localStorage
-        async function getCatsFromStorage() {
-            try {
-                const cats = JSON.parse(localStorage.getItem('petochania_cats') || '[]');
-                
-                // Проверяем и очищаем дубликаты
-                const uniqueCats = [];
-                const seenIds = new Set();
-                
-                cats.forEach(cat => {
-                    if (!cat.id) {
-                        // Если у кошки нет ID, генерируем новый
-                        cat.id = 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    }
-                    
-                    if (!seenIds.has(cat.id)) {
-                        seenIds.add(cat.id);
-                        uniqueCats.push(cat);
-                    }
-                });
-                
-                // Если были дубликаты, сохраняем очищенный список
-                if (uniqueCats.length !== cats.length) {
-                    localStorage.setItem('petochania_cats', JSON.stringify(uniqueCats));
-                }
-                
-                return uniqueCats;
-            } catch (error) {
-                console.error('Error getting cats from storage:', error);
-                return [];
-            }
-        }
-
-        // Сохранение кошки в localStorage
-        async function saveCatToStorage(catData) {
-            try {
-                let cats = await getCatsFromStorage();
-                
-                if (catData.id && catData.id !== '') {
-                    // Обновляем существующую кошку
-                    const index = cats.findIndex(c => c.id == catData.id);
-                    if (index !== -1) {
-                        cats[index] = { ...cats[index], ...catData };
-                        console.log('Коша обновлена в localStorage');
-                    } else {
-                        cats.push(catData);
-                        console.log('Кошка добавлена в localStorage (редактирование)');
-                    }
-                } else {
-                    // Добавляем новую кошку
-                    catData.id = 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    catData.createdAt = new Date().toISOString();
-                    cats.push(catData);
-                    console.log('Новая кошка добавлена в localStorage');
-                }
-                
-                // Сохраняем
-                localStorage.setItem('petochania_cats', JSON.stringify(cats));
-                
-                // Обновляем общее хранилище
-                const syncData = JSON.parse(localStorage.getItem('petochania_sync_data') || '{}');
-                syncData.cats = cats;
-                localStorage.setItem('petochania_sync_data', JSON.stringify(syncData));
-                
-                // Триггерим событие для страниц пород
-                localStorage.setItem('cats_updated', Date.now().toString());
-                
-                const updateEvent = new CustomEvent('dataSyncUpdate', {
-                    detail: { source: 'admin-panel', timestamp: new Date().toISOString() }
-                });
-                window.dispatchEvent(updateEvent);
-                
-                return catData;
-            } catch (error) {
-                console.error('Error saving cat to storage:', error);
-                throw error;
-            }
-        }
-
-        // Обновление кошки в localStorage
-        async function updateCatInStorage(catId, catData) {
-            try {
-                let cats = await getCatsFromStorage();
-                const index = cats.findIndex(c => c.id == catId);
-                
-                if (index !== -1) {
-                    cats[index] = { ...cats[index], ...catData };
-                    localStorage.setItem('petochania_cats', JSON.stringify(cats));
-                    return cats[index];
-                } else {
-                    throw new Error('Кошка не найдена');
-                }
-            } catch (error) {
-                console.error('Error updating cat in storage:', error);
-                throw error;
-            }
-        }
-
-        // Удаление кошки из localStorage
-        async function deleteCatFromStorage(catId) {
-            try {
-                let cats = await getCatsFromStorage();
-                const filteredCats = cats.filter(c => c.id != catId);
-                
-                localStorage.setItem('petochania_cats', JSON.stringify(filteredCats));
-                
-                // Обновляем общее хранилище
-                const syncData = JSON.parse(localStorage.getItem('petochania_sync_data') || '{}');
-                syncData.cats = filteredCats;
-                localStorage.setItem('petochania_sync_data', JSON.stringify(syncData));
-                
-                // Триггерим событие
-                localStorage.setItem('cats_updated', Date.now().toString());
-                
-                const updateEvent = new CustomEvent('dataSyncUpdate', {
-                    detail: { source: 'admin-delete', timestamp: new Date().toISOString() }
-                });
-                window.dispatchEvent(updateEvent);
-                
-                return true;
-            } catch (error) {
-                console.error('Error deleting cat from storage:', error);
-                throw error;
-            }
-        }
-
-        // Сохранение породы
-        async function saveBreedPage() {
-            const breedId = document.getElementById('currentBreedId').value;
-            const title = document.getElementById('breedPageTitle').value;
-            const description = document.getElementById('breedPageDescription').value;
-            const heroDescription = document.getElementById('breedHeroDescription').value;
-            
-            if (!breedId || !title || !description || !heroDescription) {
-                showMessage('Пожалуйста, заполните обязательные поля', 'error');
-                return;
-            }
-            
-            const submitText = document.getElementById('breedPageSubmitText');
-            const submitLoading = document.getElementById('breedPageSubmitLoading');
-            
-            try {
-                submitText.style.display = 'none';
-                showLoading(submitLoading);
-                
-                // Подготавливаем данные
-                const breedData = {
-                    title,
-                    description,
-                    heroDescription,
-                    origin: document.getElementById('breedOrigin').value,
-                    weight: document.getElementById('breedWeight').value,
-                    lifespan: document.getElementById('breedLifespan').value,
-                    temperament: document.getElementById('breedTemperament').value,
-                    characteristics: document.getElementById('breedCharacteristics').value.split(',').map(c => c.trim()).filter(c => c),
-                    lastUpdated: new Date().toISOString()
-                };
-                
-                // Если есть новое изображение, конвертируем в base64
-                if (currentBreedMainImage) {
-                    const base64Image = await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            resolve(e.target.result);
-                        };
-                        reader.readAsDataURL(currentBreedMainImage);
-                    });
-                    
-                    breedData.mainImage = base64Image;
-                } else {
-                    // Сохраняем текущее изображение если есть
-                    const preview = document.getElementById('breedMainImagePreview');
-                    const existingImg = preview.querySelector('img');
-                    if (existingImg && existingImg.src) {
-                        breedData.mainImage = existingImg.src;
-                    }
-                }
-                
-                // Сохраняем в localStorage
-                const breedPages = JSON.parse(localStorage.getItem('petochania_breedPages') || '{}');
-                breedPages[breedId] = breedData;
-                localStorage.setItem('petochania_breedPages', JSON.stringify(breedPages));
-                localStorage.setItem('breedPages', JSON.stringify(breedPages));
-                
-                // Обновляем общее хранилище
-                const syncData = JSON.parse(localStorage.getItem('petochania_sync_data') || '{}');
-                syncData.breedPages = breedPages;
-                localStorage.setItem('petochania_sync_data', JSON.stringify(syncData));
-                
-                // Триггерим событие
-                localStorage.setItem('breedPages_updated', Date.now().toString());
-                
-                const updateEvent = new CustomEvent('dataSyncUpdate', {
-                    detail: { source: 'admin-panel' }
-                });
-                window.dispatchEvent(updateEvent);
-                
-                showMessage('Страница породы успешно обновлена!', 'success');
-                
-                // Обновляем список страниц
-                await updateBreedPagesList();
-                
-                // Обновляем список котят
-                await loadBreedKittens(breedId);
-                
-                // Обновляем дашборд
-                await updateDashboard();
-                
-            } catch (error) {
-                console.error('Error saving breed page:', error);
-                showMessage('Ошибка при сохранении: ' + error.message, 'error');
-            } finally {
-                submitText.style.display = 'inline';
-                hideLoading(submitLoading);
-            }
-        }
-
-        // Сохранение кошки
-        async function saveCat() {
-            const name = document.getElementById('catName').value;
-            const breed = document.getElementById('catBreed').value;
-            const gender = document.getElementById('catGender').value;
-            const status = document.getElementById('catStatus').value;
-            const color = document.getElementById('catColor').value;
-            const editingId = document.getElementById('editingCatId').value;
-            
-            if (!name || !breed || !gender || !status || !color) {
-                showMessage('Пожалуйста, заполните обязательные поля', 'error');
-                return;
-            }
-            
-            const submitText = document.getElementById('catSubmitText');
-            const submitLoading = document.getElementById('catSubmitLoading');
-            
-            try {
-                submitText.style.display = 'none';
-                showLoading(submitLoading);
-                
-                // Подготавливаем данные
-                const catData = {
-                    name,
-                    breed,
-                    gender,
-                    status,
-                    color,
-                    age: document.getElementById('catAge').value || '',
-                    price: document.getElementById('catPrice').value || '',
-                    litter: document.getElementById('catLitter').value || '',
-                    parents: document.getElementById('catParents').value || '',
-                    description: document.getElementById('catDescription').value || '',
-                    characteristics: document.getElementById('catCharacteristics').value || '',
-                    updatedAt: new Date().toISOString()
-                };
-                
-                // Конвертируем изображения в base64
-                const base64Images = [];
-                
-                for (const imageData of currentCatImages) {
-                    if (imageData.url.startsWith('data:image/')) {
-                        // Уже base64
-                        base64Images.push(imageData.url);
-                    } else if (imageData.file) {
-                        // Файл, конвертируем в base64
-                        const base64Data = await new Promise((resolve) => {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                resolve(e.target.result);
-                            };
-                            reader.readAsDataURL(imageData.file);
-                        });
-                        base64Images.push(base64Data);
-                    } else {
-                        // Существующее изображение (URL)
-                        base64Images.push(imageData.url);
-                    }
-                }
-                
-                catData.images = base64Images;
-                
-                if (editingId) {
-                    catData.id = editingId;
-                }
-                
-                // Сохраняем локально
-                const savedCat = await saveCatToStorage(catData);
-                
-                // Пытаемся сохранить на сервер
-                try {
-                    const token = localStorage.getItem('petochania_authToken');
-                    const endpoint = editingId ? `/api/cats/${catData.id}` : '/api/cats';
-                    const method = editingId ? 'PUT' : 'POST';
-                    
-                    const response = await fetch(`${API_BASE}${endpoint}`, {
-                        method: method,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(savedCat)
-                    });
-                    
-                    if (!response.ok) {
-                        console.warn('Не удалось сохранить на сервер, но локально сохранено');
-                    }
-                } catch (serverError) {
-                    console.warn('Ошибка соединения с сервером:', serverError);
-                }
-                
-                const message = editingId ? 'Котенок успешно обновлен!' : 'Котенок успешно добавлен!';
-                showMessage(message, 'success');
-                
-                // Обновляем все списки
-                await loadCatsList();
-                await updateBreedPagesList();
-                
-                // Проверяем, связана ли кошка с текущей редактируемой породой
-                const currentBreedId = document.getElementById('currentBreedId').value;
-                if (currentBreedId && breed.toLowerCase().includes(getBreedNameById(currentBreedId).toLowerCase())) {
-                    await loadBreedKittens(currentBreedId);
-                }
-                
-                // Сбрасываем форму
-                resetCatForm();
-                
-                // Обновляем дашборд
-                await updateDashboard();
-                
-            } catch (error) {
-                console.error('Error saving cat:', error);
-                showMessage('Ошибка при сохранении кошки: ' + error.message, 'error');
-            } finally {
-                submitText.style.display = 'inline';
-                hideLoading(submitLoading);
-            }
-        }
-
-        // Функция для получения названия породы по ID
-        function getBreedNameById(breedId) {
-            const breedMap = {
-                'chinchilla': 'Золотая Шиншилла',
-                'devon': 'Девон-рекс', 
-                'munchkin': 'Манчкин'
-            };
-            return breedMap[breedId] || '';
-        }
-
-        // Загрузка списка кошек
-        async function loadCatsList() {
-            try {
-                console.log('Загрузка списка кошек...');
-                
-                const cats = await getCatsFromStorage();
-                const tbody = document.getElementById('catsTableBody');
-                
-                if (!cats || cats.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" style="text-align: center; color: #7f8c8d;">
-                                <i class="fas fa-cat" style="font-size: 48px; display: block; margin-bottom: 10px;"></i>
-                                Нет добавленных кошек
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-                
-                tbody.innerHTML = '';
-                
-                // Сортируем по дате добавления (новые сверху)
-                cats.sort((a, b) => {
-                    const dateA = new Date(a.createdAt || 0);
-                    const dateB = new Date(b.createdAt || 0);
-                    return dateB - dateA;
-                });
-                
-                cats.forEach(cat => {
-                    const statusBadge = getStatusBadge(cat.status);
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                ${cat.images && cat.images.length > 0 ? 
-                                    `<img src="${cat.images[0]}" alt="${cat.name}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">` : 
-                                    `<div style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
-                                        <i class="fas fa-cat" style="color: #C8A97E;"></i>
-                                    </div>`
-                                }
-                                <strong>${cat.name || 'Без имени'}</strong>
-                            </div>
-                        </td>
-                        <td>${cat.breed || 'Не указана'}</td>
-                        <td>${cat.gender || 'Не указан'}</td>
-                        <td>${statusBadge}</td>
-                        <td>${cat.createdAt ? new Date(cat.createdAt).toLocaleDateString('ru-RU') : '-'}</td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn btn-primary action-btn" onclick="editCat('${cat.id}')">
-                                    <i class="fas fa-edit"></i> Редактировать
-                                </button>
-                                <button class="btn btn-danger action-btn" onclick="deleteCat('${cat.id}')">
-                                    <i class="fas fa-trash"></i> Удалить
-                                </button>
-                            </div>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-                
-                console.log('Список кошек отображен:', cats.length, 'записей');
-                
-            } catch (error) {
-                console.error('Error loading cats:', error);
-                const tbody = document.getElementById('catsTableBody');
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: #e74c3c;">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            Ошибка загрузки данных: ${error.message}
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-
-        // Фильтрация кошек
-        async function filterCats(searchTerm) {
-            try {
-                const cats = await getCatsFromStorage();
-                const tbody = document.getElementById('catsTableBody');
-                
-                if (!searchTerm) {
-                    loadCatsList();
-                    return;
-                }
-                
-                const filteredCats = cats.filter(cat => 
-                    (cat.name && cat.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                    (cat.breed && cat.breed.toLowerCase().includes(searchTerm.toLowerCase()))
-                );
-                
-                if (filteredCats.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" style="text-align: center; color: #7f8c8d;">
-                                Кошки не найдены
-                            </td>
-                        </tr>
-                    `;
-                    return;
-                }
-                
-                tbody.innerHTML = '';
-                
-                filteredCats.forEach(cat => {
-                    const statusBadge = getStatusBadge(cat.status);
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                ${cat.images && cat.images.length > 0 ? 
-                                    `<img src="${cat.images[0]}" alt="${cat.name}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">` : 
-                                    `<div style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
-                                        <i class="fas fa-cat" style="color: #C8A97E;"></i>
-                                    </div>`
-                                }
-                                <strong>${cat.name}</strong>
-                            </div>
-                        </td>
-                        <td>${cat.breed}</td>
-                        <td>${cat.gender}</td>
-                        <td>${statusBadge}</td>
-                        <td>${cat.createdAt ? new Date(cat.createdAt).toLocaleDateString('ru-RU') : '-'}</td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn btn-primary action-btn" onclick="editCat('${cat.id}')">
-                                    <i class="fas fa-edit"></i> Редактировать
-                                </button>
-                                <button class="btn btn-danger action-btn" onclick="deleteCat('${cat.id}')">
-                                    <i class="fas fa-trash"></i> Удалить
-                                </button>
-                            </div>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error filtering cats:', error);
-            }
-        }
-
-        // Редактирование кошки из списка
-        async function editCat(catId) {
-            try {
-                const cats = await getCatsFromStorage();
-                const cat = cats.find(c => c.id == catId);
-                
-                if (!cat) {
-                    showMessage('Кошка не найдена', 'error');
-                    return;
-                }
-                
-                editingCatId = catId;
-                
-                // Заполняем форму данными
-                document.getElementById('catName').value = cat.name || '';
-                document.getElementById('catBreed').value = cat.breed || '';
-                document.getElementById('catGender').value = cat.gender || '';
-                document.getElementById('catStatus').value = cat.status || '';
-                document.getElementById('catColor').value = cat.color || '';
-                document.getElementById('catAge').value = cat.age || '';
-                document.getElementById('catPrice').value = cat.price || '';
-                document.getElementById('catLitter').value = cat.litter || '';
-                document.getElementById('catParents').value = cat.parents || '';
-                document.getElementById('catDescription').value = cat.description || '';
-                document.getElementById('catCharacteristics').value = cat.characteristics || '';
-                document.getElementById('editingCatId').value = catId;
-                
-                // Загружаем изображения
-                const uploadedImagesContainer = document.getElementById('catUploadedImages');
-                uploadedImagesContainer.innerHTML = '';
-                currentCatImages = [];
-                
-                if (cat.images && cat.images.length > 0) {
-                    cat.images.forEach((imageUrl, index) => {
-                        const imageData = {
-                            id: `existing_${index}`,
-                            url: imageUrl
-                        };
-                        
-                        currentCatImages.push(imageData);
-                        
-                        const imageElement = document.createElement('div');
-                        imageElement.className = 'uploaded-image';
-                        imageElement.innerHTML = `
-                            <img src="${imageUrl}" alt="Cat image ${index + 1}">
-                            <div class="remove-image" onclick="removeCatImage('${imageData.id}')">
-                                <i class="fas fa-times"></i>
-                            </div>
-                        `;
-                        
-                        uploadedImagesContainer.appendChild(imageElement);
-                    });
-                }
-                
-                // Меняем текст кнопки
-                document.getElementById('catSubmitText').textContent = 'Обновить кошку';
-                document.getElementById('cancelEdit').style.display = 'inline-block';
-                
-                // Переключаемся на форму редактирования
-                document.querySelector('[data-subtab="add-cat"]').click();
-                
-            } catch (error) {
-                console.error('Error loading cat for edit:', error);
-                showMessage('Ошибка загрузки данных кошки', 'error');
-            }
-        }
-
-        // Удаление кошки
-        async function deleteCat(catId) {
-            if (!confirm('Вы уверены, что хотите удалить эту кошку? Это действие нельзя отменить.')) {
-                return;
-            }
-            
-            try {
-                // Удаляем локально
-                await deleteCatFromStorage(catId);
-                
-                // Пытаемся удалить с сервера
-                try {
-                    const token = localStorage.getItem('petochania_authToken');
-                    const response = await fetch(`${API_BASE}/cats/${catId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-                    
-                    if (!response.ok) {
-                        console.warn('Не удалось удалить с сервера, но локально удалено');
-                    }
-                } catch (serverError) {
-                    console.warn('Ошибка соединения с сервером:', serverError);
-                }
-                
-                showMessage('Кошка успешно удалена!', 'success');
-                
-                // Обновляем список кошек
-                await loadCatsList();
-                
-                // Обновляем список пород если редактировали из контекста породы
-                const breedId = document.getElementById('currentBreedId').value;
-                if (breedId) {
-                    await loadBreedKittens(breedId);
-                    await updateBreedPagesList();
-                }
-                
-                // Обновляем дашборд
-                await updateDashboard();
-                
-            } catch (error) {
-                console.error('Error deleting cat:', error);
-                showMessage('Ошибка удаления кошки', 'error');
-            }
-        }
-
-        // Обновление списка страниц пород
-        async function updateBreedPagesList() {
-            try {
-                const breedPages = JSON.parse(localStorage.getItem('petochania_breedPages') || '{}');
-                const cats = await getCatsFromStorage();
                 const tbody = document.getElementById('breedPagesTableBody');
+                if (!tbody) return;
                 
                 tbody.innerHTML = '';
                 
@@ -2620,9 +1959,9 @@
                 ];
                 
                 breeds.forEach(breed => {
-                    const breedData = breedPages[breed.id];
-                    const lastUpdated = breedData?.lastUpdated ? 
-                        new Date(breedData.lastUpdated).toLocaleDateString('ru-RU') : 'Не обновлялась';
+                    const page = pages.find(p => p.id === breed.id);
+                    const lastUpdated = page?.last_updated ? 
+                        new Date(page.last_updated).toLocaleDateString('ru-RU') : 'Не обновлялась';
                     
                     // Считаем количество котят этой породы
                     const breedCatsCount = cats.filter(cat => 
@@ -2631,7 +1970,7 @@
                     
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${breedData?.title || breed.name}</td>
+                        <td>${page?.title || breed.name}</td>
                         <td>${breed.url}</td>
                         <td>${lastUpdated}</td>
                         <td>${breedCatsCount}</td>
@@ -2649,58 +1988,129 @@
                     tbody.appendChild(row);
                 });
             } catch (error) {
-                console.error('Error updating breed pages list:', error);
-                const tbody = document.getElementById('breedPagesTableBody');
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center; color: #e74c3c;">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            Ошибка загрузки данных
-                        </td>
-                    </tr>
-                `;
+                console.error('Error loading breed pages:', error);
             }
         }
 
-        // Добавление котенка к породе из списка пород
-        function addKittenToBreed(breedId, breedTitle) {
-            // Автоматически устанавливаем породу
-            document.getElementById('catBreed').value = breedTitle;
+        async function saveBreedPage(e) {
+            e.preventDefault();
             
-            // Переходим к форме добавления кошки
-            document.querySelector('[data-tab="cats"]').click();
-            document.querySelector('[data-subtab="add-cat"]').click();
-            
-            // Прокручиваем к форме
-            document.getElementById('add-cat').scrollIntoView({ behavior: 'smooth' });
-            
-            showMessage(`Порода автоматически установлена: "${breedTitle}". Теперь заполните информацию о котенке`, 'info');
-        }
-
-        // Предпросмотр страницы
-        function previewBreedPage() {
             const breedId = document.getElementById('currentBreedId').value;
-            if (breedId) {
-                const breedTitle = document.getElementById('breedPageTitle').value;
+            const title = document.getElementById('breedPageTitle').value;
+            const description = document.getElementById('breedPageDescription').value;
+            const heroDescription = document.getElementById('breedHeroDescription').value;
+            
+            if (!breedId || !title || !description || !heroDescription) {
+                showMessage('Пожалуйста, заполните обязательные поля', 'error');
+                return;
+            }
+            
+            const saveBtn = document.getElementById('saveBreedPageBtn');
+            const submitText = document.getElementById('breedPageSubmitText');
+            const submitLoading = document.getElementById('breedPageSubmitLoading');
+            
+            try {
+                submitText.style.display = 'none';
+                showLoading(submitLoading);
+                saveBtn.disabled = true;
+                
+                // Загружаем изображение если есть
+                let mainImageFilename = '';
+                if (currentBreedMainImage) {
+                    const uploadResult = await uploadFile(currentBreedMainImage, 'image');
+                    mainImageFilename = uploadResult.filename;
+                }
+                
                 const breedData = {
-                    title: breedTitle,
-                    heroDescription: document.getElementById('breedHeroDescription').value,
-                    description: document.getElementById('breedPageDescription').value,
+                    title,
+                    description,
+                    heroDescription,
                     origin: document.getElementById('breedOrigin').value,
                     weight: document.getElementById('breedWeight').value,
                     lifespan: document.getElementById('breedLifespan').value,
                     temperament: document.getElementById('breedTemperament').value,
-                    characteristics: document.getElementById('breedCharacteristics').value.split(',').map(c => c.trim()).filter(c => c)
+                    characteristics: document.getElementById('breedCharacteristics').value.split(',').map(c => c.trim()).filter(c => c),
+                    mainImage: mainImageFilename
                 };
                 
-                // Сохраняем данные для предпросмотра
-                localStorage.setItem('breed_preview_data', JSON.stringify(breedData));
+                await apiRequest(`/breed-pages/${breedId}`, {
+                    method: 'POST',
+                    body: JSON.stringify(breedData)
+                });
                 
-                window.open(`${breedId}.html?preview=true`, '_blank');
+                showMessage('Страница породы успешно сохранена!', 'success');
+                await loadBreedPagesList();
+                await loadBreedKittens(breedId);
+                
+            } catch (error) {
+                console.error('Error saving breed page:', error);
+                showMessage('Ошибка сохранения: ' + error.message, 'error');
+            } finally {
+                submitText.style.display = 'inline';
+                hideLoading(submitLoading);
+                saveBtn.disabled = false;
             }
         }
 
-        // Получение данных по умолчанию для породы
+        async function editBreedPage(breedId) {
+            try {
+                const response = await apiRequest('/breed-pages');
+                const pages = response.data || [];
+                const page = pages.find(p => p.id === breedId);
+                
+                document.getElementById('currentBreedId').value = breedId;
+                
+                // Заполняем форму данными или данными по умолчанию
+                const defaultData = getDefaultBreedData(breedId);
+                
+                document.getElementById('breedPageTitle').value = page?.title || defaultData.title;
+                document.getElementById('breedPageDescription').value = page?.description || defaultData.description;
+                document.getElementById('breedHeroDescription').value = page?.hero_description || defaultData.heroDescription;
+                document.getElementById('breedOrigin').value = page?.origin || defaultData.origin;
+                document.getElementById('breedWeight').value = page?.weight || defaultData.weight;
+                document.getElementById('breedLifespan').value = page?.lifespan || defaultData.lifespan;
+                document.getElementById('breedTemperament').value = page?.temperament || defaultData.temperament;
+                
+                const characteristics = page?.characteristics ? 
+                    (Array.isArray(page.characteristics) ? page.characteristics : JSON.parse(page.characteristics || '[]')) : 
+                    defaultData.characteristics;
+                document.getElementById('breedCharacteristics').value = characteristics.join(', ');
+                
+                // Показываем текущее изображение если есть
+                const preview = document.getElementById('breedMainImagePreview');
+                preview.innerHTML = '';
+                
+                if (page?.main_image) {
+                    preview.innerHTML = `
+                        <div class="uploaded-image">
+                            <img src="${API_BASE}/uploads/${page.main_image}" alt="Current breed image">
+                            <div class="remove-image" onclick="removeBreedMainImage()">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Загружаем котят для этой породы
+                await loadBreedKittens(breedId);
+                
+                // Переключаемся на вкладку редактирования
+                document.querySelector('[data-subtab="edit-breed-page"]').click();
+                
+                showMessage(`Редактирование страницы породы "${page?.title || defaultData.title}"`, 'info');
+                
+            } catch (error) {
+                console.error('Error loading breed page:', error);
+                showMessage('Ошибка загрузки страницы породы', 'error');
+            }
+        }
+
+        function removeBreedMainImage() {
+            currentBreedMainImage = null;
+            document.getElementById('breedMainImagePreview').innerHTML = '';
+            document.getElementById('breedMainImage').value = '';
+        }
+
         function getDefaultBreedData(breedId) {
             const defaults = {
                 'chinchilla': {
@@ -2738,20 +2148,434 @@
             return defaults[breedId] || {};
         }
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Проверяем авторизацию
-            if (authToken) {
-                try {
-                    showAdminPanel();
-                } catch (error) {
-                    console.log('Invalid token, showing login page');
-                    authToken = '';
-                    localStorage.removeItem('petochania_authToken');
+        // ============================================
+        // УПРАВЛЕНИЕ FAQ
+        // ============================================
+
+        async function loadFaqList() {
+            try {
+                const response = await apiRequest('/faq');
+                const faqs = response.data || [];
+                
+                const tbody = document.getElementById('faqTableBody');
+                if (!tbody) return;
+                
+                if (faqs.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #7f8c8d;">
+                                <i class="fas fa-question-circle" style="font-size: 48px; display: block; margin-bottom: 10px;"></i>
+                                Нет добавленных вопросов
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                tbody.innerHTML = '';
+                
+                faqs.forEach((faq, index) => {
+                    const row = document.createElement('tr');
+                    const answerPreview = faq.answer.length > 100 ? 
+                        faq.answer.substring(0, 100) + '...' : faq.answer;
+                    
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td><strong>${faq.question}</strong></td>
+                        <td>${answerPreview}</td>
+                        <td>${faq.category || 'Общие'}</td>
+                        <td>${faq.order || 1}</td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn btn-primary action-btn" onclick="editFaq('${faq.id}')">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </button>
+                                <button class="btn btn-danger action-btn" onclick="deleteFaq('${faq.id}')">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading FAQ:', error);
+            }
+        }
+
+        async function saveFaq(e) {
+            e.preventDefault();
+            
+            const question = document.getElementById('faqQuestion').value;
+            const answer = document.getElementById('faqAnswer').value;
+            const faqId = document.getElementById('editingFaqId').value;
+            
+            if (!question || !answer) {
+                showMessage('Пожалуйста, заполните все обязательные поля', 'error');
+                return;
+            }
+            
+            const saveBtn = document.getElementById('saveFaqBtn');
+            const submitText = document.getElementById('faqSubmitText');
+            const submitLoading = document.getElementById('faqSubmitLoading');
+            
+            try {
+                submitText.style.display = 'none';
+                showLoading(submitLoading);
+                saveBtn.disabled = true;
+                
+                const faqData = {
+                    question,
+                    answer,
+                    category: document.getElementById('faqCategory').value || 'Общие',
+                    order: parseInt(document.getElementById('faqOrder').value) || 1,
+                    tags: document.getElementById('faqTags').value.split(',').map(t => t.trim()).filter(t => t),
+                    active: document.getElementById('faqActive').checked
+                };
+                
+                if (faqId) {
+                    faqData.id = faqId;
+                }
+                
+                await apiRequest('/faq', {
+                    method: 'POST',
+                    body: JSON.stringify(faqData)
+                });
+                
+                showMessage(faqId ? 'Вопрос обновлен!' : 'Вопрос добавлен!', 'success');
+                await loadFaqList();
+                document.querySelector('[data-subtab="faq-list"]').click();
+                resetFaqForm();
+                
+            } catch (error) {
+                console.error('Error saving FAQ:', error);
+                showMessage('Ошибка сохранения: ' + error.message, 'error');
+            } finally {
+                submitText.style.display = 'inline';
+                hideLoading(submitLoading);
+                saveBtn.disabled = false;
+            }
+        }
+
+        function resetFaqForm() {
+            document.getElementById('faqForm').reset();
+            document.getElementById('editingFaqId').value = '';
+            document.getElementById('faqSubmitText').textContent = 'Сохранить вопрос';
+            document.getElementById('deleteFaqBtn').style.display = 'none';
+            document.getElementById('faqOrder').value = '1';
+            document.getElementById('faqActive').checked = true;
+        }
+
+        // ============================================
+        // УПРАВЛЕНИЕ ОТЗЫВАМИ
+        // ============================================
+
+        async function loadReviewsList() {
+            try {
+                const response = await apiRequest('/reviews');
+                const reviews = response.data || [];
+                
+                const tbody = document.getElementById('reviewsTableBody');
+                if (!tbody) return;
+                
+                if (reviews.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #7f8c8d;">
+                                <i class="fas fa-star" style="font-size: 48px; display: block; margin-bottom: 10px;"></i>
+                                Нет добавленных отзывов
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                tbody.innerHTML = '';
+                
+                reviews.forEach(review => {
+                    const row = document.createElement('tr');
+                    const textPreview = review.text.length > 100 ? 
+                        review.text.substring(0, 100) + '...' : review.text;
+                    const ratingStars = '★'.repeat(review.rating || 5) + '☆'.repeat(5 - (review.rating || 5));
+                    
+                    row.innerHTML = `
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                ${review.image ? 
+                                    `<img src="${API_BASE}/uploads/${review.image}" alt="${review.author}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">` : 
+                                    `<div style="width: 40px; height: 40px; border-radius: 50%; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-user" style="color: #C8A97E;"></i>
+                                    </div>`
+                                }
+                                <strong>${review.author || 'Аноним'}</strong>
+                            </div>
+                        </td>
+                        <td>${textPreview}</td>
+                        <td>
+                            <span style="color: #ffc107; font-size: 16px;">${ratingStars}</span>
+                            <br><small>(${review.rating || 5}/5)</small>
+                        </td>
+                        <td>${review.city || '-'}</td>
+                        <td>${review.date ? new Date(review.date).toLocaleDateString('ru-RU') : 
+                            (review.created_at ? new Date(review.created_at).toLocaleDateString('ru-RU') : '-')}</td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn btn-primary action-btn" onclick="editReview('${review.id}')">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </button>
+                                <button class="btn btn-danger action-btn" onclick="deleteReview('${review.id}')">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+            }
+        }
+
+        // ============================================
+        // УПРАВЛЕНИЕ ВИДЕО
+        // ============================================
+
+        async function loadVideosList() {
+            try {
+                const response = await apiRequest('/videos');
+                const videos = response.data || [];
+                
+                const grid = document.getElementById('videosGrid');
+                if (!grid) return;
+                
+                if (videos.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #7f8c8d; border: 2px dashed #ddd; border-radius: 10px;">
+                            <i class="fas fa-video-slash" style="font-size: 64px; margin-bottom: 20px; display: block; color: #C8A97E;"></i>
+                            <h4>Нет добавленных видео</h4>
+                            <p style="margin-bottom: 20px;">Добавьте видео для отображения на главной странице</p>
+                            <button class="btn btn-success" id="addFirstVideoBtn">
+                                <i class="fas fa-plus"></i> Добавить первое видео
+                            </button>
+                        </div>
+                    `;
+                    
+                    document.getElementById('addFirstVideoBtn').addEventListener('click', function() {
+                        resetVideoForm();
+                        document.querySelector('[data-subtab="edit-video"]').click();
+                    });
+                    
+                    return;
+                }
+                
+                grid.innerHTML = '';
+                
+                videos.forEach(video => {
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'card';
+                    videoCard.style.overflow = 'hidden';
+                    
+                    let videoElement = '';
+                    if (video.type === 'youtube' && video.youtube_id) {
+                        videoElement = `
+                            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/${video.youtube_id}?rel=0&showinfo=0" 
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                                    allowfullscreen>
+                                </iframe>
+                            </div>
+                        `;
+                    } else if (video.thumbnail) {
+                        videoElement = `
+                            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                                <img src="${API_BASE}/uploads/${video.thumbnail}" alt="${video.title}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-play" style="font-size: 48px; color: white; background: rgba(200, 169, 126, 0.8); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"></i>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        videoElement = `
+                            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-video" style="font-size: 48px; color: #C8A97E;"></i>
+                            </div>
+                        `;
+                    }
+                    
+                    const categoryBadges = {
+                        'main': '<span class="status-badge status-available" style="margin-right: 5px;">Главная</span>',
+                        'about': '<span class="status-badge status-reserved" style="margin-right: 5px;">О питомнике</span>',
+                        'breed': '<span class="status-badge status-sold" style="margin-right: 5px;">Породы</span>'
+                    };
+                    
+                    videoCard.innerHTML = `
+                        <div class="card-header">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h4 style="margin: 0; font-size: 16px; color: #2c3e50;">${video.title}</h4>
+                                ${video.active ? '' : '<span style="color: #e74c3c; font-size: 12px;">(скрыто)</span>'}
+                            </div>
+                        </div>
+                        ${videoElement}
+                        <div class="card-body">
+                            <p style="font-size: 14px; color: #666; margin-bottom: 15px; height: 60px; overflow: hidden;">
+                                ${video.description || 'Без описания'}
+                            </p>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #95a5a6;">
+                                <div>
+                                    ${categoryBadges[video.category] || ''}
+                                    <span>Порядок: ${video.order || 1}</span>
+                                </div>
+                                <div>
+                                    ${video.autoplay ? '<i class="fas fa-play-circle" title="Автовоспроизведение"></i>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="actions" style="display: flex; gap: 8px; width: 100%;">
+                                <button class="btn btn-primary action-btn" onclick="editVideo('${video.id}')" style="flex: 1;">
+                                    <i class="fas fa-edit"></i> Редактировать
+                                </button>
+                                <button class="btn btn-danger action-btn" onclick="deleteVideo('${video.id}')" style="flex: 1;">
+                                    <i class="fas fa-trash"></i> Удалить
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(videoCard);
+                });
+            } catch (error) {
+                console.error('Error loading videos:', error);
+            }
+        }
+
+        // ============================================
+        // УПРАВЛЕНИЕ НАСТРОЙКАМИ
+        // ============================================
+
+        async function loadSettings() {
+            try {
+                const response = await apiRequest('/settings');
+                const settings = response.data || {};
+                
+                // Основные настройки
+                if (settings.site_title) document.getElementById('siteTitle').value = settings.site_title;
+                if (settings.site_tagline) document.getElementById('siteTagline').value = settings.site_tagline;
+                if (settings.contact_phone) document.getElementById('contactPhone').value = settings.contact_phone;
+                if (settings.contact_email) document.getElementById('contactEmail').value = settings.contact_email;
+                if (settings.contact_address) document.getElementById('contactAddress').value = settings.contact_address;
+                if (settings.working_hours) document.getElementById('workingHours').value = settings.working_hours;
+                if (settings.site_description) document.getElementById('siteDescription').value = settings.site_description;
+                
+                // SEO настройки
+                if (settings.meta_title) document.getElementById('metaTitle').value = settings.meta_title;
+                if (settings.meta_description) document.getElementById('metaDescription').value = settings.meta_description;
+                if (settings.meta_keywords) document.getElementById('metaKeywords').value = settings.meta_keywords;
+                if (settings.google_analytics) document.getElementById('googleAnalytics').value = settings.google_analytics;
+                
+                // Социальные сети
+                const socialContainer = document.getElementById('socialLinksContainer');
+                socialContainer.innerHTML = '';
+                
+                if (settings.social_links && Array.isArray(settings.social_links)) {
+                    settings.social_links.forEach((social, index) => {
+                        socialContainer.innerHTML += `
+                            <div class="social-link-item" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+                                <div style="flex: 1;">
+                                    <div class="form-row">
+                                        <div class="form-group" style="flex: 1;">
+                                            <label>Название</label>
+                                            <input type="text" class="form-control social-name" placeholder="Например: Instagram" value="${social.name || ''}">
+                                        </div>
+                                        <div class="form-group" style="flex: 2;">
+                                            <label>URL</label>
+                                            <input type="url" class="form-control social-url" placeholder="https://instagram.com/petochania" value="${social.url || ''}">
+                                        </div>
+                                        <div class="form-group" style="flex: 1;">
+                                            <label>Иконка FontAwesome</label>
+                                            <input type="text" class="form-control social-icon" placeholder="fab fa-instagram" value="${social.icon || ''}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-danger" onclick="removeSocialLink(this)" style="align-self: flex-start; margin-top: 25px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // ============================================
+        // ДАШБОРД
+        // ============================================
+
+        async function updateDashboard() {
+            try {
+                const response = await apiRequest('/stats');
+                const stats = response.data || {};
+                
+                document.getElementById('totalCats').textContent = stats.totalCats || 0;
+                document.getElementById('availableCats').textContent = stats.availableCats || 0;
+                document.getElementById('totalQuestions').textContent = stats.totalQuestions || 0;
+                document.getElementById('totalReviews').textContent = stats.totalReviews || 0;
+                
+                // Получаем последние активности
+                const activityResponse = await apiRequest('/activity');
+                const activities = activityResponse.data || [];
+                const recentActivity = document.getElementById('recentActivity');
+                
+                if (activities.length > 0) {
+                    recentActivity.innerHTML = activities.map(item => 
+                        `<p><i class="fas fa-check-circle" style="color: #27ae60;"></i> ${item.description}</p>`
+                    ).join('');
+                } else {
+                    recentActivity.innerHTML = `<p><i class="fas fa-info-circle" style="color: #3498db;"></i> Нет активностей</p>`;
+                }
+            } catch (error) {
+                console.error('Error updating dashboard:', error);
+            }
+        }
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+
+        function showAdminPanel() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'flex';
+            
+            // Обновляем информацию о пользователе
+            if (currentUser.name) {
+                document.getElementById('adminName').textContent = currentUser.name;
+                const avatar = document.getElementById('adminAvatar');
+                if (avatar && currentUser.name) {
+                    avatar.textContent = currentUser.name.charAt(0).toUpperCase();
                 }
             }
+            
+            // Загружаем начальные данные
+            loadCatsList();
+            loadBreedPagesList();
+            loadFaqList();
+            loadReviewsList();
+            loadVideosList();
+            loadSettings();
+            updateDashboard();
+        }
 
-            // Login functionality
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Проверяем авторизацию
+            const isAuthenticated = await checkAuth();
+            if (isAuthenticated) {
+                showAdminPanel();
+            }
+
+            // Обработчик входа
             document.getElementById('loginBtn').addEventListener('click', async function() {
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
@@ -2766,216 +2590,147 @@
                 
                 try {
                     loginText.style.display = 'none';
-                    showLoading(loginLoading);
+                    loginLoading.style.display = 'inline-block';
                     messageEl.textContent = '';
                     
-                    const response = await apiService.login(username, password);
+                    await login(username, password);
+                    showAdminPanel();
+                    showMessage('Успешный вход в систему!', 'success');
                     
-                    if (response.success) {
-                        showAdminPanel();
-                        showMessage('Успешный вход в систему!', 'success');
-                    } else {
-                        throw new Error(response.error || 'Неверный логин или пароль');
-                    }
                 } catch (error) {
                     messageEl.textContent = 'Ошибка входа: ' + error.message;
                 } finally {
                     loginText.style.display = 'inline';
-                    hideLoading(loginLoading);
+                    loginLoading.style.display = 'none';
                 }
             });
 
-            // Logout functionality
+            // Обработчик выхода
             document.getElementById('logoutBtn').addEventListener('click', function() {
                 if (confirm('Вы уверены, что хотите выйти?')) {
-                    authToken = '';
-                    localStorage.removeItem('petochania_authToken');
-                    window.location.reload();
+                    logout();
                 }
             });
 
-            // Navigation tabs
+            // Навигация по вкладкам
             document.querySelectorAll('.nav-links a').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     if (this.id === 'logoutBtn') return;
                     
-                    // Update active nav link
                     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
                     this.classList.add('active');
                     
-                    // Show corresponding tab
                     const tabId = this.getAttribute('data-tab');
                     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
                     document.getElementById(tabId).classList.add('active');
                     
-                    // Update page title
                     const pageTitles = {
                         'dashboard': 'Дашборд',
                         'cats': 'Кошки',
                         'breed-pages': 'Страницы пород',
-                        'gallery': 'Галерея',
                         'faq': 'FAQ',
                         'reviews': 'Отзывы',
                         'videos': 'Видео',
                         'settings': 'Настройки'
                     };
                     document.getElementById('pageTitle').textContent = pageTitles[tabId] || this.querySelector('span').textContent;
-                    
-                    // Load data for specific tabs
-                    if (tabId === 'cats') {
-                        loadCatsList();
-                    } else if (tabId === 'breed-pages') {
-                        updateBreedPagesList();
-                    } else if (tabId === 'dashboard') {
-                        updateDashboard();
-                    }
                 });
             });
-            
-            // Sub-tabs
+
+            // Подтабы
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     const subtabId = this.getAttribute('data-subtab');
                     const parentTabs = this.closest('.tabs');
                     
-                    // Update active sub-tab
                     parentTabs.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     
-                    // Show corresponding sub-tab content
                     const parentContent = this.closest('.content-section');
                     parentContent.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
                     parentContent.querySelector('#' + subtabId).classList.add('active');
                 });
             });
+
+            // Форма кошек
+            document.getElementById('catForm').addEventListener('submit', saveCat);
+            document.getElementById('resetCatForm').addEventListener('click', resetCatForm);
+            document.getElementById('cancelEdit').addEventListener('click', resetCatForm);
             
-            // Quick action buttons
-            document.querySelectorAll('[data-tab]').forEach(btn => {
-                if (btn.classList.contains('btn')) {
-                    btn.addEventListener('click', function() {
-                        const tabId = this.getAttribute('data-tab');
-                        
-                        // Update active nav link
-                        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-                        document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-                        
-                        // Show corresponding tab
-                        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-                        document.getElementById(tabId).classList.add('active');
-                        
-                        // Update page title
-                        const pageTitles = {
-                            'dashboard': 'Дашборд',
-                            'cats': 'Кошки',
-                            'breed-pages': 'Страницы пород',
-                            'gallery': 'Галерея',
-                            'faq': 'FAQ',
-                            'reviews': 'Отзывы',
-                            'videos': 'Видео',
-                            'settings': 'Настройки'
-                        };
-                        document.getElementById('pageTitle').textContent = pageTitles[tabId] || document.querySelector(`[data-tab="${tabId}"] span`).textContent;
-                        
-                        // Load data for specific tabs
-                        if (tabId === 'cats') {
-                            loadCatsList();
-                        } else if (tabId === 'breed-pages') {
-                            updateBreedPagesList();
-                        }
-                    });
-                }
+            // Загрузка изображений кошек
+            document.getElementById('catImageUpload').addEventListener('click', function() {
+                document.getElementById('catImages').click();
             });
             
-            // Initialize forms
-            initBreedPagesForm();
-            initCatsForm();
+            document.getElementById('catImages').addEventListener('change', function(e) {
+                const files = Array.from(e.target.files);
+                handleCatImagesUpload(files);
+            });
+
+            // Форма пород
+            document.getElementById('breedPageForm').addEventListener('submit', saveBreedPage);
             
-            // Load initial data if already logged in
-            if (authToken) {
-                await updateBreedPagesList();
-                await loadCatsList();
-                await updateDashboard();
+            // Загрузка изображения породы
+            document.getElementById('breedMainImageUpload').addEventListener('click', function() {
+                document.getElementById('breedMainImage').click();
+            });
+            
+            document.getElementById('breedMainImage').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && !file.type.startsWith('image/')) {
+                    showMessage('Пожалуйста, выберите изображение', 'error');
+                    return;
+                }
                 
-                // Загружаем начальные данные пород если их нет
-                const breedPages = JSON.parse(localStorage.getItem('petochania_breedPages') || '{}');
-                if (Object.keys(breedPages).length === 0) {
-                    const defaultBreeds = {
-                        'chinchilla': getDefaultBreedData('chinchilla'),
-                        'devon': getDefaultBreedData('devon'),
-                        'munchkin': getDefaultBreedData('munchkin')
+                if (file && file.size > 5 * 1024 * 1024) {
+                    showMessage('Изображение слишком большое (макс. 5MB)', 'error');
+                    return;
+                }
+                
+                currentBreedMainImage = file;
+                const preview = document.getElementById('breedMainImagePreview');
+                
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML = `
+                            <div class="uploaded-image">
+                                <img src="${e.target.result}" alt="Uploaded breed image">
+                                <div class="remove-image" onclick="removeBreedMainImage()">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                        `;
                     };
-                    localStorage.setItem('petochania_breedPages', JSON.stringify(defaultBreeds));
-                    localStorage.setItem('breedPages', JSON.stringify(defaultBreeds));
+                    reader.readAsDataURL(file);
                 }
-            }
-        });
+            });
 
-        async function showAdminPanel() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'flex';
-        }
-
-        // Dashboard functions
-        async function updateDashboard() {
-            try {
-                const cats = await getCatsFromStorage();
-
-                document.getElementById('totalCats').textContent = cats.length;
-                document.getElementById('availableCats').textContent = cats.filter(cat => cat.status === 'ДОСТУПЕН').length;
-                document.getElementById('totalQuestions').textContent = 0; // Пока нет FAQ
-                document.getElementById('totalReviews').textContent = 0; // Пока нет отзывов
-
-                // Update recent activity
-                const recentActivity = document.getElementById('recentActivity');
-                const activities = [];
-                
-                // Подсчитываем котят по породам
-                const chinchillaCats = cats.filter(cat => cat.breed && cat.breed.includes('Золотая Шиншилла')).length;
-                const devonCats = cats.filter(cat => cat.breed && cat.breed.includes('Девон-рекс')).length;
-                const munchkinCats = cats.filter(cat => cat.breed && cat.breed.includes('Манчкин')).length;
-                
-                if (chinchillaCats > 0) {
-                    activities.push(`${chinchillaCats} котят золотой шиншиллы`);
-                }
-                if (devonCats > 0) {
-                    activities.push(`${devonCats} котят девон-рекса`);
-                }
-                if (munchkinCats > 0) {
-                    activities.push(`${munchkinCats} котят манчкина`);
-                }
-                
-                if (cats.length > 0) {
-                    activities.push(`Всего ${cats.length} кошек в системе`);
-                }
-
-                if (activities.length > 0) {
-                    recentActivity.innerHTML = activities.map(activity => 
-                        `<p><i class="fas fa-check-circle" style="color: #27ae60;"></i> ${activity}</p>`
-                    ).join('');
-                } else {
-                    recentActivity.innerHTML = `<p><i class="fas fa-info-circle" style="color: #3498db;"></i> Нет добавленных кошек. Начните с добавления первой кошки!</p>`;
-                }
-            } catch (error) {
-                console.error('Error updating dashboard:', error);
-                recentActivity.innerHTML = `<p><i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Ошибка загрузки данных</p>`;
-            }
-        }
-
-        // Add CSS animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
+            // Форма FAQ
+            document.getElementById('faqForm').addEventListener('submit', saveFaq);
             
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
+            // Кнопки для добавления новых элементов
+            document.getElementById('addFaqBtn').addEventListener('click', function() {
+                resetFaqForm();
+                document.querySelector('[data-subtab="edit-faq"]').click();
+            });
+
+            // Добавление CSS анимаций
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
     </script>
 </body>
 </html>
