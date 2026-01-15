@@ -7,7 +7,6 @@
     <link rel="shortcut icon" href="img/free-icon-kitten-5389298.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="data-sync.js"></script>
     <style>
         * {
             margin: 0;
@@ -324,11 +323,24 @@
             top: 15px;
             right: 15px;
             padding: 6px 15px;
-            background: #fff;
-            color: #C8A97E;
             border-radius: 20px;
             font-weight: bold;
             font-size: 14px;
+        }
+        
+        .cat-status.available {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .cat-status.reserved {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .cat-status.sold {
+            background: #f8d7da;
+            color: #721c24;
         }
         
         .cat-details {
@@ -712,8 +724,7 @@
                         <a href="index.html#about">О питомнике</a>
                         <a href="index.html#testimonials">Отзывы</a>
                         <a href="index.html#contact">Контакты</a>
-                        <a href="gallery.html">Наши кошки</a>
-                        <a href="faq.html">Частые вопросы</a>
+                        <a href="index.html#faq">Частые вопросы</a>
                     </div>
                 </div>
                 
@@ -739,8 +750,7 @@
             <a href="index.html#about">О питомнике</a>
             <a href="index.html#testimonials">Отзывы</a>
             <a href="index.html#contact">Контакты</a>
-            <a href="gallery.html">Наши кошки</a>
-            <a href="faq.html">Частые вопросы</a>
+            <a href="index.html#faq-main">Частые вопросы</a>
             <a href="tel:+79261502870" class="mobile-phone">8 926 150 2870</a>
         </div>
     </div>
@@ -748,38 +758,38 @@
     <main class="main">
         <section class="breed-hero">
             <div class="container">
-                <h1>Манчкин</h1>
-                <p>Очаровательные коротколапые кошки с уникальной внешностью и дружелюбным нравом</p>
+                <h1 id="breedTitle">Манчкин</h1>
+                <p id="breedHeroDescription">Очаровательные коротколапые кошки с уникальной внешностью и дружелюбным нравом</p>
             </div>
         </section>
 
         <section class="breed-content">
             <div class="breed-overview">
                 <div class="breed-image">
-                    <img src="img/machkin.JPG" alt="Манчкин">
+                    <img src="img/machkin.JPG" alt="Манчкин" id="breedMainImage">
                 </div>
                 <div class="breed-info">
-                    <h2>О породе Манчкин</h2>
-                    <p class="breed-description">
+                    <h2 id="breedInfoTitle">О породе Манчкин</h2>
+                    <p class="breed-description" id="breedDescription">
                         Манчкины — уникальная порода кошек с короткими лапками, появившаяся в результате естественной генетической мутации. Несмотря на короткие конечности, эти кошки очень подвижны и активны. Манчкины известны своим дружелюбным и общительным характером.
                     </p>
                     
                     <div class="breed-stats">
                         <div class="stat-item">
                             <h4>Происхождение</h4>
-                            <p>США</p>
+                            <p id="breedOrigin">США</p>
                         </div>
                         <div class="stat-item">
                             <h4>Вес</h4>
-                            <p>3-4 кг</p>
+                            <p id="breedWeight">3-4 кг</p>
                         </div>
                         <div class="stat-item">
                             <h4>Продолжительность жизни</h4>
-                            <p>12-15 лет</p>
+                            <p id="breedLifespan">12-15 лет</p>
                         </div>
                         <div class="stat-item">
                             <h4>Темперамент</h4>
-                            <p>Дружелюбный, любопытный</p>
+                            <p id="breedTemperament">Дружелюбный, любопытный</p>
                         </div>
                     </div>
                     
@@ -787,7 +797,7 @@
                         <h3>Особенности характера</h3>
                         <p>Манчкины очень любопытны и часто сидят на задних лапках, чтобы лучше рассмотреть окружающий мир. Они отлично адаптируются к жизни в квартире и прекрасно ладят с детьми и другими животными.</p>
                         
-                        <div class="tags">
+                        <div class="tags" id="breedCharacteristics">
                             <span class="tag">Величественная</span>
                             <span class="tag">Умная</span>
                             <span class="tag">Любопытная</span>
@@ -800,65 +810,11 @@
             
             <div class="available-cats">
                 <h2>Доступные котята</h2>
-                <div class="cats-grid">
-                    <!-- Котенок 1 -->
-                    <div class="cat-card">
-                        <div class="cat-image">
-                            <img src="img/machkin.JPG" alt="Muffin Shorty Paws">
-                            <div class="cat-status">ДОСТУПЕН</div>
-                        </div>
-                        <div class="cat-details">
-                            <h3>Muffin Shorty Paws</h3>
-                            <div class="cat-info">
-                                <div class="info-item">
-                                    <span class="info-label">Пол</span>
-                                    <span class="info-value">Девочка</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Окрас</span>
-                                    <span class="info-value">Рыжий мраморный</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Возраст</span>
-                                    <span class="info-value">3 месяца</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Помет</span>
-                                    <span class="info-value">M от 10/02/2025</span>
-                                </div>
-                            </div>
-                            <button class="cta-button">Забронировать котёнка</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Котенок 2 -->
-                    <div class="cat-card">
-                        <div class="cat-image">
-                            <img src="img/machkin.JPG" alt="Shorty Legs">
-                            <div class="cat-status">ЗАБРОНИРОВАН</div>
-                        </div>
-                        <div class="cat-details">
-                            <h3>Shorty Legs</h3>
-                            <div class="cat-info">
-                                <div class="info-item">
-                                    <span class="info-label">Пол</span>
-                                    <span class="info-value">Мальчик</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Окрас</span>
-                                    <span class="info-value">Черный дым</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Возраст</span>
-                                    <span class="info-value">4 месяца</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Помет</span>
-                                    <span class="info-value">M от 10/02/2025</span>
-                                </div>
-                            </div>
-                            <button class="cta-button">Забронировать котёнка</button>
-                        </div>
+                <div class="cats-grid" id="catsGrid">
+                    <!-- Котята будут загружены динамически -->
+                    <div class="loading-message" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 48px; color: #C8A97E; margin-bottom: 20px;"></i>
+                        <h3>Загрузка котят...</h3>
                     </div>
                 </div>
             </div>
@@ -924,9 +880,15 @@
         </div>
     </div>
 
+    <!-- Подключаем скрипт синхронизации -->
+    <script src="data-sync.js"></script>
+
     <script>
+        // Глобальная переменная для DataSync
+        let dataSync;
+        
         // Мобильное меню
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             const menuToggle = document.querySelector('.menu-toggle');
             const closeMenu = document.querySelector('.close-menu');
             const mobileMenu = document.querySelector('.mobile-menu');
@@ -952,14 +914,37 @@
             // Модальное окно
             const bookingModal = document.getElementById('bookingModal');
             const closeModal = document.getElementById('closeModal');
-            const bookingButtons = document.querySelectorAll('.cta-button');
             
-            bookingButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    bookingModal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
+            // Инициализируем DataSync
+            if (typeof DataSync !== 'undefined' && window.dataSync) {
+                dataSync = window.dataSync;
+                console.log('DataSync инициализирован из глобальной переменной');
+            } else if (typeof DataSync !== 'undefined') {
+                dataSync = new DataSync();
+                console.log('DataSync создан как новый экземпляр');
+            } else {
+                console.error('DataSync не загружен');
+                // Пробуем загрузить синхронно
+                const script = document.createElement('script');
+                script.src = 'data-sync.js';
+                script.onload = function() {
+                    dataSync = window.dataSync || new DataSync();
+                    console.log('DataSync загружен динамически');
+                    loadBreedPageData();
+                };
+                document.head.appendChild(script);
+            }
+            
+            // Слушаем события обновления данных
+            if (dataSync) {
+                window.addEventListener('dataSyncUpdate', (event) => {
+                    console.log('Получено событие обновления данных от:', event.detail.source);
+                    loadBreedPageData();
                 });
-            });
+            }
+            
+            // Загрузка данных для страницы породы
+            await loadBreedPageData();
             
             closeModal.addEventListener('click', function() {
                 bookingModal.classList.remove('active');
@@ -972,114 +957,328 @@
                     document.body.style.overflow = '';
                 }
             });
-
-            // Загрузка динамических данных для страницы породы
-document.addEventListener('DOMContentLoaded', function() {
-    // Получаем ID породы из имени файла
-    const breedId = window.location.pathname.split('/').pop().replace('.html', '');
-    loadBreedPageData(breedId);
-});
-
-function loadBreedPageData(breedId) {
-    try {
-        // Пробуем загрузить данные из localStorage
-        const breedPages = JSON.parse(localStorage.getItem('breedPages')) || {};
-        const breedData = breedPages[breedId];
-        
-        if (breedData) {
-            console.log('Загружены данные для породы:', breedId, breedData);
             
-            // Обновляем заголовок страницы
-            document.title = `${breedData.title} | Petochania`;
-            
-            // Обновляем герой-секцию
-            const heroTitle = document.querySelector('.breed-hero h1');
-            const heroDescription = document.querySelector('.breed-hero p');
-            
-            if (heroTitle && breedData.title) {
-                heroTitle.textContent = breedData.title;
-            }
-            if (heroDescription && breedData.heroDescription) {
-                heroDescription.textContent = breedData.heroDescription;
-            }
-            
-            // Обновляем основную информацию
-            const breedInfoTitle = document.querySelector('.breed-info h2');
-            const breedDescription = document.querySelector('.breed-description');
-            
-            if (breedInfoTitle && breedData.title) {
-                breedInfoTitle.textContent = `О породе ${breedData.title}`;
-            }
-            if (breedDescription && breedData.description) {
-                breedDescription.textContent = breedData.description;
-            }
-            
-            // Обновляем статистику
-            const statItems = document.querySelectorAll('.stat-item');
-            if (statItems.length >= 4) {
-                if (breedData.origin) {
-                    statItems[0].querySelector('p').textContent = breedData.origin;
-                }
-                if (breedData.weight) {
-                    statItems[1].querySelector('p').textContent = breedData.weight;
-                }
-                if (breedData.lifespan) {
-                    statItems[2].querySelector('p').textContent = breedData.lifespan;
-                }
-                if (breedData.temperament) {
-                    statItems[3].querySelector('p').textContent = breedData.temperament;
-                }
-            }
-            
-            // Обновляем характеристики
-            if (breedData.characteristics && breedData.characteristics.length > 0) {
-                const tagsContainer = document.querySelector('.tags');
-                if (tagsContainer) {
-                    tagsContainer.innerHTML = '';
-                    breedData.characteristics.forEach(char => {
-                        const tag = document.createElement('span');
-                        tag.className = 'tag';
-                        tag.textContent = char;
-                        tagsContainer.appendChild(tag);
-                    });
-                }
-            }
-            
-            // Обновляем главное изображение если есть
-            if (breedData.mainImage) {
-                const mainImage = document.querySelector('.breed-image img');
-                if (mainImage) {
-                    mainImage.src = breedData.mainImage;
-                    mainImage.alt = breedData.title;
-                }
-                
-                // Также обновляем изображения в карточках котят
-                const kittenImages = document.querySelectorAll('.cat-image img');
-                kittenImages.forEach(img => {
-                    img.src = breedData.mainImage;
-                });
-            }
-        } else {
-            console.log('Данные для породы не найдены, используются стандартные');
-        }
-    } catch (error) {
-        console.error('Error loading breed page data:', error);
-    }
-}
-
-// Функция для принудительного обновления данных (для отладки)
-function refreshBreedData() {
-    const breedId = window.location.pathname.split('/').pop().replace('.html', '');
-    loadBreedPageData(breedId);
-    alert('Данные обновлены!');
-}            
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && bookingModal.classList.contains('active')) {
                     bookingModal.classList.remove('active');
                     document.body.style.overflow = '';
                 }
             });
+            
+            // Периодическая проверка обновлений
+            if (dataSync) {
+                setInterval(() => {
+                    console.log('Периодическая проверка обновлений...');
+                    loadBreedPageData();
+                }, 30000); // Каждые 30 секунд
+            }
+            
+            // Настройка реального времени обновлений
+            setupRealTimeUpdates();
         });
+
+        // Функция для загрузки данных страницы породы
+        async function loadBreedPageData() {
+            try {
+                if (!dataSync) {
+                    console.error('DataSync не инициализирован');
+                    return;
+                }
+                
+                console.log('Загрузка данных страницы породы...');
+                
+                // Получаем ID породы из URL
+                const pathParts = window.location.pathname.split('/');
+                const breedId = pathParts[pathParts.length - 1].replace('.html', '');
+                
+                // Загружаем данные породы
+                const breedData = dataSync.getBreedData(breedId);
+                console.log('Данные породы загружены:', breedData);
+                
+                if (breedData) {
+                    updateBreedPage(breedData);
+                } else {
+                    // Используем данные по умолчанию
+                    const defaultData = getDefaultBreedData(breedId);
+                    updateBreedPage(defaultData);
+                }
+                
+                // Загружаем кошек для этой породы
+                const breedName = breedData?.title || getDefaultBreedData(breedId).title;
+                const breedCats = dataSync.getBreedCats(breedName);
+                console.log('Котята загружены:', breedCats);
+                
+                updateBreedCats(breedCats || []);
+                
+            } catch (error) {
+                console.error('Error loading breed page data:', error);
+                // Используем данные по умолчанию в случае ошибки
+                const pathParts = window.location.pathname.split('/');
+                const breedId = pathParts[pathParts.length - 1].replace('.html', '');
+                const defaultData = getDefaultBreedData(breedId);
+                updateBreedPage(defaultData);
+                updateBreedCats([]);
+            }
+        }
+
+        // Функция обновления данных породы на странице
+        function updateBreedPage(breedData) {
+            if (!breedData) return;
+            
+            console.log('Обновление страницы породы данными:', breedData);
+            
+            // Обновляем заголовок
+            const breedTitle = document.getElementById('breedTitle');
+            if (breedTitle && breedData.title) {
+                breedTitle.textContent = breedData.title;
+            }
+            
+            // Обновляем описание в герой-секции
+            const heroDescription = document.getElementById('breedHeroDescription');
+            if (heroDescription && breedData.heroDescription) {
+                heroDescription.textContent = breedData.heroDescription;
+            }
+            
+            // Обновляем заголовок раздела
+            const breedInfoTitle = document.getElementById('breedInfoTitle');
+            if (breedInfoTitle && breedData.title) {
+                breedInfoTitle.textContent = `О породе ${breedData.title}`;
+            }
+            
+            // Обновляем основное описание
+            const breedDescription = document.getElementById('breedDescription');
+            if (breedDescription && breedData.description) {
+                breedDescription.textContent = breedData.description;
+            }
+            
+            // Обновляем характеристики
+            if (breedData.characteristics) {
+                const characteristicsContainer = document.getElementById('breedCharacteristics');
+                if (characteristicsContainer) {
+                    characteristicsContainer.innerHTML = '';
+                    if (Array.isArray(breedData.characteristics)) {
+                        breedData.characteristics.forEach(char => {
+                            const tag = document.createElement('span');
+                            tag.className = 'tag';
+                            tag.textContent = char;
+                            characteristicsContainer.appendChild(tag);
+                        });
+                    }
+                }
+            }
+            
+            // Обновляем статистику
+            if (breedData.origin) {
+                const originElement = document.getElementById('breedOrigin');
+                if (originElement) originElement.textContent = breedData.origin;
+            }
+            
+            if (breedData.weight) {
+                const weightElement = document.getElementById('breedWeight');
+                if (weightElement) weightElement.textContent = breedData.weight;
+            }
+            
+            if (breedData.lifespan) {
+                const lifespanElement = document.getElementById('breedLifespan');
+                if (lifespanElement) lifespanElement.textContent = breedData.lifespan;
+            }
+            
+            if (breedData.temperament) {
+                const temperamentElement = document.getElementById('breedTemperament');
+                if (temperamentElement) temperamentElement.textContent = breedData.temperament;
+            }
+            
+            // Обновляем главное изображение если есть
+            if (breedData.mainImage) {
+                const mainImage = document.getElementById('breedMainImage');
+                if (mainImage) {
+                    // Проверяем, это base64 или обычный URL
+                    if (breedData.mainImage.startsWith('data:image/')) {
+                        mainImage.src = breedData.mainImage;
+                    } else {
+                        mainImage.src = breedData.mainImage;
+                    }
+                    mainImage.alt = breedData.title;
+                }
+            }
+        }
+
+        function setupRealTimeUpdates() {
+            // Слушаем события обновления из админ-панели
+            window.addEventListener('storage', function(event) {
+                if (event.key === 'cats_updated' || event.key === 'petochania_cats') {
+                    console.log('Данные кошек обновились, перезагружаем...');
+                    loadBreedPageData();
+                }
+            });
+            
+            // Также слушаем custom events
+            window.addEventListener('dataSyncUpdate', function(event) {
+                console.log('Получено событие обновления данных:', event.detail);
+                loadBreedPageData();
+            });
+            
+            // Периодическая проверка обновлений
+            setInterval(() => {
+                const lastUpdate = localStorage.getItem('cats_updated');
+                if (lastUpdate) {
+                    const lastUpdateTime = parseInt(lastUpdate);
+                    const currentTime = Date.now();
+                    
+                    // Если обновление было менее 30 секунд назад, перезагружаем
+                    if (currentTime - lastUpdateTime < 30000) {
+                        console.log('Обнаружены свежие данные, перезагружаем...');
+                        loadBreedPageData();
+                    }
+                }
+            }, 5000); // Проверяем каждые 5 секунд
+        }
+
+        // Функция обновления списка котят
+        function updateBreedCats(cats) {
+            console.log('Обновление списка котят:', cats);
+            
+            const catsGrid = document.getElementById('catsGrid');
+            if (!catsGrid) return;
+            
+            catsGrid.innerHTML = '';
+            
+            if (!cats || cats.length === 0) {
+                catsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #7f8c8d;">
+                        <i class="fas fa-cat" style="font-size: 48px; margin-bottom: 20px; display: block;"></i>
+                        <h3>В настоящее время нет доступных котят</h3>
+                        <p>Свяжитесь с нами для уточнения информации о будущих пометах</p>
+                        <a href="https://wa.me/message/Y4ZYRHELPNHUE1" class="cta-button" style="margin-top: 20px; display: inline-block; width: auto;">
+                            <i class="fab fa-whatsapp"></i> Узнать о будущих пометах
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            cats.forEach(cat => {
+                const statusText = getCatStatusText(cat.status);
+                const statusClass = getCatStatusClass(cat.status);
+                
+                const catCard = document.createElement('div');
+                catCard.className = 'cat-card';
+                catCard.innerHTML = `
+                    <div class="cat-image">
+                        ${cat.images && cat.images.length > 0 ? 
+                            `<img src="${cat.images[0]}" alt="${cat.name}" loading="lazy">` :
+                            `<div style="width: 100%; height: 100%; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-cat" style="font-size: 48px; color: #C8A97E;"></i>
+                            </div>`
+                        }
+                        <div class="cat-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="cat-details">
+                        <h3>${cat.name}</h3>
+                        <div class="cat-info">
+                            <div class="info-item">
+                                <span class="info-label">Пол</span>
+                                <span class="info-value">${cat.gender}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Окрас</span>
+                                <span class="info-value">${cat.color}</span>
+                            </div>
+                            ${cat.age ? `
+                            <div class="info-item">
+                                <span class="info-label">Возраст</span>
+                                <span class="info-value">${cat.age} месяцев</span>
+                            </div>` : ''}
+                            ${cat.litter ? `
+                            <div class="info-item">
+                                <span class="info-label">Помет</span>
+                                <span class="info-value">${cat.litter}</span>
+                            </div>` : ''}
+                        </div>
+                        ${cat.description ? `<p style="margin: 15px 0; color: #666; font-size: 14px; line-height: 1.4;">${cat.description}</p>` : ''}
+                        ${cat.price ? `<div style="margin: 15px 0; text-align: center;">
+                            <span style="font-size: 18px; font-weight: bold; color: #C8A97E;">${cat.price} руб.</span>
+                        </div>` : ''}
+                        <button class="cta-button" onclick="showBookingModal('${cat.name}')">
+                            ${cat.status === 'ДОСТУПЕН' ? 'Забронировать котёнка' : 'Узнать подробности'}
+                        </button>
+                    </div>
+                `;
+                
+                catsGrid.appendChild(catCard);
+            });
+        }
+
+        function getCatStatusText(status) {
+            const statusMap = {
+                'ДОСТУПЕН': 'ДОСТУПЕН',
+                'ЗАБРОНИРОВАН': 'ЗАБРОНИРОВАН',
+                'ПРОДАН': 'ПРОДАН'
+            };
+            return statusMap[status] || status;
+        }
+
+        function getCatStatusClass(status) {
+            const classMap = {
+                'ДОСТУПЕН': 'available',
+                'ЗАБРОНИРОВАН': 'reserved', 
+                'ПРОДАН': 'sold'
+            };
+            return classMap[status] || '';
+        }
+
+        function showBookingModal(catName) {
+            const modal = document.getElementById('bookingModal');
+            if (modal) {
+                const modalTitle = modal.querySelector('.modal-title');
+                if (modalTitle && catName) {
+                    modalTitle.textContent = `Забронировать котёнка ${catName}`;
+                }
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Получение данных по умолчанию для породы
+        function getDefaultBreedData(breedId) {
+            const defaults = {
+                'chinchilla': {
+                    title: 'Золотая Шиншилла',
+                    heroDescription: 'Аристократичные британцы с роскошной золотистой шерстью и королевским характером',
+                    description: 'Золотые шиншиллы — одна из самых красивых и редких пород кошек. Их шерсть имеет уникальный золотистый оттенок с затемнениями на кончиках, создавая эффект сияния. Эти аристократичные кошки обладают спокойным и уравновешенным характером, идеально подходят для жизни в семье.',
+                    origin: 'Великобритания',
+                    weight: '4-6 кг',
+                    lifespan: '12-15 лет',
+                    temperament: 'Спокойный, нежный',
+                    characteristics: ['Любопытный', 'Дружелюбный', 'Элегантный', 'Спокойный', 'Независимый'],
+                    mainImage: 'img/goldshinshina.JPG'
+                },
+                'devon': {
+                    title: 'Девон-рекс',
+                    heroDescription: 'Энергичные и любвеобильные кошки с инопланетной внешностью и собачьим характером',
+                    description: 'Девон-рекс — порода домашних кошек, появившаяся в Великобритании в 1960-х годах. Эти кошки отличаются уникальной волнистой шерстью, большими ушами и выразительными глазами. Девон-рексы очень социальные и преданные кошки, которые любят быть в центре внимания.',
+                    origin: 'Великобритания',
+                    weight: '3-4.5 кг',
+                    lifespan: '9-15 лет',
+                    temperament: 'Активный, игривый',
+                    characteristics: ['Ласковый', 'Игривый', 'Умный', 'Общительный', 'Энергичный'],
+                    mainImage: 'img/devon-reks.JPG'
+                },
+                'munchkin': {
+                    title: 'Манчкин',
+                    heroDescription: 'Очаровательные коротколапые кошки с уникальной внешностью и дружелюбным нравом',
+                    description: 'Манчкины — уникальная порода кошек с короткими лапками, появившаяся в результате естественной генетической мутации. Несмотря на короткие конечности, эти кошки очень подвижны и активны. Манчкины известны своим дружелюбным и общительным характером.',
+                    origin: 'США',
+                    weight: '3-4 кг',
+                    lifespan: '12-15 лет',
+                    temperament: 'Дружелюбный, любопытный',
+                    characteristics: ['Величественная', 'Умная', 'Любопытная', 'Дружелюбная', 'Общительная'],
+                    mainImage: 'img/machkin.JPG'
+                }
+            };
+            
+            return defaults[breedId] || {};
+        }
     </script>
 </body>
 </html>
