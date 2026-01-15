@@ -7,6 +7,9 @@
     <link rel="shortcut icon" href="img/free-icon-kitten-5389298.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="data-sync.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -1767,10 +1770,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="faq-button-container">
-                    <a href="faq.html" class="faq-button">Посмотреть все вопросы</a>
-                </div>
             </div>
         </section>
 
@@ -1939,79 +1938,335 @@
     </footer>
 
     <script>
-        // Мобильное меню
-        const menuToggle = document.querySelector('.menu-toggle');
-        const closeMenu = document.querySelector('.close-menu');
-        const mobileMenu = document.querySelector('.mobile-menu');
-        
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-        
-        closeMenu.addEventListener('click', () => {
+    // Мобильное меню
+    const menuToggle = document.querySelector('.menu-toggle');
+    const closeMenu = document.querySelector('.close-menu');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+    
+    closeMenu.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    
+    // Закрытие меню при клике на ссылку
+    const mobileLinks = document.querySelectorAll('.mobile-menu a');
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
             mobileMenu.classList.remove('active');
             document.body.style.overflow = '';
         });
-        
-        // Закрытие меню при клике на ссылку
-        const mobileLinks = document.querySelectorAll('.mobile-menu a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        });
-        
-        // FAQ Accordion
-        function initFAQAccordion() {
-            const faqItems = document.querySelectorAll('#faq-main .faq-item');
+    });
+    
+    // Инициализация DataSync
+    let dataSync = null;
+    
+    // Ждем загрузки DataSync
+    function waitForDataSync() {
+        if (window.dataSync) {
+            dataSync = window.dataSync;
+            console.log('DataSync загружен, обновляю данные...');
+            updatePageWithData();
+        } else {
+            setTimeout(waitForDataSync, 100);
+        }
+    }
+    
+    // Обновление страницы с данными
+    async function updatePageWithData() {
+        try {
+            if (!dataSync) {
+                console.error('DataSync не загружен');
+                return;
+            }
             
-            if (faqItems.length > 0) {
-                faqItems.forEach(item => {
-                    const question = item.querySelector('.faq-question');
-                    
-                    question.addEventListener('click', () => {
-                        // Закрываем все другие открытые вопросы
-                        faqItems.forEach(otherItem => {
-                            if (otherItem !== item && otherItem.classList.contains('active')) {
-                                otherItem.classList.remove('active');
-                            }
-                        });
-                        
-                        // Переключаем текущий вопрос
-                        item.classList.toggle('active');
-                    });
+            // Обновляем FAQ на главной
+            await updateFAQSection();
+            
+            // Обновляем отзывы
+            await updateReviewsSection();
+            
+            // Обновляем видео
+            await updateVideosSection();
+            
+            console.log('Страница обновлена с актуальными данными');
+            
+        } catch (error) {
+            console.error('Ошибка обновления страницы:', error);
+        }
+    }
+    
+    // Обновление FAQ секции
+    async function updateFAQSection() {
+        try {
+            const faqSection = document.getElementById('faq-main');
+            if (!faqSection) return;
+            
+            // Получаем FAQ из localStorage
+            const faqs = JSON.parse(localStorage.getItem('petochania_faq') || '[]');
+            
+            // Фильтруем активные вопросы
+            const activeFaqs = faqs.filter(faq => faq.active !== false);
+            
+            // Если нет FAQ в админке, используем статичные
+            if (activeFaqs.length === 0) {
+                console.log('Нет FAQ из админки, использую статичные');
+                return;
+            }
+            
+            // Сортируем по порядку
+            activeFaqs.sort((a, b) => (a.order || 999) - (b.order || 999));
+            
+            // Берем первые 3 для главной
+            const mainPageFaqs = activeFaqs.slice(0, 3);
+            
+            // Обновляем контейнер FAQ
+            const faqContainer = faqSection.querySelector('.faq-container');
+            if (faqContainer && mainPageFaqs.length > 0) {
+                faqContainer.innerHTML = '';
+                
+                mainPageFaqs.forEach((faq, index) => {
+                    const faqItem = document.createElement('div');
+                    faqItem.className = index === 0 ? 'faq-item active' : 'faq-item';
+                    faqItem.innerHTML = `
+                        <div class="faq-question">
+                            <h3>${faq.question}</h3>
+                            <div class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="faq-answer" style="${index === 0 ? 'display: block;' : ''}">
+                            <p>${faq.answer}</p>
+                        </div>
+                    `;
+                    faqContainer.appendChild(faqItem);
                 });
                 
-                // Открываем первый вопрос по умолчанию
-                faqItems[0].classList.add('active');
+                // Инициализируем аккордеон заново
+                initFAQAccordion();
             }
-        }
-
-        // Функция для создания элемента видео
-        function createVideoItem(video, index) {
-            const item = document.createElement('div');
-            item.className = 'video-strip-item';
-            item.setAttribute('data-index', index);
             
-            const videoElement = document.createElement('video');
-            videoElement.src = video.videoUrl || video.url;
-            videoElement.poster = video.poster || '';
+        } catch (error) {
+            console.error('Ошибка обновления FAQ:', error);
+        }
+    }
+    
+    // Обновление секции отзывов
+    async function updateReviewsSection() {
+        try {
+            const reviewsSection = document.getElementById('testimonials');
+            if (!reviewsSection) return;
+            
+            // Получаем отзывы из localStorage
+            const reviews = JSON.parse(localStorage.getItem('petochania_reviews') || '[]');
+            
+            // Фильтруем активные отзывы
+            const activeReviews = reviews.filter(review => review.active !== false);
+            
+            // Если нет отзывов в админке, используем статичные
+            if (activeReviews.length === 0) {
+                console.log('Нет отзывов из админки, использую статичные');
+                return;
+            }
+            
+            // Сортируем по дате (новые первыми)
+            activeReviews.sort((a, b) => {
+                const dateA = new Date(a.date || a.createdAt);
+                const dateB = new Date(b.date || b.createdAt);
+                return dateB - dateA;
+            });
+            
+            // Обновляем контейнер отзывов
+            const reviewsContainer = reviewsSection.querySelector('.reviews-container');
+            if (reviewsContainer && activeReviews.length > 0) {
+                reviewsContainer.innerHTML = '';
+                
+                activeReviews.forEach((review, index) => {
+                    const reviewCard = document.createElement('div');
+                    reviewCard.className = index === 0 ? 'review-card active' : 'review-card';
+                    reviewCard.style.display = index === 0 ? 'flex' : 'none';
+                    
+                    // Создаем звезды рейтинга
+                    const ratingStars = Array(5).fill().map((_, i) => 
+                        i < (review.rating || 5) ? 
+                        '<i class="fas fa-star"></i>' : 
+                        '<i class="far fa-star"></i>'
+                    ).join('');
+                    
+                    reviewCard.innerHTML = `
+                        <div class="review-left">
+                            <div class="review-photo">
+                                ${review.image ? 
+                                    `<img src="${review.image}" alt="Фото от ${review.author}">` : 
+                                    `<img src="img/machkin.JPG" alt="Фото отзыва">`
+                                }
+                            </div>
+                            <div class="review-author-info">
+                                <div class="author-name">${review.author || 'Гость'}</div>
+                                <div class="author-location">
+                                    <i class="fas fa-map-marker-alt"></i> ${review.city || 'Москва, Россия'}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-right">
+                            <div class="review-meta">
+                                <div class="rating">
+                                    ${ratingStars}
+                                </div>
+                            </div>
+                            <div class="review-text">
+                                "${review.text || 'Отличный отзыв!'}"
+                            </div>
+                        </div>
+                    `;
+                    reviewsContainer.appendChild(reviewCard);
+                });
+                
+                // Обновляем точки навигации
+                const dotsContainer = reviewsSection.querySelector('.review-dots-container');
+                if (dotsContainer) {
+                    dotsContainer.innerHTML = '';
+                    activeReviews.forEach((_, index) => {
+                        const dot = document.createElement('div');
+                        dot.className = index === 0 ? 'review-dot active' : 'review-dot';
+                        dot.setAttribute('data-index', index);
+                        dotsContainer.appendChild(dot);
+                    });
+                }
+                
+                // Инициализируем слайдер отзывов заново
+                initReviewsSlider(activeReviews.length);
+            }
+            
+        } catch (error) {
+            console.error('Ошибка обновления отзывов:', error);
+        }
+    }
+    
+    // Обновление секции видео
+    async function updateVideosSection() {
+        try {
+            const videoStrip = document.getElementById('videoStrip');
+            if (!videoStrip) return;
+            
+            // Получаем видео из localStorage
+            const videos = JSON.parse(localStorage.getItem('petochania_videos') || '[]');
+            
+            // Фильтруем активные видео для главной страницы
+            const mainVideos = videos.filter(video => 
+                video.active !== false && 
+                video.category === 'main'
+            );
+            
+            // Сортируем по порядку
+            mainVideos.sort((a, b) => (a.order || 999) - (b.order || 999));
+            
+            // Очищаем текущие видео
+            videoStrip.innerHTML = '';
+            
+            // Если нет видео из админки, используем демо-видео
+            if (mainVideos.length === 0) {
+                console.log('Нет видео из админки, использую демо');
+                createDemoVideos();
+                return;
+            }
+            
+            // Создаем элементы видео
+            for (let i = 0; i < 4; i++) {
+                mainVideos.forEach((video, index) => {
+                    const videoItem = createVideoItem(video, index);
+                    videoStrip.appendChild(videoItem);
+                });
+            }
+            
+            // Инициализируем анимацию ленты
+            initVideoStripAnimation(videoStrip);
+            
+        } catch (error) {
+            console.error('Ошибка обновления видео:', error);
+        }
+    }
+    
+    // Создание демо-видео (если нет видео в админке)
+    function createDemoVideos() {
+        const videoStrip = document.getElementById('videoStrip');
+        const demoVideos = [
+            {
+                title: 'Наши котята',
+                videoUrl: 'videos/video1.mp4',
+                poster: ''
+            },
+            {
+                title: 'Питомник',
+                videoUrl: 'videos/video2.mp4', 
+                poster: ''
+            },
+            {
+                title: 'Забота о кошках',
+                videoUrl: 'videos/video3.mp4',
+                poster: ''
+            }
+        ];
+        
+        // Создаем элементы для демо-видео
+        for (let i = 0; i < 4; i++) {
+            demoVideos.forEach((video, index) => {
+                const videoItem = createVideoItem(video, index);
+                videoStrip.appendChild(videoItem);
+            });
+        }
+        
+        initVideoStripAnimation(videoStrip);
+    }
+    
+    // Функция для создания элемента видео (оставьте как есть)
+    function createVideoItem(video, index) {
+        const item = document.createElement('div');
+        item.className = 'video-strip-item';
+        item.setAttribute('data-index', index);
+        
+        const videoElement = document.createElement('video');
+        
+        // Обработка разных типов видео
+        if (video.type === 'youtube') {
+            // Для YouTube используем превью
+            item.innerHTML = `
+                <div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; cursor: pointer;"
+                     onclick="openYouTubeVideo('${video.youtubeId || extractYouTubeId(video.url)}')">
+                    ${video.thumbnail ? 
+                        `<img src="${video.thumbnail}" alt="${video.title}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.8;">` :
+                        `<div style="color: white; font-size: 24px;">YouTube</div>`
+                    }
+                    <div class="video-play-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+            `;
+            return item;
+        } else {
+            // Для прямых ссылок или загруженных видео
+            videoElement.src = video.videoFile || video.url;
+            videoElement.poster = video.thumbnail || '';
             videoElement.alt = video.title;
-            videoElement.muted = true;
+            videoElement.muted = video.autoplay !== false;
             videoElement.loop = true;
             videoElement.playsInline = true;
-            videoElement.autoplay = true;
-            
-            const playIcon = document.createElement('div');
-            playIcon.className = 'video-play-icon';
-            playIcon.innerHTML = '<i class="fas fa-play"></i>';
-            
-            item.appendChild(videoElement);
-            item.appendChild(playIcon);
-            
-            // Автоматически запускаем воспроизведение
+            videoElement.autoplay = video.autoplay !== false;
+        }
+        
+        const playIcon = document.createElement('div');
+        playIcon.className = 'video-play-icon';
+        playIcon.innerHTML = '<i class="fas fa-play"></i>';
+        
+        item.appendChild(videoElement);
+        item.appendChild(playIcon);
+        
+        // Автоматически запускаем воспроизведение если autoplay
+        if (video.autoplay !== false) {
             const playPromise = videoElement.play();
             
             if (playPromise !== undefined) {
@@ -2032,260 +2287,304 @@
                     });
                 });
             }
-            
-            videoElement.addEventListener('playing', function() {
+        }
+        
+        videoElement.addEventListener('playing', function() {
+            item.classList.add('playing');
+        });
+        
+        videoElement.addEventListener('pause', function() {
+            item.classList.remove('playing');
+        });
+        
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (videoElement.paused) {
+                videoElement.play().catch(e => console.log('Воспроизведение заблокировано:', e));
                 item.classList.add('playing');
-            });
-            
-            videoElement.addEventListener('pause', function() {
+            } else {
+                videoElement.pause();
+                videoElement.currentTime = 0;
                 item.classList.remove('playing');
-            });
-            
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (videoElement.paused) {
-                    videoElement.play().catch(e => console.log('Воспроизведение заблокировано:', e));
-                    item.classList.add('playing');
-                } else {
-                    videoElement.pause();
-                    videoElement.currentTime = 0;
-                    item.classList.remove('playing');
-                }
-            });
-            
-            return item;
-        }
-
-        // Функция для создания бесконечной ленты видео
-        async function createInfiniteVideoStrip() {
-            const videoStrip = document.getElementById('videoStrip');
-            
-            if (videoStrip) {
-                try {
-                    // Демо-видео
-                    const demoVideos = [
-                        {
-                            title: 'Наши котята',
-                            videoUrl: 'videos/video1.mp4',
-                            poster: ''
-                        },
-                        {
-                            title: 'Питомник',
-                            videoUrl: 'videos/video2.mp4', 
-                            poster: ''
-                        },
-                        {
-                            title: 'Забота о кошках',
-                            videoUrl: 'videos/video3.mp4',
-                            poster: ''
-                        }
-                    ];
-                    
-                    // Создаем элементы для демо-видео
-                    for (let i = 0; i < 4; i++) {
-                        demoVideos.forEach((video, index) => {
-                            const videoItem = createVideoItem(video, index);
-                            videoStrip.appendChild(videoItem);
-                        });
-                    }
-                    
-                    initVideoStripAnimation(videoStrip);
-                    
-                } catch (error) {
-                    console.error('Error creating video strip:', error);
-                }
             }
-        }
-
-        function initVideoStripAnimation(videoStrip) {
-            const stripWidth = videoStrip.scrollWidth / 2;
-            
-            let position = 0;
-            const speed = 0.9;
-            let animationId;
-            let isPaused = false;
-            let isDragging = false;
-            let startX = 0;
-            let scrollLeft = 0;
-            const container = videoStrip.parentElement;
-            
-            function animateStrip() {
-                if (!isPaused && !isDragging) {
-                    position -= speed;
-                    
-                    if (Math.abs(position) >= stripWidth) {
-                        position = 0;
-                    }
-                    
-                    videoStrip.style.transform = `translateX(${position}px)`;
+        });
+        
+        return item;
+    }
+    
+    // Функция для открытия YouTube видео
+    function openYouTubeVideo(videoId) {
+        window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+    }
+    
+    // Функция извлечения YouTube ID из URL
+    function extractYouTubeId(url) {
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[7].length === 11) ? match[7] : null;
+    }
+    
+    // Функция инициализации анимации ленты видео (оставьте как есть)
+    function initVideoStripAnimation(videoStrip) {
+        const stripWidth = videoStrip.scrollWidth / 2;
+        
+        let position = 0;
+        const speed = 0.9;
+        let animationId;
+        let isPaused = false;
+        let isDragging = false;
+        let startX = 0;
+        let scrollLeft = 0;
+        const container = videoStrip.parentElement;
+        
+        function animateStrip() {
+            if (!isPaused && !isDragging) {
+                position -= speed;
+                
+                if (Math.abs(position) >= stripWidth) {
+                    position = 0;
                 }
                 
-                animationId = requestAnimationFrame(animateStrip);
-            }
-            
-            // Запускаем анимацию
-            animateStrip();
-            
-            // Обработчики для паузы при наведении
-            container.addEventListener('mouseenter', () => {
-                isPaused = true;
-            });
-            
-            container.addEventListener('mouseleave', () => {
-                isPaused = false;
-            });
-            
-            // Функции для ручной прокрутки (drag & drop)
-            function startDrag(e) {
-                isDragging = true;
-                isPaused = true;
-                startX = e.pageX || e.touches[0].pageX;
-                scrollLeft = position;
-                container.style.cursor = 'grabbing';
-                e.preventDefault();
-            }
-            
-            function duringDrag(e) {
-                if (!isDragging) return;
-                const x = e.pageX || e.touches[0].pageX;
-                const walk = (x - startX) * 2;
-                position = scrollLeft - walk;
                 videoStrip.style.transform = `translateX(${position}px)`;
             }
             
-            function endDrag() {
-                isDragging = false;
+            animationId = requestAnimationFrame(animateStrip);
+        }
+        
+        // Запускаем анимацию
+        animateStrip();
+        
+        // Обработчики для паузы при наведении
+        container.addEventListener('mouseenter', () => {
+            isPaused = true;
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            isPaused = false;
+        });
+        
+        // Функции для ручной прокрутки (drag & drop)
+        function startDrag(e) {
+            isDragging = true;
+            isPaused = true;
+            startX = e.pageX || e.touches[0].pageX;
+            scrollLeft = position;
+            container.style.cursor = 'grabbing';
+            e.preventDefault();
+        }
+        
+        function duringDrag(e) {
+            if (!isDragging) return;
+            const x = e.pageX || e.touches[0].pageX;
+            const walk = (x - startX) * 2;
+            position = scrollLeft - walk;
+            videoStrip.style.transform = `translateX(${position}px)`;
+        }
+        
+        function endDrag() {
+            isDragging = false;
+            isPaused = false;
+            container.style.cursor = 'grab';
+        }
+        
+        // Добавляем обработчики
+        container.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', duringDrag);
+        document.addEventListener('mouseup', endDrag);
+        container.addEventListener('touchstart', startDrag);
+        document.addEventListener('touchmove', duringDrag);
+        document.addEventListener('touchend', endDrag);
+        
+        // Останавливаем анимацию при уходе со страницы
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                isPaused = true;
+            } else {
                 isPaused = false;
-                container.style.cursor = 'grab';
             }
-            
-            // Добавляем обработчики
-            container.addEventListener('mousedown', startDrag);
-            document.addEventListener('mousemove', duringDrag);
-            document.addEventListener('mouseup', endDrag);
-            container.addEventListener('touchstart', startDrag);
-            document.addEventListener('touchmove', duringDrag);
-            document.addEventListener('touchend', endDrag);
-            
-            // Останавливаем анимацию при уходе со страницы
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    isPaused = true;
-                } else {
-                    isPaused = false;
-                }
+        });
+    }
+    
+    // FAQ Accordion
+    function initFAQAccordion() {
+        const faqItems = document.querySelectorAll('#faq-main .faq-item');
+        
+        if (faqItems.length > 0) {
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    // Закрываем все другие открытые вопросы
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('active')) {
+                            otherItem.classList.remove('active');
+                            otherItem.querySelector('.faq-answer').style.display = 'none';
+                        }
+                    });
+                    
+                    // Переключаем текущий вопрос
+                    const isActive = item.classList.contains('active');
+                    item.classList.toggle('active');
+                    const answer = item.querySelector('.faq-answer');
+                    answer.style.display = isActive ? 'none' : 'block';
+                });
             });
         }
-
-        // Обработчики для карточек котят
-        function initKittenCards() {
-            const kittenCards = document.querySelectorAll('.kitten-card');
+    }
+    
+    // Инициализация слайдера отзывов
+    function initReviewsSlider(totalReviews) {
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const reviewCards = document.querySelectorAll('.review-card');
+        const reviewDots = document.querySelectorAll('.review-dot');
+        
+        let currentIndex = 0;
+        
+        // Функция для обновления отображаемого отзыва
+        function updateReview() {
+            // Скрываем все отзывы
+            reviewCards.forEach(card => {
+                card.style.display = 'none';
+            });
             
-            kittenCards.forEach(card => {
-                // Для десктопов - обычный клик
-                card.addEventListener('click', function(e) {
-                    if (e.target.tagName !== 'A' && !e.target.closest('a')) {
-                        const link = this.querySelector('.kitten-button');
-                        if (link) {
-                            window.location.href = link.href;
-                        }
-                    }
-                });
-                
-                // Для мобильных устройств - обработка касаний
-                card.addEventListener('touchstart', function(e) {
-                    if (e.target.tagName !== 'A' && !e.target.closest('a')) {
-                        this.style.transform = 'scale(0.98)';
-                    }
-                }, { passive: true });
-                
-                card.addEventListener('touchend', function(e) {
-                    if (e.target.tagName !== 'A' && !e.target.closest('a')) {
-                        this.style.transform = '';
-                        const link = this.querySelector('.kitten-button');
-                        if (link) {
-                            setTimeout(() => {
-                                window.location.href = link.href;
-                            }, 150);
-                        }
-                    }
-                }, { passive: true });
+            // Показываем текущий отзыв
+            if (reviewCards[currentIndex]) {
+                reviewCards[currentIndex].style.display = 'flex';
+            }
+            
+            // Обновляем активные точки
+            reviewDots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
             });
         }
         
-        document.addEventListener('DOMContentLoaded', function() {
-            // Инициализируем карточки котят
-            initKittenCards();
-            
-            // Инициализируем бесконечную ленту видео
-            createInfiniteVideoStrip();
-            
-            // Инициализируем FAQ аккордеон
-            initFAQAccordion();
-            
-            const prevBtn = document.querySelector('.prev-btn');
-            const nextBtn = document.querySelector('.next-btn');
-            const reviewCards = document.querySelectorAll('.review-card');
-            const reviewDots = document.querySelectorAll('.review-dot');
-            
-            let currentIndex = 0;
-            
-            // Функция для обновления отображаемого отзыва
-            function updateReview() {
-                // Скрываем все отзывы
-                reviewCards.forEach(card => {
-                    card.classList.remove('active');
-                });
-                
-                // Показываем текущий отзыв
-                reviewCards[currentIndex].classList.add('active');
-                
-                // Обновляем активные точки
-                reviewDots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === currentIndex);
-                });
-            }
-            
-            // Инициализация
+        // Инициализация
+        if (reviewCards.length > 0) {
             updateReview();
-            
-            // Обработчики для кнопок навигации
+        }
+        
+        // Обработчики для кнопок навигации
+        if (prevBtn) {
             prevBtn.addEventListener('click', function() {
                 if (currentIndex > 0) {
                     currentIndex--;
                 } else {
-                    currentIndex = reviewCards.length - 1;
+                    currentIndex = totalReviews - 1;
                 }
                 updateReview();
             });
-            
+        }
+        
+        if (nextBtn) {
             nextBtn.addEventListener('click', function() {
-                if (currentIndex < reviewCards.length - 1) {
+                if (currentIndex < totalReviews - 1) {
                     currentIndex++;
                 } else {
                     currentIndex = 0;
                 }
                 updateReview();
             });
-            
-            // Обработчики для точек навигации
-            reviewDots.forEach((dot, index) => {
-                dot.addEventListener('click', function() {
-                    currentIndex = index;
-                    updateReview();
-                });
+        }
+        
+        // Обработчики для точек навигации
+        reviewDots.forEach((dot, index) => {
+            dot.addEventListener('click', function() {
+                currentIndex = index;
+                updateReview();
             });
-            
-            // Автоматическое перелистывание каждые 10 секунд
+        });
+        
+        // Автоматическое перелистывание каждые 10 секунд
+        if (reviewCards.length > 1) {
             setInterval(() => {
-                if (currentIndex < reviewCards.length - 1) {
+                if (currentIndex < totalReviews - 1) {
                     currentIndex++;
                 } else {
                     currentIndex = 0;
                 }
                 updateReview();
             }, 10000);
+        }
+    }
+    
+    // Обработчики для карточек котят
+    function initKittenCards() {
+        const kittenCards = document.querySelectorAll('.kitten-card');
+        
+        kittenCards.forEach(card => {
+            // Для десктопов - обычный клик
+            card.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+                    const link = this.querySelector('.kitten-button');
+                    if (link) {
+                        window.location.href = link.href;
+                    }
+                }
+            });
+            
+            // Для мобильных устройств - обработка касаний
+            card.addEventListener('touchstart', function(e) {
+                if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+                    this.style.transform = 'scale(0.98)';
+                }
+            }, { passive: true });
+            
+            card.addEventListener('touchend', function(e) {
+                if (e.target.tagName !== 'A' && !e.target.closest('a')) {
+                    this.style.transform = '';
+                    const link = this.querySelector('.kitten-button');
+                    if (link) {
+                        setTimeout(() => {
+                            window.location.href = link.href;
+                        }, 150);
+                    }
+                }
+            }, { passive: true });
         });
-    </script>
+    }
+    
+    // Слушатель для обновления данных при изменении в localStorage
+    function setupDataUpdateListener() {
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'petochania_faq' || 
+                event.key === 'petochania_reviews' || 
+                event.key === 'petochania_videos') {
+                console.log('Данные обновлены, обновляю страницу...');
+                updatePageWithData();
+            }
+        });
+        
+        // Также слушаем кастомные события
+        window.addEventListener('dataSyncUpdate', () => {
+            console.log('Событие обновления данных получено');
+            updatePageWithData();
+        });
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Страница загружена, инициализация...');
+        
+        // Инициализируем карточки котят
+        initKittenCards();
+        
+        // Ждем загрузки DataSync
+        waitForDataSync();
+        
+        // Настраиваем слушатель обновления данных
+        setupDataUpdateListener();
+        
+        // Инициализируем FAQ аккордеон
+        initFAQAccordion();
+        
+        // Инициализируем слайдер отзывов (сначала со статичными данными)
+        initReviewsSlider(3);
+        
+        // Также запускаем обновление через 2 секунды на всякий случай
+        setTimeout(() => {
+            updatePageWithData();
+        }, 2000);
+    });
+</script>
 </body>
 </html>
